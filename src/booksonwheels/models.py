@@ -28,8 +28,8 @@ class Book(models.Model):
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	image=models.ImageField(upload_to='img')
 	genre=models.CharField(max_length=20)
-	dosell=models.BoolenField(default=False)
-	available=models.BoolenField(default=True)
+	dosell=models.BooleanField(default=False)
+	available=models.BooleanField(default=True)
 	summary=models.CharField(max_length=200)
 	rating=models.DecimalField(max_digits=1,decimal_places=1)
 	title=models.CharField(max_length=120,blank=False,null=False)
@@ -60,7 +60,7 @@ class Order(models.Model):
 class Payment(models.Model):
 	paymentid=models.AutoField(primary_key=True)
 	mode=models.CharField(max_length=2)
-	ispending=models.BoolenField(default=True)
+	ispending=models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return self.paymentid
