@@ -8,19 +8,19 @@ class UserClass:
 
 	def authenticate(self,isadmin):
 		if isadmin==True:
-			if email=="bow@gmail.com" and password=="1234":
+			if self.email=="bow@gmail.com" and self.password=="1234":
 				return True
 			else:
 				return False
 		else:
-			ans=User.objects.filter(email=email,password=password)
+			ans=User.objects.filter(email=self.email,password=self.password)
 		if len(ans):
 			return True
 		else:
 			return False
 
 	def addUser(self):
-		newuser=User(name=name,password=password,email=email)
+		newuser=User(name=self.name,password=self.password,email=self.email)
 		newuser.save()
 
 			
