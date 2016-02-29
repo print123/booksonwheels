@@ -1,5 +1,4 @@
 from ..models import User,Admin
-import stmplib
 import string
 class AdminClass(UserClass):
 	def trackRentRequest(self,date):
@@ -16,26 +15,26 @@ class AdminClass(UserClass):
 		"""A method to notify user from wishlist by ISBN"""
 		ans=WishList.object.filter(ISBN=ISBN).values('userid')
 		import smtp
-		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email
+		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email		
         for id in ans
             mail=User.objects.filter(userid=id).values('email')
             """script for mail goes here"""
-			toaddr = mail #receiver's email
-			msg = 'Hi there'#The message
+		toaddr = mail #receiver's email
+		msg = 'Hi there'#The message
 			
-			#gmail credentials
-			username = 'booksonwheelsteam'
-			password = 'books^**'
+		#gmail credentials
+		username = 'booksonwheelsteam'
+		password = 'books^**'
 			
-			server=smtplib.SMTP('smtp.gmail.com:587')
-			server.ehlo()
-			server.starttls()
+		server=smtplib.SMTP('smtp.gmail.com:587')
+		server.ehlo()
+		server.starttls()
 
 
-	server.login(username,password)
-	server.sendmail(fromaddr,toaddr,msg)
+		server.login(username,password)
+		server.sendmail(fromaddr,toaddr,msg)
 
-server.quit()
+		server.quit()
 
 
 
