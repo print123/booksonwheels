@@ -15,14 +15,14 @@ def login(request):
 
     context={'form':lform,'is_not_auth':is_not_auth}
     if request.method == "POST":
-    	form=LoginForm(request.POST)
-    	email=request.POST["email"]
-    	password=request.POST["password"]
-    	requestuser=UserClass(name="",password=password,email=email)
-    	if requestuser.authenticate(False)==True:
-    		return HttpResponseRedirect('/cart/')
-    	else:
-    		context["is_not_auth"]=True
-    		return render(request,"login.html",context)
+        form=LoginForm(request.POST)
+        email=request.POST["email"]
+        password=request.POST["password"]
+        requestuser=UserClass(name="",password=password,email=email)
+        if requestuser.authenticate(False)==True:
+            return HttpResponseRedirect("")
+        else:
+            context["is_not_auth"]=True
+            return render(request,"login.html",context)
     else:
-		return render(request,"login.html",context)
+        return render(request,"login.html",context)
