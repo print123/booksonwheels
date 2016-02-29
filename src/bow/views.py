@@ -45,3 +45,5 @@ def signup(request):
             return render(request, "u.html")
 
     return render(request, "r.html")
+
+
