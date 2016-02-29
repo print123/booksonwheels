@@ -16,7 +16,7 @@ class AdminClass(UserClass):
 		"""A method to notify user from wishlist by ISBN"""
 		ans=WishList.object.filter(ISBN=ISBN).values('userid')
 		import smtp
-		fromaddr = 'mattdamon@gmail.com'#sender's email
+		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email
         for id in ans
             mail=User.objects.filter(userid=id).values('email')
             """script for mail goes here"""

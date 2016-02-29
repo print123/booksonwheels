@@ -13,4 +13,4 @@ class OrderClass:
 
     def updateStatus(self,orderid):
         t_order=Order.objects.filter(orderid=orderid)
-
+		

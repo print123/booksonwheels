@@ -1,7 +1,7 @@
 """A Class that represents a Customer """
 
-from .user import UserClass  #
-# ,CartClass,BookClass,
+from .cart import CartClass
+from .user import UserClass  #BookClass,
 from ..models import User, Wishlist, Book, Rents
 
 
@@ -24,12 +24,10 @@ class CustomerClass(UserClass):
 
         books = Book.object.get(ISBN=ISBN, available=True)
         isAvailable = books.available
-        if (isAvailable):
-            # call mark it unavailablr for that bookid
-            book_object = BookClass(books.bookid)
-            book_object.mark_it_unAvailable()
-            # add to cart
-            #checkout
+        if (isAvailable):            
+			cartObj=CartClass(userid,bookid)
+            cartObj.addToCart(bookid,userid)			
+			cartObj.checkOut(userid,bookid)
         return isAvailable
 
     class WishListClass:
