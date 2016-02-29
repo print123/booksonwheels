@@ -43,6 +43,7 @@ class Book(models.Model):
 
 class Rents(models.Model):
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
+	ISBN=models.ForeignKey(max_length=20,blank=False,null=False)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	date_of_issue=models.DateTimeField(auto_now_add=True)
@@ -55,6 +56,7 @@ class Order(models.Model):
 	orderid=models.AutoField(primary_key=True)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	date_of_order=models.DateTimeField(auto_now_add=True)
+	ISBN=models.ForeignKey('Book',on_delete=models.CASCADE)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
 

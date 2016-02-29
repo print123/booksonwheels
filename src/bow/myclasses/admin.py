@@ -27,7 +27,6 @@ class AdminClass(UserClass):
 		password = 'books^**'
 			
 		server=smtplib.SMTP('smtp.gmail.com:587')
-		server.ehlo()
 		server.starttls()
 
 
