@@ -20,6 +20,10 @@ class Wishlist(models.Model):
 	def __unicode__(self):
 		return self.userid
 
+class Cart(models.Model):
+	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
+	bookid=models.CharField(max_length=20,blank=False,null=False)
+
 class Book(models.Model):
 	bookid=models.AutoField(primary_key=True)
 	owner_id=models.ForeignKey('User',on_delete=models.CASCADE,)
