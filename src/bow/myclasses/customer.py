@@ -52,3 +52,8 @@ class CustomerClass(UserClass):
         def getItems(self):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
+		
+	def uploadBook(self,ISBN,actual_price,genre,summary)
+		'''code for web scraping '''
+		b=Book.object.filter(owner_id=self.userid,ISBN=ISBN,actual_price=actual_price,genre=genre,summary=summary)
+		b.save(available=True)
