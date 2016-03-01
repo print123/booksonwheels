@@ -1,7 +1,7 @@
 """A Class that represents a Customer """
 
 from .cart import CartClass
-from .user import UserClass  #BookClass,
+from .user import UserClass,BookClass
 from ..models import User, Wishlist, Book, Rents
 
 
@@ -25,11 +25,21 @@ class CustomerClass(UserClass):
         books = Book.object.get(ISBN=ISBN, available=True)
         isAvailable = books.available
         if (isAvailable):            
-			cartObj=CartClass(userid,bookid)
-            cartObj.addToCart(bookid,userid)			
-			cartObj.checkOut(userid,bookid)
+			cartObj=CartClass(userid,books.bookid)
+            cartObj.addToCart(books.bookid,userid)			
+			cartObj.checkOut(userid,books.bookid)
         return isAvailable
-
+	def rentBook(self,ISBN):
+		book_to_rent=Book.object.get(ISBN=ISBN,available=True)
+		bookObj=Book(book_to_rent.bookid)
+		timdur=1#to be discussed yet
+		temp_var=bookObj.getQuotation(timedur)
+		#ask for confirmation from user
+		cartObj=CartClass(userid,book_to_rent.bookid)
+		cartObj.addToCart(book_to_rent.bookid,userid)
+		cartObj.checkOut(userid,book_to_rent.bookid)
+		
+	
     class WishListClass:
         """WishList Class associated with each User"""
         def addBook(self, ISBN):
