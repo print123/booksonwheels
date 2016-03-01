@@ -42,6 +42,7 @@ class Book(models.Model):
 		return self.title
 
 class Rents(models.Model):
+
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
@@ -58,7 +59,7 @@ class Order(models.Model):
 	date_of_order=models.DateTimeField(auto_now_add=True)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
-	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
+	bookid=models.ForeignKey('Book',related_name="order_bookid",on_delete=models.CASCADE)
 
 	def __unicode__(self):
 		return self.orderid
