@@ -30,7 +30,7 @@ class Book(models.Model):
 	author=models.CharField(max_length=100)
 	actual_price=models.DecimalField(max_digits=8,decimal_places=4)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
-	image=models.ImageField(upload_to='img')
+	imageurl=models.CharField(max_length=100,blank=False,null=False)
 	genre=models.CharField(max_length=20)
 	dosell=models.BooleanField(default=False)
 	available=models.BooleanField(default=True)
@@ -43,7 +43,7 @@ class Book(models.Model):
 
 class Rents(models.Model):
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
-	ISBN=models.ForeignKey(max_length=20,blank=False,null=False)
+	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	date_of_issue=models.DateTimeField(auto_now_add=True)
@@ -56,7 +56,7 @@ class Order(models.Model):
 	orderid=models.AutoField(primary_key=True)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	date_of_order=models.DateTimeField(auto_now_add=True)
-	ISBN=models.ForeignKey('Book',on_delete=models.CASCADE)
+	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
 

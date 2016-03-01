@@ -7,6 +7,8 @@ class BookClass:
 	
 	def __init__(self,bookid):
 		self.bookid=bookid
+	def __init__(self):
+		bookid=None
 	
 	def mark_it_unavailable(self):
 		Book.Object.filter(bookid=self.bookid).update(available=False)
@@ -27,13 +29,16 @@ class BookClass:
 		
 		return final_price
 	
-	def getRent():
+	def getRent(self):
 		# for uploader
 		base_price=Book.object.filter(bookid=self.bookid).values('actual_price')
 		final_price=0.1*base_price*cnt
 		
 		return final_price
-		
+	
+	def getBooks(self,number):
+		b=Book.objects.all()[:number]
+		return b
 		
 		
 		

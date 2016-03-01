@@ -1,12 +1,20 @@
 from django.shortcuts import render
+from django.shortcuts import render_to_response
 from .myclasses.user import UserClass
+from .myclasses.book import BookClass
 from .forms import *
 from django.http import HttpResponseRedirect
-
+from .myclasses.search import SearchClass
+from django.template import RequestContext
 
 # Create your views here.
 def home(request):
-    context = {}
+    books=BookClass().getBooks(3)
+    print books
+    '''for b in books:
+        b.imageurl="{%"+" static"+" '"+b.imageurl+"' %}"
+        print b.imageurl'''    
+    context = {'books':books}
     return render(request, "index.html", context)
 
 
@@ -47,3 +55,11 @@ def signup(request):
     return render(request, "r.html")
 
 
+def search(request):
+    if request.method == "POST":
+        s=SearchClass()
+        print request.POST["stext"]
+        res=s.searchOnTitle(request.POST["stext"])
+        context={'result':res}
+        print res
+        return render_to_response("search.html",RequestContext(request,context))

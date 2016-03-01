@@ -4,8 +4,6 @@ from ..models import Book
 
 
 class SearchClass:
-    def __init__(self, arg):
-        self.arg = arg
 
     def searchOnAuthor(self, author):
         result = Book.objects.filter(author=author)

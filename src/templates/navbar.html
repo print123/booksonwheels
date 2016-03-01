@@ -11,15 +11,18 @@
 
       </div>
       <div class="col-md-6 col-sm-9">
+          <form action="/search" method="post">{% csrf_token %}
           <div class="input-group" >
-          <input type="text" class="form-control" placeholder="Search for..." style="color:white">
+          
+          <input type="text" class="form-control" name="stext" placeholder="Search for..." style="color:white">
         
         
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button" style="margin-left:10%;">Search</button>
+            <button class="btn btn-default" type="submit" style="margin-left:0%;">Search</button>
           </span>
           
         </div>
+        </form>
       </div>
       
       <div class="col-md-3">
