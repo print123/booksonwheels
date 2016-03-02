@@ -8,10 +8,10 @@ class SearchClass:
 
     def searchOnString(self,string):
         result=Book.objects.filter(
-            Q(author__iexact=string)|
-            Q(title__iexact=string)|
-            Q(summary__iexact=string)|
-            Q(genre__iexact=string)
+            Q(author__icontains=string)|
+            Q(title__icontains=string)|
+            Q(summary__icontains=string)|
+            Q(genre__icontains=string)
             )
         return result
     ''''    

@@ -63,4 +63,7 @@ def search(request):
         #res=s.searchOnTitle(request.POST["stext"])
         context={'result':res}
         print res
-        return render_to_response("search.html",RequestContext(request,context))# know why this works
+        if len(res)>=1:
+            return render_to_response("search.html",RequestContext(request,context))# know why this works
+        else:
+            return render_to_response("404.html",RequestContext(request,context))
