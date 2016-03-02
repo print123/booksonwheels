@@ -62,4 +62,4 @@ def search(request):
         res=s.searchOnTitle(request.POST["stext"])
         context={'result':res}
         print res
-        return render_to_response("search.html",RequestContext(request,context))
+        return render_to_response("search.html",RequestContext(request,context))# know why this works
