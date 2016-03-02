@@ -59,7 +59,8 @@ def search(request):
     if request.method == "POST":
         s=SearchClass()
         print request.POST["stext"]
-        res=s.searchOnTitle(request.POST["stext"])
+        res=s.searchOnString(request.POST["stext"])
+        #res=s.searchOnTitle(request.POST["stext"])
         context={'result':res}
         print res
         return render_to_response("search.html",RequestContext(request,context))# know why this works
