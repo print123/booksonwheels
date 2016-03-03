@@ -9,7 +9,7 @@ from django.template import RequestContext
 
 # Create your views here.
 def home(request):
-    books=BookClass().getBooks(3)
+    books=BookClass().getBooks(6)
     print books
     '''for b in books:
         b.imageurl="{%"+" static"+" '"+b.imageurl+"' %}"
