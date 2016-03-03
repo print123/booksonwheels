@@ -1,7 +1,7 @@
 """A Class for Book"""
 
 from ..models import Book,Rents
-
+from django.db.models import Count
 
 class BookClass:
 	
@@ -16,11 +16,9 @@ class BookClass:
 	def getSummary(self):
 		return Book.object.filter(bookid=self.bookid).values('summary')
 		
-	def getTrending(self,cnt,type):
-		# left to implement
-		if type == 1:  # 1 for rent
-			rentTrend = Rents.object.all().aggregate(Max(count(ISBN)))
-			
+	def getTrending(self):		
+		rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:3]
+		return rentTrend
 			
 	def getQuotation(self,time_dur):
 		# for customer

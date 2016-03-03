@@ -9,7 +9,7 @@ from django.template import RequestContext
 
 # Create your views here.
 def home(request):
-    books=BookClass().getBooks(6)
+    books=BookClass().getTrending()
     print books
     '''for b in books:
         b.imageurl="{%"+" static"+" '"+b.imageurl+"' %}"
@@ -19,6 +19,9 @@ def home(request):
 
 
 def login(request):
+    if request.session["userid"] is not None:
+        return HttpResponseRedirect('/')
+
     lform = LoginForm()
     sform = SignUpForm()
     # rform=retype()
