@@ -11,4 +11,5 @@ urlpatterns = [
 	#url(r'^cart', 'bow.views.login', name='cart'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cart', 'bow.views.cart', name='cart'),
+    url(r'^productdetails', 'bow.views.productdetails', name='productdetails'),#what is name
 ]

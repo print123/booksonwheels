@@ -67,3 +67,13 @@ def search(request):
             return render_to_response("search.html",RequestContext(request,context))# know why this works
         else:
             return render_to_response("404.html",RequestContext(request,context))
+
+def productdetails(request):
+    if request.GET["id"]!="":
+        b=BookClass()
+        res=b.getBook(request.GET["id"])
+        print res
+        context={'result':res}
+        print len(res)
+        return render_to_response("product-details.html",RequestContext(request,context))
+    

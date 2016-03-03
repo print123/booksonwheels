@@ -40,5 +40,7 @@ class BookClass:
 		b=Book.objects.all()[:number]
 		return b
 		
-		
+	def getBook(self,ISBN):
+		b=Book.objects.filter(ISBN=ISBN)[:1]
+		return b
 		
