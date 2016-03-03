@@ -60,7 +60,7 @@ def signup(request):
 def search(request):
     if request.method == "POST":
         s=SearchClass()
-        print request.POST["stext"]
+        #print request.POST["stext"]
         res=s.searchOnString(request.POST["stext"])
         #res=s.searchOnTitle(request.POST["stext"])
         context={'result':res}
