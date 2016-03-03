@@ -32,7 +32,9 @@ def login(request):
         requestuser = UserClass(name="", password=password, email=email)
         if requestuser.authenticate(False) == True:
             context["is_not_auth"] = False
-            return HttpResponseRedirect('/cart/')
+            request.session["userid"]=requestuser.userid
+            request.session["name"]=requestuser.name
+            return HttpResponseRedirect('/')
         else:
             context["is_not_auth"] = True
             return render(request, "login.html", context)
@@ -76,4 +78,8 @@ def productdetails(request):
         context={'result':res}
         print len(res)
         return render_to_response("product-details.html",RequestContext(request,context))
-    
+
+def logout(request):
+    del request.session["userid"]
+    del request.session["name"]
+    return HttpResponseRedirect('/')

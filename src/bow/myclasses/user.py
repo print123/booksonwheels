@@ -17,8 +17,10 @@ class UserClass:
             else:
                 return False
         else:
-            ans = User.objects.filter(email=self.email, password=self.password)
-            if len(ans):
+            ans = User.objects.get(email=self.email, password=self.password)
+            if ans is not None:
+                self.userid=ans.userid
+                self.name=ans.name
                 return True
             else:
                 return False

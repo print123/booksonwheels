@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cart', 'bow.views.cart', name='cart'),
     url(r'^productdetails', 'bow.views.productdetails', name='productdetails'),#what is name
+    url(r'^logout', 'bow.views.logout', name='logout'),
 ]
