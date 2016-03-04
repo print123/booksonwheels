@@ -19,12 +19,12 @@ def home(request):
 
 
 def login(request):
-	try:	
-		if request.session["userid"] is not None:
-			return HttpResponseRedirect('/')
-	except:
-		return HttpResponseRedirect('/')
-	
+    try:
+        if request.session["userid"] is not None:
+            return HttpResponseRedirect('/')
+    except:
+        already_login=True 
+
     lform = LoginForm()
     sform = SignUpForm()
     # rform=retype()

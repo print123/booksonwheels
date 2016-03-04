@@ -74,15 +74,21 @@
 										<div class="productinfo text-center">										
 										
 											<div class='col-sm-4'>
-											<img src="{%static b.imageurl %}" alt=""/>
+											<form action="/productdetails" method="get">
+											
+											<button type="submit" ><img src="{% static b.imageurl%}"/></button>
+											<input type="hidden" name="id" value={{b.ISBN}}>
+											
+											</form>
 											</div>
-											<div class='col-sm-4'>
-											<h2>{{b.actual_price}}</h2>										
-											<p>{{b.title}}</p>											
+											<div class='col-sm-8'>
+																					
+											<h2>{{b.title}}</h2>							
+											<p>{{b.actual_price}}</p>				
 											
 											</div>														
 										</div>
-										<div class='col-sm-4'>									
+										<!--<div class='col-sm-8' style="padding-left: 25%">									
 												<form action="/productdetails" method="get">
 												<button type=" submit" href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Know More</button>
 												<input type="hidden" name="id" value={{b.ISBN}}>
@@ -92,7 +98,7 @@
 														<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
 													</ul>
 												</div>
-										</div>
+										</div>-->
 									</div>	
 								</div>								
 																
