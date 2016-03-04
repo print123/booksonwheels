@@ -11,9 +11,6 @@ from django.template import RequestContext
 def home(request):
     books=BookClass().getTrending()
     print books
-    '''for b in books:
-        b.imageurl="{%"+" static"+" '"+b.imageurl+"' %}"
-        print b.imageurl'''    
     context = {'books':books}
     return render(request, "index.html", context)
 
