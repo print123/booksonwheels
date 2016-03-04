@@ -21,7 +21,6 @@ class BookClass:
 		res=[]
 		for i in rentTrend:
 			res += self.getBook(i['ISBN'])
-		print res
 		return res
 			
 	def getQuotation(self,time_dur):
