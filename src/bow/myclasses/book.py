@@ -18,7 +18,11 @@ class BookClass:
 		
 	def getTrending(self):		
 		rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:3]
-		return rentTrend
+		res=[]
+		for i in rentTrend:
+			res += self.getBook(i['ISBN'])
+		print res
+		return res
 			
 	def getQuotation(self,time_dur):
 		# for customer

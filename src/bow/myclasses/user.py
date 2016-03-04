@@ -17,7 +17,10 @@ class UserClass:
             else:
                 return False
         else:
-            ans = User.objects.get(email=self.email, password=self.password)
+            try:
+                ans = User.objects.get(email=self.email, password=self.password)
+            except:
+                return False
             if ans is not None:
                 self.userid=ans.userid
                 self.name=ans.name
