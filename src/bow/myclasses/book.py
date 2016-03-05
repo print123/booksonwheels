@@ -50,7 +50,7 @@ class BookClass:
 		print catCount
 		return catCount
 
-	def getCategory(self,res):
+	def getCategoryOfRes(self,res):
 		gen_counts=[]
 		for r in res:
 			flag=False

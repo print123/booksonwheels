@@ -68,7 +68,7 @@ def search(request):
         s=SearchClass()
         #print request.POST["stext"]
         res=s.searchOnString(request.POST["stext"])
-        category=BookClass().getCategory(res)
+        category=BookClass().getCategoryOfRes(res)
         #res=s.searchOnTitle(request.POST["stext"])
         context={'result':res,'category':category}
         print res
