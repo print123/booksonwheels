@@ -44,4 +44,25 @@ class BookClass:
 	def getBook(self,ISBN):
 		b=Book.objects.filter(ISBN=ISBN)[:1]
 		return b
-		
+	
+	def getCategory(self):
+		catCount = Book.objects.all().values('genre').annotate(total=Count('genre'))
+		print catCount
+		return catCount
+
+	def getCategory(self,res):
+		gen_counts=[]
+		for r in res:
+			flag=False
+			for d in gen_counts:
+				if d['genre'] == r.genre:
+					d['total']+=1
+					flag=True
+					break
+			if flag==False:
+				gen_counts.append({'genre':r.genre,'total':1})	
+		print gen_counts
+		return gen_counts
+
+  		
+  		

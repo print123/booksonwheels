@@ -85,9 +85,10 @@
 										<div class="productinfo text-center">										
 										
 											<div class='col-sm-4'>
-											<form action="/productdetails" method="get">
+								<form action="/productdetails" method="get" id="myform">
 											
-											<button type="submit" ><img src="{% static b.imageurl%}"/></button>
+										
+<a href="javascript:{}" onclick="document.getElementById('myform').submit();"><img src="{% static b.imageurl%}"/></a>
 											<input type="hidden" name="id" value={{b.ISBN}}>
 											
 											</form>

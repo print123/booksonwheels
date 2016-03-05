@@ -10,8 +10,8 @@ from django.template import RequestContext
 # Create your views here.
 def home(request):
     books=BookClass().getTrending()
-    print books
-    context = {'books':books}
+    category=BookClass().getCategory()
+    context = {'books':books,'category':category}
     return render(request, "index.html", context)
 
 
@@ -64,11 +64,13 @@ def signup(request):
 
 def search(request):
     if request.method == "POST":
+        
         s=SearchClass()
         #print request.POST["stext"]
         res=s.searchOnString(request.POST["stext"])
+        category=BookClass().getCategory(res)
         #res=s.searchOnTitle(request.POST["stext"])
-        context={'result':res}
+        context={'result':res,'category':category}
         print res
         if len(res)>=1:
             return render_to_response("search.html",RequestContext(request,context))# know why this works
