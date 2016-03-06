@@ -3,12 +3,16 @@
 							{%for cat in category%}
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h4 class="panel-title"><a href="#">{{cat.genre}}
-									<spanclass="badge pull-right">( {{cat.total}} )</span>
+								<form id={{cat.genre}} method="get" action="/genre">
+									<h4 class="panel-title"><a href="javascript:{}" onclick="document.getElementById('{{cat.genre}}').submit();">{{cat.genre}}
+									<span class="badge pull-right">( {{cat.total}} )</span>
 									</a></h4>
+									<input type="hidden" value={{cat.genre}} name="genre">
+								</form>
 								</div>
 							</div>
 							{%endfor%}
+</div>
 							<!--<div class="panel panel-default">
 								<div class="panel-heading">
 									<h4 class="panel-title">
@@ -108,7 +112,7 @@
 									<h4 class="panel-title"><a href="#">Inspirational</a></h4>
 								</div>
 							</div>-->
-						</div><!--/category-products-->
+						<!--/category-products-->
 					
 						
 						

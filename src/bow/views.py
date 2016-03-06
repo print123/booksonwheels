@@ -90,3 +90,10 @@ def logout(request):
     del request.session["userid"]
     del request.session["name"]
     return HttpResponseRedirect('/')
+
+def bookOfGenre(request):
+    if request.GET["genre"] is not None:
+        res=SearchClass().searchOnGenre(request.GET["genre"])
+        context={'result':res}
+        print len(res)
+        return render_to_response("genre.html",RequestContext(request,context))

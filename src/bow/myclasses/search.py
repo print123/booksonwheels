@@ -14,3 +14,8 @@ class SearchClass:
             Q(genre__icontains=string)
             )
         return result
+
+    def searchOnGenre(self,genre):
+    	result=Book.objects.filter(genre=genre)
+    	return result
+    	
