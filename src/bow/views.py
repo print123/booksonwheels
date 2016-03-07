@@ -67,8 +67,10 @@ def search(request):
         
         s=SearchClass()
         #print request.POST["stext"]
+        request.session["searchtext"]=request.POST["stext"]
         res=s.searchOnString(request.POST["stext"])
         category=BookClass().getCategoryOfRes(res)
+        #request.session["resultset"]=res
         #res=s.searchOnTitle(request.POST["stext"])
         context={'result':res,'category':category}
         print res
@@ -97,3 +99,10 @@ def bookOfGenre(request):
         context={'result':res}
         print len(res)
         return render_to_response("genre.html",RequestContext(request,context))
+
+def resOfGenre(request):
+    if request.GET["genre"] is not None:
+        res=SearchClass().searchResOnGenre(request.GET["genre"],request.session["searchtext"])
+        context={'result':res}
+        print len(res)
+        return render_to_response("genre.html",RequestContext(request,context))    

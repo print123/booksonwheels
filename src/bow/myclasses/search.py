@@ -18,4 +18,11 @@ class SearchClass:
     def searchOnGenre(self,genre):
     	result=Book.objects.filter(genre=genre)
     	return result
+
+    def searchResOnGenre(self,genre,s):
+        result=Book.objects.filter((
+            Q(author__icontains=s)|
+            Q(title__icontains=s)|
+            Q(summary__icontains=s))&Q(genre=genre))
+        return result
     	
