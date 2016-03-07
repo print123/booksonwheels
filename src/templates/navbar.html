@@ -1,3 +1,15 @@
+<head>
+		<script>
+		function validateForm()
+		{			
+		var x = document.forms["myform"]["stext"].value;
+			if (x == null || x == "") {
+				alert("Search Box must be filled out");
+				return false;
+			}
+		}
+		</script>
+</head>
 {% load staticfiles %}
 <div class="navbar-fixed">
 <nav>
@@ -11,16 +23,15 @@
 
       </div>
       <div class="col-md-6 col-sm-9">
-          <form action="/search" method="post">{% csrf_token %}
+          <form action="/search" name="myform"method="post" onsubmit="return validateForm()">{% csrf_token %}
           <div class="input-group" >
-          
-          <input type="text" class="form-control" name="stext" placeholder="Search for..." style="color:white">
-        
-        
+		  <div class="ui-widget">	
+          <input type="text" class="form-control" id="search" name="stext"    placeholder="Search for..." style="color:white">		  		          		  
+		  </div>
+
           <span class="input-group-btn">
-            <button class="btn btn-default" type="submit" style="margin-left:0%;">Search</button>
-          </span>
-          
+            <button class="btn btn-default" type="submit" style="margin-left:0%;" >Search</button>
+          </span>          
         </div>
         </form>
       </div>
@@ -29,7 +40,17 @@
      <!-- <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>-->
       <ul id="mobile-demo" class="right hide-on-med-and-down">
           {% if request.session.name %}
-          <li><a href="">Welcome {{request.session.name }}</a></li>
+          <li><a href="">{{request.session.name }}</a></li>
+		  <ul class="nav navbar-nav collapse navbar-collapse" style="margin-top:10px">								
+		  <li class="dropdown"><a href="#"><span class="caret" style="border-width:10px"></span></a>
+     		<ul role="menu" class="sub-menu">			
+			<li><a href="shop.html">Books</a></li>
+			<li><a href="checkout.html">My Books</a></li>
+			<li><a href="checkout.html">Orders</a></li> 
+			<li><a href="cart.html">Wishlist</a></li> 
+		    </ul>
+	        </li> 
+		  </ul>
           <li><a href="logout">Logout</a></li>
           {% else %}  
           <li><a href="login">Login/Signup</a></li>
@@ -39,9 +60,9 @@
           <!--<li><a href="collapsible.html">JavaScript</a></li>-->
         </ul>
         </div>
-      
 
       </div>
     </div>
   </nav>
 </div>
+

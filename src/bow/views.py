@@ -1,33 +1,48 @@
 from django.shortcuts import render
 from django.shortcuts import render_to_response
+import json
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .forms import *
 from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
+
+@csrf_exempt
+def autocomplete(request):
+    print "In autocomplete"
+    s = SearchClass()
+    simple_qs = s.searchOnString(request.GET["stext"])
+    results = ['starting']
+    for r in simple_qs:
+        results.append(r.title)
+    resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'
+    print resp
+    return HttpResponse(resp, content_type='application/json')
+
+
 def home(request):
-    books=BookClass().getTrending()
-    category=BookClass().getCategory()
-    context = {'books':books,'category':category}
+    books = BookClass().getTrending()
+    category = BookClass().getCategory()
+    context = {'books': books, 'category': category}
     return render(request, "index.html", context)
 
 
 def login(request):
-
     try:
         if request.session["userid"] is not None:
             return HttpResponseRedirect('/')
     except:
-        already_login=True 
-
+        already_login = True
 
     lform = LoginForm()
     sform = SignUpForm()
     # rform=retype()
-    is_not_auth = False
+    is_not_auth = False1
 
     context = {'form': lform, 'is_not_auth': is_not_auth, 'sform': sform}
     if request.method == "POST":
@@ -37,8 +52,8 @@ def login(request):
         requestuser = UserClass(name="", password=password, email=email)
         if requestuser.authenticate(False) == True:
             context["is_not_auth"] = False
-            request.session["userid"]=requestuser.userid
-            request.session["name"]=requestuser.name
+            request.session["userid"] = requestuser.userid
+            request.session["name"] = requestuser.name
             return HttpResponseRedirect('/')
         else:
             context["is_not_auth"] = True
@@ -64,36 +79,36 @@ def signup(request):
 
 def search(request):
     if request.method == "POST":
-        
-        s=SearchClass()
-        #print request.POST["stext"]
-        res=s.searchOnString(request.POST["stext"])
-        category=BookClass().getCategoryOfRes(res)
-        #res=s.searchOnTitle(request.POST["stext"])
-        context={'result':res,'category':category}
-        print res
-        if len(res)>=1:
-            return render_to_response("search.html",RequestContext(request,context))# know why this works
+
+        s = SearchClass()        
+        res = s.searchOnString(request.POST["stext"])
+        category = BookClass().getCategoryOfRes(res)
+        context = {'result': res, 'category': category}
+        if len(res) >= 1:
+            return render_to_response("search.html", RequestContext(request, context))  # know why this works
         else:
-            return render_to_response("404.html",RequestContext(request,context))
+            return render_to_response("404.html", RequestContext(request, context))
+
 
 def productdetails(request):
-    if request.GET["id"]!="":
-        b=BookClass()
-        res=b.getBook(request.GET["id"])
+    if request.GET["id"] != "":
+        b = BookClass()
+        res = b.getBook(request.GET["id"])
         print res
-        context={'result':res}
+        context = {'result': res}
         print len(res)
-        return render_to_response("product-details.html",RequestContext(request,context))
+        return render_to_response("product-details.html", RequestContext(request, context))
+
 
 def logout(request):
     del request.session["userid"]
     del request.session["name"]
     return HttpResponseRedirect('/')
 
+
 def bookOfGenre(request):
     if request.GET["genre"] is not None:
-        res=SearchClass().searchOnGenre(request.GET["genre"])
-        context={'result':res}
+        res = SearchClass().searchOnGenre(request.GET["genre"])
+        context = {'result': res}
         print len(res)
-        return render_to_response("genre.html",RequestContext(request,context))
+        return render_to_response("genre.html", RequestContext(request, context))

@@ -11,7 +11,8 @@ urlpatterns = [
 	#url(r'^cart', 'bow.views.login', name='cart'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cart', 'bow.views.cart', name='cart'),
-    url(r'^productdetails', 'bow.views.productdetails', name='productdetails'),#what is name
+    url(r'^productdetails', 'bow.views.productdetails', name='productdetails'),
     url(r'^logout', 'bow.views.logout', name='logout'),
     url(r'^genre', 'bow.views.bookOfGenre', name='genre'),
+	url(r'^auto','bow.views.autocomplete',name='autocomplete'),
 ]
