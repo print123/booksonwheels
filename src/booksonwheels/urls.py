@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^logout', 'bow.views.logout', name='logout'),
     url(r'^genre', 'bow.views.bookOfGenre', name='genre'),
 	url(r'^auto','bow.views.autocomplete',name='autocomplete'),
+    url(r'^resgenre', 'bow.views.resOfGenre', name='resgenre'),
 ]
