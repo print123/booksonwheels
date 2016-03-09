@@ -40,11 +40,11 @@ def login(request):
         already_login = True
 
     lform = LoginForm()
-    sform = SignUpForm()
+    #sform = SignUpForm()
     # rform=retype()
     is_not_auth = False
 
-    context = {'form': lform, 'is_not_auth': is_not_auth, 'sform': sform}
+    context = {'form': lform, 'is_not_auth': is_not_auth}
     if request.method == "POST":
         form = LoginForm(request.POST)
         email = request.POST["email"]
@@ -68,7 +68,7 @@ def cart(request):
 
 def signup(request):
     if request.method == "POST":
-        nuser = UserClass(name=request.POST["name"], password=request.POST["password"], email=request.POST["email"])
+        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:
             nuser.addUser()
         except:

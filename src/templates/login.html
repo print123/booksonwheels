@@ -3,6 +3,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script type="text/javascript">
+		var pass;
+		var email;
+		function checkPass()
+		{
+		    //Store the password field objects into variables ...
+		    var pass1 = document.getElementById('password1');
+		    var pass2 = document.getElementById('password2');
+		    //Store the Confimation Message Object ...
+		    var message = document.getElementById('confirmMessage');
+		    //Set the colors we will be using ...
+		    var goodColor = "#66cc66";
+		    var badColor = "#ff6666";
+		    //Compare the values in the password field 
+		    //and the confirmation field
+		    //if(pass1.value != pass2.value && pass2 != null)
+		    //{
+
+		    //}
+		    if(pass1.value == pass2.value && pass1.value.length !== 0)
+		    {
+		        //The passwords match. 
+		        //Set the color to the good color and inform
+		        //the user that they have entered the correct password 
+		        pass2.style.backgroundColor = goodColor;
+		        message.style.color = goodColor;
+		        message.innerHTML = "Passwords Match!"
+		        pass = true;
+		        if(email)
+		        	document.getElementById("submit").disabled = false;		        	        		        
+		    }
+		    else{
+		        //The passwords do not match.
+		        //Set the color to the bad color and
+		        //notify the user.
+		        pass2.style.backgroundColor = badColor;
+		        message.style.color = badColor;
+		        message.innerHTML = "Passwords Do Not Match!"
+		        document.getElementById("submit").disabled = true;		        
+		    }
+		}  	
+		function checkEmail()
+		{
+			var message1 = document.getElementById('confirmationMessage');
+			var email = document.getElementById('emailid');
+			var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+			var goodColor = "#66cc66";
+		    var badColor = "#ff6666";
+			if ((!filter.test(email.value)) || email.value.length === 0)
+			{
+				//alert('Enter correct Id')
+				email.style.backgroundColor = badColor;
+				message1.style.color = badColor;
+				message1.innerHTML = "Enter valid email-Id!"
+				//document.getElementById("submit").disabled = true;
+			}
+			else
+			{
+				email.style.backgroundColor = goodColor;
+				message1.style.color = goodColor;
+				message1.innerHTML = "Id is valid!";
+				email = true;
+				if(pass)
+			        document.getElementById("submit").disabled = false;
+			}
+		}
+
+	</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -87,13 +155,17 @@
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
 						<h2>New User Signup!</h2>
-						<form action="/signup/" method="post">
+						<form action="/signup/" name="formName" method="post">
 
 							{% csrf_token %}
-
-    						{{ sform }}
-    					
-							<button type="submit" class="btn btn-default">Signup</button>
+							Name:<input type="Text" name="name" id="name" class="form-control" placeholder="Your Name" style="color:black"><br>
+							Email:<input type="Text" name="email" class="form-control" id="emailid" onkeyup="checkEmail()"=placeholder="Your Email Address" style="color:black">
+							<span id="confirmationMessage" class="confirmMessage"></span><br>
+							Password:<input type="Password" name="password1" id="password1" onkeyup="checkPass()" class="form-control" style="color:black"><br>
+							Confirm Password:<input type="Password" name="password2" onkeyup="checkPass()" id="password2" onblur="validateField()" class="form-control" style="color:black">
+							<span id="confirmMessage" class="confirmMessage"></span>
+							<br>					
+							<button type="submit" id="submit" class="btn btn-default" disabled>Signup</button>
 						</form>
 					</div><!--/sign up form-->
 				</div>
