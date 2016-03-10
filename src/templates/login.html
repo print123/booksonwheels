@@ -5,7 +5,7 @@
 <head>
 	<script type="text/javascript">
 		var pass;
-		var email;
+		var email1;
 		function checkPass()
 		{
 		    //Store the password field objects into variables ...
@@ -31,7 +31,7 @@
 		        message.style.color = goodColor;
 		        message.innerHTML = "Passwords Match!"
 		        pass = true;
-		        if(email)
+		        if(email1)
 		        	document.getElementById("submit").disabled = false;		        	        		        
 		    }
 		    else{
@@ -56,15 +56,15 @@
 				//alert('Enter correct Id')
 				email.style.backgroundColor = badColor;
 				message1.style.color = badColor;
-				message1.innerHTML = "Enter valid email-Id!"
-				//document.getElementById("submit").disabled = true;
+				message1.innerHTML = "Enter valid email-Id!";
+				document.getElementById("submit").disabled = true;
 			}
 			else
 			{
 				email.style.backgroundColor = goodColor;
 				message1.style.color = goodColor;
 				message1.innerHTML = "Id is valid!";
-				email = true;
+				email1 = true;
 				if(pass)
 			        document.getElementById("submit").disabled = false;
 			}
