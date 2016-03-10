@@ -52,8 +52,8 @@
 		</div><!--/header-bottom-->
 	</header><!--/header-->
 	
-	<section>
-	{% for b in result %}
+	<section>	
+	{% for b in result %}	
 		<div class="container-fluid">
 			<div class="row">								
 				
@@ -70,8 +70,8 @@
 						</div>
 						<div class="col-sm-8">
 							<div class="product-information"><!--/product-information-->
-								<img src="{%static {{b.imageurl}}%}" class="newarrival" alt="" />
-								<h2>{{b.title}}</h2>
+								<img src="images/product-details/new.jpg" class="newarrival" alt="" />
+								<h2>{{b.title}}</h2>								
 								<p>ISBN: {{b.ISBN}}</p>
 								<!--<img src="{%static 'images/product-details/rating.png'%}" alt="" />-->
 								<span>
