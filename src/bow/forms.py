@@ -12,7 +12,7 @@ class LoginForm(ModelForm):
             'email': forms.TextInput(attrs={'required': True})
         }
 
-
+'''
 class SignUpForm(ModelForm):
     class Meta:
         model = User
@@ -22,3 +22,4 @@ class SignUpForm(ModelForm):
             'email': forms.TextInput(attrs={'required': True}),
             'name': forms.TextInput(attrs={'required': True}),
         }
+'''
