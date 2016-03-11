@@ -9,7 +9,7 @@ class User(models.Model):
 	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 	contact_no = models.CharField(max_length=15,validators=[phone_regex], blank=True) # validators should be a list
 	address=models.CharField(max_length=500,blank=True,null=False)
-	
+
 	def __unicode__(self):
 		return self.name
 
@@ -28,14 +28,17 @@ class Book(models.Model):
 	bookid=models.AutoField(primary_key=True)
 	owner_id=models.ForeignKey('User',on_delete=models.CASCADE,)
 	author=models.CharField(max_length=100)
-	actual_price=models.DecimalField(max_digits=8,decimal_places=4)
+	actual_price=models.DecimalField(max_digits=8,decimal_places=2)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	imageurl=models.CharField(max_length=100,blank=False,null=False)
 	genre=models.CharField(max_length=20)
 	dosell=models.BooleanField(default=False)
+	dorent=models.BooleanField(default=True)
 	available=models.BooleanField(default=True)
-	summary=models.CharField(max_length=200)
-	rating=models.DecimalField(max_digits=1,decimal_places=1)
+	summary=models.CharField(max_length=500)
+	publisher=models.CharField(max_length=50)
+	language=models.CharField(max_length=20,default='English')
+	rating=models.DecimalField(max_digits=2,decimal_places=1)
 	title=models.CharField(max_length=120,blank=False,null=False)
 
 	def __unicode__(self):

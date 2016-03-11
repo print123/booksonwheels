@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 import json
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
+from .myclasses.cart import CartClass
 from .forms import *
 from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
@@ -40,11 +41,11 @@ def login(request):
         already_login = True
 
     lform = LoginForm()
-    sform = SignUpForm()
+    # sform = SignUpForm()
     # rform=retype()
     is_not_auth = False
 
-    context = {'form': lform, 'is_not_auth': is_not_auth, 'sform': sform}
+    context = {'form': lform, 'is_not_auth': is_not_auth}
     if request.method == "POST":
         form = LoginForm(request.POST)
         email = request.POST["email"]
@@ -63,12 +64,16 @@ def login(request):
 
 
 def cart(request):
-    return render(request, "cart.html")
+    if request.session["userid"] is not None:
+        c = CartClass(request.session["userid"])
+        result = c.displayCart()
+        context = {'result': result}
+    return render(request, "cart.html", context)
 
 
 def signup(request):
     if request.method == "POST":
-        nuser = UserClass(name=request.POST["name"], password=request.POST["password"], email=request.POST["email"])
+        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:
             nuser.addUser()
         except:
@@ -79,18 +84,18 @@ def signup(request):
 
 def search(request):
     if request.method == "POST":
-        
-        s=SearchClass()
-        #print request.POST["stext"]
-        request.session["searchtext"]=request.POST["stext"]
-        res=s.searchOnString(request.POST["stext"])
-        category=BookClass().getCategoryOfRes(res)
-        #request.session["resultset"]=res
-        #res=s.searchOnTitle(request.POST["stext"])
-        context={'result':res,'category':category}
+
+        s = SearchClass()
+        # print request.POST["stext"]
+        request.session["searchtext"] = request.POST["stext"]
+        res = s.searchOnString(request.POST["stext"])
+        category = BookClass().getCategoryOfRes(res)
+        # request.session["resultset"]=res
+        # res=s.searchOnTitle(request.POST["stext"])
+        context = {'result': res, 'category': category}
         print res
-        if len(res)>=1:
-            return render_to_response("search.html",RequestContext(request,context))# know why this works
+        if len(res) >= 1:
+            return render_to_response("search.html", RequestContext(request, context))  # know why this works
         else:
             return render_to_response("404.html", RequestContext(request, context))
 
@@ -98,6 +103,7 @@ def search(request):
 def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
+
         res = b.getBook(request.GET["id"])
         print res
         context = {'result': res}
@@ -116,12 +122,21 @@ def bookOfGenre(request):
         res = SearchClass().searchOnGenre(request.GET["genre"])
         context = {'result': res}
         print len(res)
+<<<<<<< HEAD
         return render_to_response("genre.html",RequestContext(request,context))
+=======
+        return render_to_response("genre.html", RequestContext(request, context))
+
+>>>>>>> 6cc98dc32b0dc33549a37041c55cbbde803363ed
 
 def resOfGenre(request):
     if request.GET["genre"] is not None:
-        res=SearchClass().searchResOnGenre(request.GET["genre"],request.session["searchtext"])
-        context={'result':res}
+        res = SearchClass().searchResOnGenre(request.GET["genre"], request.session["searchtext"])
+        context = {'result': res}
         print len(res)
+<<<<<<< HEAD
         return render_to_response("genre.html",RequestContext(request,context))    
 
+=======
+        return render_to_response("genre.html", RequestContext(request, context))
+>>>>>>> 6cc98dc32b0dc33549a37041c55cbbde803363ed
