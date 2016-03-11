@@ -42,7 +42,7 @@ def login(request):
     lform = LoginForm()
     sform = SignUpForm()
     # rform=retype()
-    is_not_auth = False1
+    is_not_auth = False
 
     context = {'form': lform, 'is_not_auth': is_not_auth, 'sform': sform}
     if request.method == "POST":
@@ -74,7 +74,7 @@ def signup(request):
         except:
             return render(request, "u.html")
 
-    return render(request, "r.html")
+    return HttpResponseRedirect("/")
 
 
 def search(request):
@@ -116,9 +116,6 @@ def bookOfGenre(request):
         res = SearchClass().searchOnGenre(request.GET["genre"])
         context = {'result': res}
         print len(res)
-<<<<<<< HEAD
-        return render_to_response("genre.html", RequestContext(request, context))
-=======
         return render_to_response("genre.html",RequestContext(request,context))
 
 def resOfGenre(request):
@@ -127,4 +124,4 @@ def resOfGenre(request):
         context={'result':res}
         print len(res)
         return render_to_response("genre.html",RequestContext(request,context))    
->>>>>>> 201800c1f2ce8c97311107374daa2c6b1b82eeb5
+

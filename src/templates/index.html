@@ -18,6 +18,23 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+	  <script>
+      (function($) {
+		$(function() {
+
+$('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      hover: true, // Activate on hover
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    }
+  );
+
+		}); // End Document Ready
+})(jQuery); // End of jQuery name space
+	  </script>
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -27,6 +44,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
+    
 </head><!--/head-->
 
 <body>
@@ -594,5 +612,6 @@
 	<script src="{% static 'js/price-range.js'%}"></script>
     <script src="{% static 'js/jquery.prettyPhoto.js'%}"></script>
     <script src="{% static 'js/main.js'%}"></script>
+    
 </body>
 </html>
