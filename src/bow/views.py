@@ -138,6 +138,17 @@ def addToCart(request):
         c=CartClass(request.session["userid"])
         c.addToCart(request.POST["bookid"])
         context = {}
-        return home(request)         
+        return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
+
+
+
+def remove(request):
+    try:
+        c=CartClass(request.session["userid"])
+        print request.GET["bookid"]
+        c.removeFromCart(request.GET["bookid"])
+        return HttpResponseRedirect("/cart")
+    except:
+        return HttpResponseRedirect("/login")            

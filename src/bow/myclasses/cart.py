@@ -13,10 +13,10 @@ class CartClass:
         """A method to add a new book in Cart"""
         print self.userid
         print bookid
-        newCartObj = Cart(userid=self.userid , bookid=bookid)
+        newCartObj = Cart(userid_id=self.userid , bookid=bookid)
         newCartObj.save()
 
-    def removeFromCart(self, bookid, userid):
+    def removeFromCart(self, bookid):
         """To remove a book from Cart"""
         Cart.objects.filter(userid=self.userid, bookid=bookid).delete()
 
