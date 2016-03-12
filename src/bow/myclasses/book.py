@@ -8,8 +8,8 @@ class BookClass:
     def __init__(self, bookid):
         self.bookid = bookid
 
-    #def __init__(self):
-     #   bookid = None
+    def __init__(self):
+        bookid = None
 
     def mark_it_unavailable(self):
         Book.Object.filter(bookid=self.bookid).update(available=False)
@@ -62,4 +62,4 @@ class BookClass:
                     break
             if flag == False:
                 gen_counts.append({'genre': r.genre, 'total': 1})
-            return gen_counts
+        return gen_counts

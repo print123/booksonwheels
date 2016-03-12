@@ -41,6 +41,7 @@
 		        pass2.style.backgroundColor = badColor;
 		        message.style.color = badColor;
 		        message.innerHTML = "Passwords Do Not Match!"
+		        pass=false;
 		        document.getElementById("submit").disabled = true;		        
 		    }
 		}  	
@@ -57,6 +58,7 @@
 				email.style.backgroundColor = badColor;
 				message1.style.color = badColor;
 				message1.innerHTML = "Enter valid email-Id!";
+				email1=false;
 				document.getElementById("submit").disabled = true;
 			}
 			else
@@ -155,15 +157,13 @@
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
 						<h2>New User Signup!</h2>
-<<<<<<< HEAD
-						<form action="/signup/" onclick="" method="post">
-=======
+
 						<form action="/signup/" name="formName" method="post">
->>>>>>> 6cc98dc32b0dc33549a37041c55cbbde803363ed
+
 
 							{% csrf_token %}
 							Name:<input type="Text" name="name" id="name" class="form-control" placeholder="Your Name" style="color:black"><br>
-							Email:<input type="Text" name="email" class="form-control" id="emailid" onkeyup="checkEmail()"=placeholder="Your Email Address" style="color:black">
+							Email:<input type="Text" name="email" class="form-control" id="emailid" onkeyup="checkEmail()" onchange="checkEmail()" placeholder="Your Email Address" style="color:black">
 							<span id="confirmationMessage" class="confirmMessage"></span><br>
 							Password:<input type="Password" name="password1" id="password1" onkeyup="checkPass()" class="form-control" style="color:black"><br>
 							Confirm Password:<input type="Password" name="password2" onkeyup="checkPass()" id="password2" onblur="validateField()" class="form-control" style="color:black">

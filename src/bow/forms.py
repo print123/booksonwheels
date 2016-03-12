@@ -12,7 +12,6 @@ class LoginForm(ModelForm):
             'email': forms.TextInput(attrs={'required': True})
         }
 
-'''
 class SignUpForm(ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'required':True}))
     password=forms.CharField(widget=forms.PasswordInput(attrs={'required':True}))
@@ -26,7 +25,6 @@ class SignUpForm(ModelForm):
             #'confirm_password':forms.PasswordInput(attrs={'required':True}),
         }
 
-'''
     def clean_confirm_password(self):
         print "hey bro whatsup man"
         if self.cleaned_data['password'] != self.cleaned_data['confirm_passworda']:
