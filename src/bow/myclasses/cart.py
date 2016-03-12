@@ -9,10 +9,12 @@ class CartClass:
         self.userid = userid
         self.bookarray = Cart.objects.filter(userid=self.userid)
 
-    def addToCart(self, bookid, userid):
+    def addToCart(self, bookid):
         """A method to add a new book in Cart"""
-        newCartObj = Cart()
-        newCartObj.Save()
+        print self.userid
+        print bookid
+        newCartObj = Cart(userid=self.userid , bookid=bookid)
+        newCartObj.save()
 
     def removeFromCart(self, bookid, userid):
         """To remove a book from Cart"""

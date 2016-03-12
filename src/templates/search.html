@@ -86,10 +86,10 @@
 										<div class="productinfo text-center">										
 										
 											<div class='col-sm-4'>
-								<form action="/productdetails" method="get" id="myform">
+								<form action="/productdetails" method="get" id={{b.ISBN}}>
 											
 										
-<a href="javascript:{}" onclick="document.getElementById('myform').submit();"><img src="{% static b.imageurl%}"/></a>
+<a href="javascript:{}" onclick="document.getElementById('{{b.ISBN}}').submit();"><img src="{% static b.imageurl%}"/></a>
 											<input type="hidden" name="id" value={{b.ISBN}}>
 											
 											</form>

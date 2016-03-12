@@ -62,4 +62,4 @@ class BookClass:
                     break
             if flag == False:
                 gen_counts.append({'genre': r.genre, 'total': 1})
-            return gen_counts
+        return gen_counts

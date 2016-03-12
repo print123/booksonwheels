@@ -60,7 +60,7 @@
 				<div class="col-sm-12 padding-right">
 					
 					<div class="product-details"><!--product-details-->
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							
 							<div class="view-product">
 								<img src="{% static b.imageurl %}" alt="" />
@@ -68,27 +68,30 @@
 							</div>
 							
 						</div>
-						<div class="col-sm-8">
+						<div class="col-sm-9">
 							<div class="product-information"><!--/product-information-->
 								<img src="images/product-details/new.jpg" class="newarrival" alt="" />
 								<h2>{{b.title}}</h2>								
 								<p>ISBN: {{b.ISBN}}</p>
 								<!--<img src="{%static 'images/product-details/rating.png'%}" alt="" />-->
-								<span>
+								
 									<span>{{b.actual_price}} Rs</span>
-									<label>Quantity:</label>
-									<input type="text" value="3" /><br/>
-									<button type="button" class="btn btn-fefault cart">
+									
+									<br/>
+									<form action="/addtocart" method="post">{%csrf_token%}
+									<button type="submit" class="btn btn-fefault cart">
 										<i class="fa fa-shopping-cart"></i>
-										Rent Book
+										Add to cart
 									</button>
+									<input type="hidden" name="bookid" value={{b.bookid}}>
+									</form>
 									{% if b.dosell %}
 									<button type="button" class="btn btn-fefault cart">
 										<i class="fa fa-shopping-cart"></i>
 										Buy Book
 									</button>
 									{%endif%}
-								</span>
+								
 								<p><b>Availability:</b> 
 								{%if b.available %}		
 								In Stock</p>
