@@ -64,12 +64,14 @@ def login(request):
 
 
 def cart(request):
-    if request.session["userid"] is not None:
-        c = CartClass(request.session["userid"])
-        result = c.displayCart()
-        context = {'result': result}
-    return render(request, "cart.html", context)
-
+    try:
+        if request.session["userid"] is not None:
+            c = CartClass(request.session["userid"])
+            result = c.displayCart()
+            context = {'result': result}
+        return render(request, "cart.html", context)
+    except:
+        return HttpResponseRedirect("/")
 
 def signup(request):
     if request.method == "POST":
