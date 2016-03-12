@@ -97,8 +97,14 @@
 											<div class='col-sm-8'>
 																					
 											<h2>{{b.title}}</h2>							
-											<p>{{b.actual_price}}</p>				
-											
+											<p>Price:{{b.actual_price}}</p>				
+											<p>Author:{{b.author}}</p>
+											<p>Availability:
+											{%if b.available%}
+												In Stock
+											{%else%}
+												Out of Stock
+											{%endif%}	
 											</div>														
 										</div>
 										<!--<div class='col-sm-8' style="padding-left: 25%">									

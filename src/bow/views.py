@@ -81,7 +81,7 @@ def signup(request):
         except:
             return render(request, "u.html")
 
-    return render(request, "r.html")
+    return HttpResponseRedirect("/")
 
 
 def search(request):
@@ -124,12 +124,21 @@ def bookOfGenre(request):
         res = SearchClass().searchOnGenre(request.GET["genre"])
         context = {'result': res}
         print len(res)
+<<<<<<< HEAD
+        return render_to_response("genre.html",RequestContext(request,context))
+=======
         return render_to_response("genre.html", RequestContext(request, context))
 
+>>>>>>> 6cc98dc32b0dc33549a37041c55cbbde803363ed
 
 def resOfGenre(request):
     if request.GET["genre"] is not None:
         res = SearchClass().searchResOnGenre(request.GET["genre"], request.session["searchtext"])
         context = {'result': res}
         print len(res)
+<<<<<<< HEAD
+        return render_to_response("genre.html",RequestContext(request,context))    
+
+=======
         return render_to_response("genre.html", RequestContext(request, context))
+>>>>>>> 6cc98dc32b0dc33549a37041c55cbbde803363ed
