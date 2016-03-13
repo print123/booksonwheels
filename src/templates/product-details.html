@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Product Details</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
     <link href="{% static 'css/price-range.css' %}" rel="stylesheet">
@@ -15,6 +15,7 @@
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">
 	<link href="{% static 'css/responsive.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
@@ -55,6 +56,7 @@
 	<section>	
 	{% for b in result %}	
 		<div class="container-fluid">
+
 			<div class="row">								
 				
 				<div class="col-sm-12 padding-right">
@@ -68,7 +70,7 @@
 							</div>
 							
 						</div>
-						<div class="col-sm-9">
+						<div class="col-sm-9" style="padding-left: 10%">
 							<div class="product-information"><!--/product-information-->
 								<img src="images/product-details/new.jpg" class="newarrival" alt="" />
 								<h2>{{b.title}}</h2>								
@@ -79,18 +81,36 @@
 									
 									<br/>
 									<form action="/addtocart" method="post">{%csrf_token%}
-									<button type="submit" class="btn btn-fefault cart">
-										<i class="fa fa-shopping-cart"></i>
+									{% if b.dosell %}
+									<p>
+      <input name="group1" type="radio" id="test1"/>
+      <label for="test1">Buy</label>
+    </p>
+									{%endif%}
+									{% if b.dorent %}
+									<p>
+      <input name="group1" type="radio" id="test2" checked/>
+      <label for="test2">Rent</label>
+    </p>
+									{%endif%}<br/>
+									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
+										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart
+									</button><br/>
+									<button name="wishlist" type="submit" class="btn btn-fefault cart" style="width:30%">
+										<i class="fa fa-shopping-cart pull-left"></i>
+										Add to Wishlist
+									</button><br/>
+									<button name="checkout" type="submit" class="btn btn-fefault cart" style="width:30%">
+										<i class="fa fa-shopping-cart pull-left"></i>
+										Checkout
 									</button>
+									
 									<input type="hidden" name="bookid" value={{b.bookid}}>
 									</form>
-									{% if b.dosell %}
-									<button type="button" class="btn btn-fefault cart">
-										<i class="fa fa-shopping-cart"></i>
-										Buy Book
-									</button>
-									{%endif%}
+									
+									
+									
 								
 								<p><b>Availability:</b> 
 								{%if b.available %}		
