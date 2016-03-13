@@ -1,7 +1,8 @@
 """A Class that represents a Customer """
 
 from .cart import CartClass
-from .user import UserClass,BookClass
+from .user import UserClass
+from .book import BookClass
 from ..models import User, Wishlist, Book, Rents
 
 
@@ -25,21 +26,21 @@ class CustomerClass(UserClass):
         books = Book.object.get(ISBN=ISBN, available=True)
         isAvailable = books.available
         if (isAvailable):            
-			cartObj=CartClass(userid,books.bookid)
+            cartObj=CartClass(userid,books.bookid)
             cartObj.addToCart(books.bookid,userid)			
-			cartObj.checkOut(userid,books.bookid)
+            cartObj.checkOut(userid,books.bookid)
         return isAvailable
-	def rentBook(self,ISBN):
-		book_to_rent=Book.object.get(ISBN=ISBN,available=True)
-		bookObj=Book(book_to_rent.bookid)
-		timdur=1#to be discussed yet
-		temp_var=bookObj.getQuotation(timedur)
-		#ask for confirmation from user
-		cartObj=CartClass(userid,book_to_rent.bookid)
-		cartObj.addToCart(book_to_rent.bookid,userid)
-		cartObj.checkOut(userid,book_to_rent.bookid)
-		
-	
+    def rentBook(self,ISBN):
+        book_to_rent=Book.object.get(ISBN=ISBN,available=True)
+        bookObj=Book(book_to_rent.bookid)
+        timdur=1#to be discussed yet
+        temp_var=bookObj.getQuotation(timedur)
+        #ask for confirmation from user
+        cartObj=CartClass(userid,book_to_rent.bookid)
+        cartObj.addToCart(book_to_rent.bookid,userid)
+        cartObj.checkOut(userid,book_to_rent.bookid)
+
+
     class WishListClass:
         """WishList Class associated with each User"""
         def addBook(self, ISBN):
@@ -62,8 +63,29 @@ class CustomerClass(UserClass):
         def getItems(self):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
-		
-	def uploadBook(self,ISBN,actual_price,genre,summary)
-		'''code for web scraping '''
-		b=Book.object.filter(owner_id=self.userid,ISBN=ISBN,actual_price=actual_price,genre=genre,summary=summary)
-		b.save(available=True)
+
+    def uploadBook(self,t_ISBN):
+        r=requests.get('https://www.googleapis.com/books/v1/volumes?q=isbn:%s'+t_ISBN)
+        resp=r.json()
+        temp=resp['items']
+        mydict=temp[0]
+
+        title=mydict['volumeInfo']['title']
+
+        author=mydict['volumeInfo']['authors']
+
+        ISBN10=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
+        ISBN13=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
+
+        imageurl=mydict['volumeInfo']['imageLinks']['thumbnail']    
+
+        genre=mydict['volumeInfo']['categories']
+
+        summary=mydict['volumeInfo']['description']
+
+        publisher=mydict['volumeInfo']['publisher']
+
+        language=mydict['volumeInfo']['language']
+
+        b=Book.object.filter(owner_id=self.userid,ISBN=t_ISBN,actual_price=actual_price,genre=genre,summary=summary)
+        b.save(available=True)

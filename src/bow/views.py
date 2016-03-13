@@ -4,12 +4,14 @@ import json
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .myclasses.cart import CartClass
+from .myclasses.customer import CustomerClass
 from .forms import *
 from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-
+import json
+import requests
 
 # Create your views here.
 
@@ -26,12 +28,12 @@ def autocomplete(request):
     return HttpResponse(resp, content_type='application/json')
 
 
+
 def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
     context = {'books': books, 'category': category}
     return render(request, "index.html", context)
-
 
 def login(request):
     try:
@@ -72,6 +74,21 @@ def cart(request):
         return render(request, "cart.html", context)
     except:
         return HttpResponseRedirect("/")
+
+
+def upload(request):
+    try:
+        if request.session["userid"] is not None:            
+            return render(request,"upload.html")
+    except:
+        return HttpResponseRedirect("/")
+
+def getInfo(request):
+    t_isbn=request.POST["name"]
+    CustObj=CustomerClass(request.session["userid"])
+    CustObj.uploadBook(t_isbn)
+    return render(request,'details.html',context)
+
 
 def signup(request):
     if request.method == "POST":

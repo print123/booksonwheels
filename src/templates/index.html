@@ -94,20 +94,12 @@ $('.dropdown-button').dropdown({
 								
 											<img src="{%static b.imageurl %}" alt=""/>
 											
-											<h2>{{b.actual_price}}</h2>
-											
+											<h2>{{b.actual_price}}</h2>											
 											<p>{{b.title}}</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Know more</a>
-										</div>
-										<div class="product-overlay">
-											<div class="overlay-content">
-												<h2>{{b.actual_price}}</h2>
-												<p>{{b.title}}</p>
-												<form action="/productdetails" method="get">
+											<form action="/productdetails" method="get">
 												<button type="submit" href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Know More</button>
 												<input type="hidden" name="id" value={{b.ISBN}}>												
-												</form>	
-											</div>
+												</form>										
 										</div>
 								</div>
 								<div class="choose">
