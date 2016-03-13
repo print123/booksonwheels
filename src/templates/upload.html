@@ -44,11 +44,10 @@ $('.dropdown-button').dropdown({
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
 </head><!--/head-->
 
 <body>
-		
 		<div ><!--header-middle-->
 			<div class="container-fluid" >
 				<div class="row">
@@ -68,7 +67,7 @@ $('.dropdown-button').dropdown({
 				</div>
 			</div>
 		</div><!--/header-bottom-->
-	</header><!--/header-->		
+	</header><!--/header-->				
 	<section>
 		<div class="container">
 			<div class="row">			
@@ -78,8 +77,10 @@ $('.dropdown-button').dropdown({
 							{% csrf_token %}
 							ISBN:<input type="Text" name="name" id="name" class="form-control" placeholder="ISBN of your book" style="color:black"><br>		
 							<p>You can find isbn of your book below the barcode of your Book comprising of 13 digits</p>
-							<p><input type="radio" name="rent" id="rent"  value="Book for rent"/></p>					
-							<p><input type="checkbox" name="sell" id="sell"  value="Book for sale"/></p>							
+							<p><input type="checkbox" name="rent" id="rent">
+							<label for="rent">To Rent</label></p>							
+							<p><input type="checkbox" name="sell" id="sell">															
+								<label for="sell">To Sell</label></p>
 							Price:<input type="Text" name="price" id="price" class="form-control" placeholder="Enter your book's Price">								
 							<button type="submit" id="submit" class="btn btn-default">Lookup</button>
 						</form>					

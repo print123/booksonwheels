@@ -7,7 +7,7 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
     url(r'^login', 'bow.views.login', name='login'),
     url(r'^signup', 'bow.views.signup', name='signup'),
-    url(r'^getInfo', 'bow.views.getInfo', name='signup'),
+    url(r'^getInfo', 'bow.views.getInfo', name='getInfo'),
 	url(r'^search', 'bow.views.search', name='search'),	
     url(r'^admin/', include(admin.site.urls)),
     url(r'^cart', 'bow.views.cart', name='cart'),

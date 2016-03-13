@@ -10,8 +10,7 @@ from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-import json
-import requests
+
 
 # Create your views here.
 
@@ -84,10 +83,13 @@ def upload(request):
         return HttpResponseRedirect("/")
 
 def getInfo(request):
-    t_isbn=request.POST["name"]
+    t_isbn=request.POST.get('name',False)
+    tosell=request.POST.get('sell',False)
+    torent=request.POST.get('rent',False)
+    price=request.POST.get('price',False)
     CustObj=CustomerClass(request.session["userid"])
-    CustObj.uploadBook(t_isbn)
-    return render(request,'details.html',context)
+    CustObj.uploadBook(t_isbn,tosell,torent,price)
+    return HttpResponseRedirect('/')
 
 
 def signup(request):

@@ -4,8 +4,9 @@ from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
 from ..models import User, Wishlist, Book, Rents
-
-
+import json
+import requests
+import yaml
 class CustomerClass(UserClass):
     def __init__(self, userid):
         self.userid = userid
@@ -64,28 +65,41 @@ class CustomerClass(UserClass):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
 
-    def uploadBook(self,t_ISBN):
-        r=requests.get('https://www.googleapis.com/books/v1/volumes?q=isbn:%s'+t_ISBN)
+    def uploadBook(self,t_ISBN,tosell,torent,price):
+        dosell=False
+        dorent=False
+        if tosell == "on":
+            dosell=True
+        if torent == "on":
+            dorent=True
+
+        url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
+
+        r=requests.get(url)
+
         resp=r.json()
         temp=resp['items']
         mydict=temp[0]
 
         title=mydict['volumeInfo']['title']
-
-        author=mydict['volumeInfo']['authors']
-
-        ISBN10=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
-        ISBN13=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-
-        imageurl=mydict['volumeInfo']['imageLinks']['thumbnail']    
-
-        genre=mydict['volumeInfo']['categories']
-
+        author=None
+        for i in mydict['volumeInfo']['authors']:
+            author=(yaml.safe_load(i))
+        ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
+        ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
+        imageurl=mydict['volumeInfo']['imageLinks']['thumbnail']
+        from urllib import urlretrieve
+        fname="C:\\Users\\LENOVO\\Documents\GitHub\\booksonwheels\\src\\bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
+        urlretrieve(imageurl,fname)
+        imageurl='images\\'+ISBN13+'.jpg'
+        genre=None
+        for i in mydict['volumeInfo']['categories']:
+            genre=(yaml.safe_load(i))
         summary=mydict['volumeInfo']['description']
 
         publisher=mydict['volumeInfo']['publisher']
 
         language=mydict['volumeInfo']['language']
-
-        b=Book.object.filter(owner_id=self.userid,ISBN=t_ISBN,actual_price=actual_price,genre=genre,summary=summary)
-        b.save(available=True)
+        summary=summary[:490]
+        b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
+        b.save()
