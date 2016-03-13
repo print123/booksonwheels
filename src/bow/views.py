@@ -5,6 +5,7 @@ from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .myclasses.cart import CartClass
 from .myclasses.wishlist import WishlistClass
+from .myclasses.customer import CustomerClass
 from .forms import *
 from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
@@ -27,12 +28,12 @@ def autocomplete(request):
     return HttpResponse(resp, content_type='application/json')
 
 
+
 def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
     context = {'books': books, 'category': category}
     return render(request, "index.html", context)
-
 
 def login(request):
     try:
@@ -65,11 +66,31 @@ def login(request):
 
 
 def cart(request):
-    if request.session["userid"] is not None:
-        c = CartClass(request.session["userid"])
-        result = c.displayCart()
-        context = {'result': result}
-    return render(request, "cart.html", context)
+    try:
+        if request.session["userid"] is not None:
+            c = CartClass(request.session["userid"])
+            result = c.displayCart()
+            context = {'result': result}
+        return render(request, "cart.html", context)
+    except:
+        return HttpResponseRedirect("/")
+
+
+def upload(request):
+    try:
+        if request.session["userid"] is not None:            
+            return render(request,"upload.html")
+    except:
+        return HttpResponseRedirect("/")
+
+def getInfo(request):
+    t_isbn=request.POST.get('name',False)
+    tosell=request.POST.get('sell',False)
+    torent=request.POST.get('rent',False)
+    price=request.POST.get('price',False)
+    CustObj=CustomerClass(request.session["userid"])
+    CustObj.uploadBook(t_isbn,tosell,torent,price)
+    return HttpResponseRedirect('/')
 
 def wishlist(request):
     if request.session["userid"] is not None:
