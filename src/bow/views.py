@@ -4,6 +4,7 @@ import json
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .myclasses.cart import CartClass
+from .myclasses.wishlist import WishlistClass
 from .forms import *
 from django.http import HttpResponseRedirect
 from .myclasses.search import SearchClass
@@ -70,6 +71,12 @@ def cart(request):
         context = {'result': result}
     return render(request, "cart.html", context)
 
+def wishlist(request):
+    if request.session["userid"] is not None:
+        w=WishlistClass(request.session["userid"])
+        res=w.displayWishlist()
+        context = {'result': res}
+    return render(request, "wishlist.html", context)    
 
 def signup(request):
     if request.method == "POST":

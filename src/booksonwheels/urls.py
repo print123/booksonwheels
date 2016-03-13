@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^resgenre', 'bow.views.resOfGenre', name='resgenre'),
     url(r'^addto', 'bow.views.addToCart', name='addto'),
     url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
+    url(r'^wishlist', 'bow.views.wishlist', name='wishlist'),
 ]
