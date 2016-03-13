@@ -1,0 +1,138 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>booksonwheels</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
+    <link href="{% static 'css/price-range.css' %}" rel="stylesheet">
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+	<link href="{% static 'css/main.css' %}" rel="stylesheet">
+	<link href="{% static 'css/responsive.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+	
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+	  <script>
+      (function($) {
+		$(function() {
+
+$('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      hover: true, // Activate on hover
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    }
+  );
+
+		}); // End Document Ready
+})(jQuery); // End of jQuery name space
+	  </script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'images/ico/apple-touch-icon-144-precomposed.png ' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
+    <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
+</head><!--/head-->
+
+<body>
+		<div ><!--header-middle-->
+			<div class="container-fluid" >
+				<div class="row">
+				{% include 'navbar.html' %}
+				
+				</div>
+			</div>
+		</div><!--/header-middle-->
+	
+		<div class="header-bottom"><!--header-bottom-->
+			<div class="container-fluid">
+				<div class="row" style="padding-left: 10px">
+					<div class="col-sm-9">
+						{% include 'header.html' %}		
+					</div>
+					
+				</div>
+			</div>
+		</div><!--/header-bottom-->
+	</header><!--/header-->				
+	<section>
+		<div class="container">
+			<div class="row">			
+				<h2 class="title text-center">Upload a Book</h2>							
+				<div class="signup-form"><!--sign up form-->						
+						<form action="/getInfo/" name="formName" method="get">
+							
+							{%for i in find%}
+							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
+							
+							{%endfor%}					
+							<!--{%if imageurl%}
+							<input type="hidden" name="imageurl" value={{imageurl}}>
+							{%endif%}
+							{%if genre%}
+							<input type="hidden" name="genre" value={{genre}}>
+							{%endif%}
+							{%if author %}
+							<input type="hidden" name="author" value={{author}}>
+							{%endif%}
+							{%if actual_price%}
+							<input type="hidden" name="actual_price" value={{actual_price}}>
+							{%endif%}
+							{%if ISBN%}
+							<input type="hidden" name="ISBN" value={{ISBN}}>
+							{%endif%}
+							{%if dosell%}
+							<input type="hidden" name="dosell" value={{dosell}}>
+							{%endif%}
+							{%if dorent%}
+							<input type="hidden" name="dorent" value={{dorent}}>
+							{%endif%}
+							{%if summary%}
+							<input type="hidden" name="summary" value={{summary}}>
+							{%endif%}
+							{%if publisher%}
+							<input type="hidden" name="publisher" value={{publisher}}>
+							{%endif%}
+							{%if language%}
+							<input type="hidden" name="language" value={{language}}>
+							{%endif%}
+							{%if title%}
+							<input type="hidden" name="title" value={{title}}>
+							{%endif%}-->
+							<button type="submit" id="submit" class="btn btn-default">Add info</button>
+						</form>					
+				</div>
+			</div>
+		</div>
+	</section>	
+	<footer id="footer"><!--Footer-->
+		
+		{% include 'footer.html' %}
+		
+		
+	</footer><!--/Footer-->
+	
+
+  
+    <script src="{% static 'js/jquery.js'%}"></script>
+	<script src="{% static 'js/bootstrap.min.js'%}"></script>
+	<script src="{% static 'js/jquery.scrollUp.min.js'%}"></script>
+	<script src="{% static 'js/price-range.js'%}"></script>
+    <script src="{% static 'js/jquery.prettyPhoto.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    
+</body>
+</html>
