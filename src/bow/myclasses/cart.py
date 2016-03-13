@@ -28,8 +28,8 @@ class CartClass:
             books.append(b)
         return books
 
-    def checkOut(self, userid, bookid):
+    def checkOut(self,bookid):
         """To actually checkout"""
         bookObj = BookClass(bookid)
         bookObj.mark_it_unavailable()
-        self.removeFromCart(bookid, userid)
+        self.removeFromCart(bookid)
