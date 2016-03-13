@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^resgenre', 'bow.views.resOfGenre', name='resgenre'),
     url(r'^addto', 'bow.views.addToCart', name='addto'),
 	url(r'^upload','bow.views.upload',name='upload'),
+    url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
 ]
