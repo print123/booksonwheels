@@ -89,7 +89,7 @@ class CustomerClass(UserClass):
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
         imageurl=mydict['volumeInfo']['imageLinks']['thumbnail']
         from urllib import urlretrieve
-        fname="C:\\Users\\LENOVO\\Documents\GitHub\\booksonwheels\\src\\bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
+        fname="bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
         urlretrieve(imageurl,fname)
         imageurl='images\\'+ISBN13+'.jpg'
         genre=None
