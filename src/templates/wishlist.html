@@ -51,8 +51,8 @@
 							<td class="image">Item</td>
 							<td class="description"></td>
 							<td class="price">Price</td>
-							<td class="quantity">Quantity</td>
-							<td class="total">Total</td>
+							<!--<td class="quantity">Quantity</td>-->
+							<!--<td class="total">Total</td>-->
 							<td></td>
 						</tr>
 					</thead>
@@ -69,19 +69,19 @@
 							<td class="cart_price">
 								<p>{{ b.actual_price }}</p>
 							</td>
-							<td class="cart_quantity">
+							<!--<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<!--<button class="cart_quantity_up" name="++" onclick="return document.getElementById('quantity').value++"> + </button>-->
+									<button class="cart_quantity_up" name="++" onclick="return document.getElementById('quantity').value++"> + </button>
 									<a class="cart_quantity_up" onclick="return document.getElementById('quantity').value--" href=""> + </a>
 									<input class="cart_quantity_input" id="quantity" type="text" name="quantity" value="1" autocomplete="off" size="2">
 									<a class="cart_quantity_down" onclick="return document.getElementById('quantity').value--" href=""> - </a>
 								</div>
-							</td>
-							<td class="cart_total">
+							</td>-->
+							<!--<td class="cart_total">
 								<p class="cart_total_price">{{ b.actual_price }}</p>
-							</td>
+							</td>-->
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" href="/removefromcart?bookid={{b.bookid}}"><i class="fa fa-times"></i></a>
+								<a class="cart_quantity_delete" href="/removefromwishlist?ISBN={{b.ISBN}}"><i class="fa fa-times"></i></a>
 							</td>
 						</tr>
 						{%endfor%}

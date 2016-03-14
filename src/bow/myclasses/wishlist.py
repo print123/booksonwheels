@@ -27,10 +27,3 @@ class WishlistClass:
             b = Book.objects.get(ISBN=i.ISBN)
             books.append(b)
         return books
-    '''
-    def checkOut(self, userid, bookid):
-        """To actually checkout"""
-        bookObj = BookClass(bookid)
-        bookObj.mark_it_unavailable()
-        self.removeFromCart(bookid, userid)
-    '''    

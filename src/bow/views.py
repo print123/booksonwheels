@@ -189,7 +189,14 @@ def addToCart(request):
     except:
         return HttpResponseRedirect("/login")
 
-
+def addToWishlist(request):
+    try:
+        w=WishlistClass(request.session["userid"])
+        w.addToWishlist(request.POST["ISBN"])
+        context = {}
+        return HttpResponseRedirect("/")
+    except:
+        return HttpResponseRedirect("/login")
 
 def remove(request):
     try:
@@ -199,3 +206,12 @@ def remove(request):
         return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/login")            
+
+def removeFromWishlist(request):
+    try:
+        c=WishlistClass(request.session["userid"])
+        print request.GET["ISBN"]
+        c.removeFromWishlist(request.GET["ISBN"])
+        return HttpResponseRedirect("/wishlist")
+    except:
+        return HttpResponseRedirect("/login")                    

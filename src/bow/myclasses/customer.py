@@ -41,7 +41,7 @@ class CustomerClass(UserClass):
         cartObj.addToCart(book_to_rent.bookid,userid)
         cartObj.checkOut(userid,book_to_rent.bookid)
 
-
+    '''
     class WishListClass:
         """WishList Class associated with each User"""
         def addBook(self, ISBN):
@@ -56,7 +56,7 @@ class CustomerClass(UserClass):
         def removeBook(self, ISBN):
             """To remove a book from wishlist"""
             try:
-                Wishlist.object.filter(userid=self.userid, ISBN=ISBN).delete()
+                Wishlist.objects.filter(userid=self.userid, ISBN=ISBN).delete()
                 return True
             except:
                 return False
@@ -64,7 +64,7 @@ class CustomerClass(UserClass):
         def getItems(self):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
-
+'''
     def uploadBook(self,t_ISBN,tosell,torent,price):
         #incorrect isbn not handled only if info not found handled
         lst={}
