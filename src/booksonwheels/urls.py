@@ -16,7 +16,10 @@ urlpatterns = [
     url(r'^genre', 'bow.views.bookOfGenre', name='genre'),
 	url(r'^auto','bow.views.autocomplete',name='autocomplete'),
     url(r'^resgenre', 'bow.views.resOfGenre', name='resgenre'),
-    url(r'^addto', 'bow.views.addToCart', name='addto'),
+    url(r'^addtowishlist', 'bow.views.addToWishlist', name='addtowishlist'),
+    url(r'^addtocart', 'bow.views.addToCart', name='addtocart'),
 	url(r'^upload','bow.views.upload',name='upload'),
     url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
+    url(r'^removefromwishlist', 'bow.views.removeFromWishlist', name='removefromwishlist'),
+    url(r'^wishlist', 'bow.views.wishlist', name='wishlist'),
 ]
