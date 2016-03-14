@@ -84,13 +84,32 @@ def upload(request):
         return HttpResponseRedirect("/")
 
 def getInfo(request):
-    t_isbn=request.POST.get('name',False)
-    tosell=request.POST.get('sell',False)
-    torent=request.POST.get('rent',False)
-    price=request.POST.get('price',False)
-    CustObj=CustomerClass(request.session["userid"])
-    CustObj.uploadBook(t_isbn,tosell,torent,price)
-    return HttpResponseRedirect('/')
+    if request.method=="POST":
+        t_isbn=request.POST.get('name',False)
+        tosell=request.POST.get('sell',False)
+        torent=request.POST.get('rent',False)
+        price=request.POST.get('price',False)
+        CustObj=CustomerClass(request.session["userid"])
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,price)
+        need=[]
+        for i in lst:
+            if lst[i]=='':
+                need.append(i)
+            else:
+                request.session[i]=lst[i]
+        print need
+        context={'find':need}
+        '''for i in lst:
+            if not lst[i]=='':
+                context[i]=lst[i]'''
+        return render(request,"addinfo.html",context)
+    else:
+        values={}
+        for attr in request.GET:
+            values[attr]=request.GET[attr]
+        CustObj=CustomerClass(request.session["userid"])
+        CustObj.addBook(values,request)
+        return HttpResponseRedirect("/")
 
 def wishlist(request):
     if request.session["userid"] is not None:
