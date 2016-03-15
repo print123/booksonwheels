@@ -4,6 +4,7 @@ import json
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .myclasses.cart import CartClass
+from .myclasses.wishlist import WishlistClass
 from .myclasses.customer import CustomerClass
 from .forms import *
 from django.http import HttpResponseRedirect
@@ -110,6 +111,12 @@ def getInfo(request):
         CustObj.addBook(values,request)
         return HttpResponseRedirect("/")
 
+def wishlist(request):
+    if request.session["userid"] is not None:
+        w=WishlistClass(request.session["userid"])
+        res=w.displayWishlist()
+        context = {'result': res}
+    return render(request, "wishlist.html", context)    
 
 def signup(request):
     if request.method == "POST":
@@ -182,7 +189,14 @@ def addToCart(request):
     except:
         return HttpResponseRedirect("/login")
 
-
+def addToWishlist(request):
+    try:
+        w=WishlistClass(request.session["userid"])
+        w.addToWishlist(request.POST["ISBN"])
+        context = {}
+        return HttpResponseRedirect("/")
+    except:
+        return HttpResponseRedirect("/login")
 
 def remove(request):
     try:
@@ -193,6 +207,7 @@ def remove(request):
     except:
         return HttpResponseRedirect("/login")            
 
+<<<<<<< HEAD
 def displayMyBooks(request):
     CustObj=CustomerClass(request.session["userid"])
     result=CustObj.myBooks()
@@ -203,3 +218,13 @@ def displayMyBooks(request):
 
 
 
+=======
+def removeFromWishlist(request):
+    try:
+        c=WishlistClass(request.session["userid"])
+        print request.GET["ISBN"]
+        c.removeFromWishlist(request.GET["ISBN"])
+        return HttpResponseRedirect("/wishlist")
+    except:
+        return HttpResponseRedirect("/login")                    
+>>>>>>> 7bf66f6f548a08464b5be693d9cc7e4aaab21659

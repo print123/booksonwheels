@@ -17,8 +17,8 @@ class Wishlist(models.Model):
 	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 
-	def __unicode__(self):
-		return self.userid
+	#def __unicode__(self):
+	#	return self.userid
 
 class Cart(models.Model):
 	userid=models.ForeignKey('User',on_delete=models.CASCADE,)

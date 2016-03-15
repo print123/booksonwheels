@@ -9,7 +9,7 @@ class LoginForm(ModelForm):
         fields = ['email', 'password']
         widgets = {
             'password': forms.PasswordInput(attrs={'required': True}),
-            'email': forms.TextInput(attrs={'required': True})
+            'email': forms.TextInput(attrs={'required': True}),
         }
 
 class SignUpForm(ModelForm):
