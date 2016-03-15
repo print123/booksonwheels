@@ -82,5 +82,7 @@ class BookClass:
 
     def getBookid(self, ISBN):
         b = Book.objects.filter(ISBN=ISBN).values('bookid')
-        print b[0]['bookid']
-        return b[0]['bookid']
+        try:
+            return b[0]['bookid']
+        except:
+            return -1

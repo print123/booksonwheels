@@ -94,7 +94,7 @@ def getInfo(request):
         b=BookClass()
         bookid=b.getBookid(t_isbn)
 
-        if bookid is not None:
+        if not bookid==-1:
             owner=request.session['userid']
             b.add_seller(bookid,tosell,torent,sellprice,rentprice,quantity,owner)
             return HttpResponseRedirect("/")
