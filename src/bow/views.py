@@ -192,3 +192,14 @@ def remove(request):
         return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/login")            
+
+def displayMyBooks(request):
+    CustObj=CustomerClass(request.session["userid"])
+    result=CustObj.myBooks()
+    context={'result':result}
+    return render(request,"mybooks.html",context)
+
+
+
+
+
