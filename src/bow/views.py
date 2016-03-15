@@ -207,7 +207,7 @@ def remove(request):
     except:
         return HttpResponseRedirect("/login")            
 
-<<<<<<< HEAD
+
 def displayMyBooks(request):
     CustObj=CustomerClass(request.session["userid"])
     result=CustObj.myBooks()
@@ -215,10 +215,6 @@ def displayMyBooks(request):
     return render(request,"mybooks.html",context)
 
 
-
-
-
-=======
 def removeFromWishlist(request):
     try:
         c=WishlistClass(request.session["userid"])
@@ -227,4 +223,12 @@ def removeFromWishlist(request):
         return HttpResponseRedirect("/wishlist")
     except:
         return HttpResponseRedirect("/login")                    
->>>>>>> 7bf66f6f548a08464b5be693d9cc7e4aaab21659
+
+def select(request):
+    if request.method=="POST":
+        if 'cart' in request.POST:
+            return addToCart(request)
+        else:
+            return addToWishlist(request)
+
+    return HttpResponseRedirect('/')

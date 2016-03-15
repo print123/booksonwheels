@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
     url(r'^removefromwishlist', 'bow.views.removeFromWishlist', name='removefromwishlist'),
     url(r'^wishlist', 'bow.views.wishlist', name='wishlist'),
+    url(r'^select', 'bow.views.select', name='select'),
 ]
