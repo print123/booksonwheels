@@ -194,10 +194,6 @@ class CustomerClass(UserClass):
             genre=lst['genre']
         else:
             genre=request.session['genre']
-<<<<<<< HEAD
-=======
             del request.session['genre']
-
->>>>>>> 6a36bc69fe396ed4800164f1cee7eaf726863ad0
         b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         b.save()
