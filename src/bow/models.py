@@ -22,19 +22,25 @@ class Wishlist(models.Model):
 
 class Cart(models.Model):
 	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
-	bookid=models.CharField(max_length=20,blank=False,null=False)
+	ISBN=models.CharField(max_length=20,blank=False,null=False)
+	quantity=models.DecimalField(max_digits=5)
+
+class Upload(models.Model):
+	owner_id=models.ForeignKey('User',on_delete=models.CASCADE)
+	dosell=models.BooleanField(default=False)
+	dorent=models.BooleanField(default=True)
+	rentprice=models.DecimalField(max_digits=8,decimal_places=2)
+	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
+	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
+	qtyuploaded=models.DecimalField(max_digits=8)
+	qtyavailable=models.DecimalField(max_digits=8)
 
 class Book(models.Model):
 	bookid=models.AutoField(primary_key=True)
-	owner_id=models.ForeignKey('User',on_delete=models.CASCADE,)
 	author=models.CharField(max_length=100)
-	actual_price=models.DecimalField(max_digits=8,decimal_places=2)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	imageurl=models.CharField(max_length=100,blank=False,null=False)
 	genre=models.CharField(max_length=20)
-	dosell=models.BooleanField(default=False)
-	dorent=models.BooleanField(default=True)
-	available=models.BooleanField(default=True)
 	summary=models.CharField(max_length=500)
 	publisher=models.CharField(max_length=50)
 	language=models.CharField(max_length=20,default='English')
@@ -56,13 +62,14 @@ class Rents(models.Model):
 	def __unicode__(self):
 		return self.userid
 
-class Order(models.Model):
+class Order(models.Model):# for every new (owner and book combination) new entry
 	orderid=models.AutoField(primary_key=True)
 	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	date_of_order=models.DateTimeField(auto_now_add=True)
-	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	bookid=models.ForeignKey('Book',related_name="order_bookid",on_delete=models.CASCADE)
+	owner_id=models.ForeignKey('User',on_delete=models.CASCADE)
+	quantity=models.DecimalField(max_digits=8)
 
 	def __unicode__(self):
 		return self.orderid
