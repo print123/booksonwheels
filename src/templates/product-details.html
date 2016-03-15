@@ -28,19 +28,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script>   
-     $(document).ready(function() 
-     {
-		  		$("#form1").submit(function() 
-		  		{
-		  			    
-		  			    alert('hey bro')    
-		  		}
-		  	)
-		}
-	)
-    </script>
+    
 </head><!--/head-->
 
 <body>
@@ -93,7 +81,7 @@
 									<span>{{b.actual_price}} Rs</span>
 									
 									<br/>
-									<form id="form1" method="post" action="">{%csrf_token%}
+									<form action="/select" method="post">{%csrf_token%}
 									{% if b.dosell %}
 									<p>
       <input name="group1" type="radio" id="test1"/>
@@ -106,7 +94,7 @@
       <label for="test2">Rent</label>
     </p>
 									{%endif%}<br/>
-									<button name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
+									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart
 									</button><br/>
@@ -395,7 +383,7 @@
 	</footer><!--/Footer-->
 	
 
-	<script src="/static/js/notify.js"></script>  
+  
     <script src="/static/js/jquery.js"></script>
 	<script src="/static/js/price-range.js"></script>
     <script src="/static/js/jquery.scrollUp.min.js"></script>

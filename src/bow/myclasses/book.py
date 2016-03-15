@@ -81,5 +81,9 @@ class BookClass:
         nuser.save()
 
     def getBookid(self, ISBN):
-        b = Book.objects.filter(ISBN=ISBN).values('bookid')        
-        return b[0]['bookid']
+        b = Book.objects.filter(ISBN=ISBN).values('bookid')
+        try:
+            return b[0]['bookid']
+        except:
+            return -1
+
