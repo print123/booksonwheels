@@ -88,9 +88,19 @@ def getInfo(request):
         t_isbn=request.POST.get('name',False)
         tosell=request.POST.get('sell',False)
         torent=request.POST.get('rent',False)
-        price=request.POST.get('price',False)
+        sellprice=request.POST.get('sellprice',False)
+        rentprice=request.POST.get('rentprice',False)
+        quantity=request.POST.get('quantity',False)
+        b=BookClass()
+        bookid=b.getBookid(t_isbn)
+
+        if bookid is not None:
+            owner=request.session['userid']
+            b.add_seller(bookid,tosell,torent,sellprice,rentprice,quantity,owner)
+            return HttpResponseRedirect("/")
+
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,price)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,quantity)
         need=[]
         for i in lst:
             if lst[i]=='':
