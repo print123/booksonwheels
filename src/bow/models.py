@@ -14,7 +14,7 @@ class User(models.Model):
 		return self.name
 
 class Wishlist(models.Model):
-	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
+	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 
 	#def __unicode__(self):
@@ -58,6 +58,8 @@ class Rents(models.Model):
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	date_of_issue=models.DateTimeField(auto_now_add=True)
 	date_of_return=models.DateTimeField()
+	owner_id=models.ForeignKey('User',on_delete=models.CASCADE)
+	quantity=models.DecimalField(max_digits=8)
 
 	def __unicode__(self):
 		return self.userid
