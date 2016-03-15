@@ -11,14 +11,14 @@ class CustomerClass(UserClass):
     def __init__(self, userid):
         self.userid = userid
 
-    def myBooks(self, userid):
+    def myBooks(self):
         """A method to display books uploaded by any  user"""
-        books = Book.object.filter(owner_id=userid)
+        books = Book.objects.filter(owner_id_id=self.userid)
         return books
 
     def currentBooks(self, userid):
         """A method to display books Rented by any  user"""
-        r_books = Rents.object.filter(userid=userid)
+        r_books = Rents.objects.filter(userid=userid)
         return r_books
 
     def buyBook(self, ISBN):
@@ -146,17 +146,21 @@ class CustomerClass(UserClass):
             author=lst['author']
         else:
             author=request.session['author']
+            del request.session['author']
         if 'actual_price' in lst:
             price=lst['actual_price']
         else:
             price=request.session['actual_price']
+            del request.session['actual_price']
         if 'ISBN' in lst:
             t_ISBN=lst['ISBN']
         else:
             t_ISBN=request.session['ISBN']
-
+            del request.session['ISBN']
         dorent=request.session['dorent']
         dosell=request.session['dosell']
+        del request.session['dorent']
+        del request.session['dosell']
         if 'imageurl' in lst:
             imageurl=lst['imageurl']
         else:
@@ -165,25 +169,35 @@ class CustomerClass(UserClass):
             fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
             urlretrieve(imageurl1,fname)
             imageurl='images\\'+t_ISBN+'.jpg'
+            del request.session['imageurl']
         if 'summary' in lst:
             summary=lst['summary']
         else:
             summary=request.session['summary']
+            del request.session['summary']
         if 'publisher' in lst:
             publisher=lst['publisher']
         else:
             publisher=request.session['publisher']
+            del request.session['publisher']
         if 'language' in lst:
             language=lst['language']
         else:
             language=request.session['language']
+            del request.session['language']
         if 'title' in lst:
             title=lst['title']
         else:
             title=request.session['title']
+            del request.session['title']
         if 'genre' in lst:
             genre=lst['genre']
         else:
             genre=request.session['genre']
+<<<<<<< HEAD
+=======
+            del request.session['genre']
+
+>>>>>>> 6a36bc69fe396ed4800164f1cee7eaf726863ad0
         b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         b.save()

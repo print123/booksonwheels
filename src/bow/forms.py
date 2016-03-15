@@ -30,4 +30,7 @@ class SignUpForm(ModelForm):
         if self.cleaned_data['password'] != self.cleaned_data['confirm_passworda']:
             raise forms.ValidationError("Pswd dnt match")
 
+class UploadForm(forms.Form):
+    file=forms.FileField()
+
 

@@ -19,7 +19,9 @@ urlpatterns = [
     url(r'^addtowishlist', 'bow.views.addToWishlist', name='addtowishlist'),
     url(r'^addtocart', 'bow.views.addToCart', name='addtocart'),
 	url(r'^upload','bow.views.upload',name='upload'),
+    url(r'^mybooks','bow.views.displayMyBooks',name='mybooks'),
     url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
     url(r'^removefromwishlist', 'bow.views.removeFromWishlist', name='removefromwishlist'),
     url(r'^wishlist', 'bow.views.wishlist', name='wishlist'),
+    url(r'^select', 'bow.views.select', name='select'),
 ]

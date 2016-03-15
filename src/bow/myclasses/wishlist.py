@@ -24,6 +24,6 @@ class WishlistClass:
         """To display Wishlist Items"""
         books = []
         for i in self.bookarray:
-            b = Book.objects.get(ISBN=i.ISBN)
+            b = Book.objects.filter(ISBN=i.ISBN)[0]
             books.append(b)
         return books

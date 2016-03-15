@@ -81,7 +81,7 @@
 									<span>{{b.actual_price}} Rs</span>
 									
 									<br/>
-									<form action="/addtocart" method="post">{%csrf_token%}
+									<form action="/select" method="post">{%csrf_token%}
 									{% if b.dosell %}
 									<p>
       <input name="group1" type="radio" id="test1"/>
@@ -108,6 +108,7 @@
 									</button>
 									
 									<input type="hidden" name="bookid" value={{b.bookid}}>
+									<input type="hidden" name="ISBN" value={{b.ISBN}}>
 									</form>
 									
 									
