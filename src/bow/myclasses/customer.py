@@ -3,7 +3,7 @@
 from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
-from ..models import User, Wishlist, Book, Rents
+from ..models import User, Wishlist, Book, Rents,Upload
 import json
 import requests
 import yaml
@@ -65,7 +65,7 @@ class CustomerClass(UserClass):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
 '''
-    def uploadBook(self,t_ISBN,tosell,torent,price):
+    def uploadBook(self,t_ISBN,tosell,torent,sellprice,rentprice,quantity):
         #incorrect isbn not handled only if info not found handled
         lst={}
         lst['dosell']=False
@@ -75,8 +75,9 @@ class CustomerClass(UserClass):
         if torent == "on":
             lst['dorent']=True
         lst['ISBN']=t_ISBN
-        lst['actual_price']=price
-
+        lst['sellprice']=sellprice
+        lst['rentprice']=rentprice
+        lst['quantity']=quantity
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
         
         lst['imageurl']=''
@@ -147,11 +148,7 @@ class CustomerClass(UserClass):
         else:
             author=request.session['author']
             del request.session['author']
-        if 'actual_price' in lst:
-            price=lst['actual_price']
-        else:
-            price=request.session['actual_price']
-            del request.session['actual_price']
+        
         if 'ISBN' in lst:
             t_ISBN=lst['ISBN']
         else:
@@ -159,8 +156,14 @@ class CustomerClass(UserClass):
             del request.session['ISBN']
         dorent=request.session['dorent']
         dosell=request.session['dosell']
+        sellprice=request.session['sellprice']
+        rentprice=request.session['rentprice']
+        quantity=request.session['quantity']
+        del request.session['rentprice']
         del request.session['dorent']
         del request.session['dosell']
+        del request.session['sellprice']
+        del request.session['quantity']
         if 'imageurl' in lst:
             imageurl=lst['imageurl']
         else:
@@ -195,5 +198,7 @@ class CustomerClass(UserClass):
         else:
             genre=request.session['genre']
             del request.session['genre']
-        b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
+        b=Book(author=author,ISBN=t_ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         b.save()
+        nuser=Upload(owner_id_id=request.session['userid'],bookid=b,dorent=dorent,dosell=dosell,sellprice=sellprice,rentprice=rentprice,qtyuploaded=quantity,qtyavailable=quantity)
+        nuser.save()

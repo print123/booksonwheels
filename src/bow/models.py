@@ -41,24 +41,24 @@ class Book(models.Model):
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	imageurl=models.CharField(max_length=100,blank=False,null=False)
 	genre=models.CharField(max_length=20)
-	summary=models.CharField(max_length=500)
+	summary=models.CharField(max_length=1000)
 	publisher=models.CharField(max_length=50)
 	language=models.CharField(max_length=20,default='English')
 	rating=models.DecimalField(max_digits=2,decimal_places=1)
 	title=models.CharField(max_length=120,blank=False,null=False)
+	quantity=models.DecimalField(max_digits=10,decimal_places=0)
 
 	def __unicode__(self):
 		return self.title
 
 class Rents(models.Model):
-
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	userid=models.ForeignKey('User',related_name="rents_userid",on_delete=models.CASCADE)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	date_of_issue=models.DateTimeField(auto_now_add=True)
 	date_of_return=models.DateTimeField()
-	owner_id=models.ForeignKey('User',related_name="rents_ownerid",on_delete=models.CASCADE)
+	owner_id=models.CharField(max_length=20)
 	quantity=models.DecimalField(max_digits=8,decimal_places=0)
 
 	def __unicode__(self):
@@ -70,7 +70,7 @@ class Order(models.Model):# for every new (owner and book combination) new entry
 	date_of_order=models.DateTimeField(auto_now_add=True)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	bookid=models.ForeignKey('Book',related_name="order_bookid",on_delete=models.CASCADE)
-	owner_id=models.ForeignKey('User',related_name="order_ownerid",on_delete=models.CASCADE)
+	owner_id=models.CharField(max_length=20)
 	quantity=models.DecimalField(max_digits=8,decimal_places=0)
 
 	def __unicode__(self):

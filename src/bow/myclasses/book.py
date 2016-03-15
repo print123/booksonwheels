@@ -1,6 +1,6 @@
 """A Class for Book"""
 from __future__ import unicode_literals
-from ..models import Book, Rents
+from ..models import Book, Rents,Upload
 from django.db.models import Count
 
 
@@ -63,3 +63,23 @@ class BookClass:
             if flag == False:
                 gen_counts.append({'genre': r.genre, 'total': 1})
         return gen_counts
+
+
+    def add_seller(self,bookid,tosell,torent,sellprice,rentprice,quantity,owner):
+        if tosell=="on":
+            tosell=True
+        else:
+            tosell=False
+        if torent=="on":
+            torent=True
+        else:
+            torent=False
+        #book=self.getBook(isbn)
+
+        #bookobj=Book(ISBN=book['ISBN'],author=book['author'],title=book['author'],summary=book['summary'],imageurl=book['imageurl'],genre=book['genre'],publisher=book['publisher'],rating=book['rating'],language=book['language'],)
+        nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+        nuser.save()
+
+    def getBookid(self, ISBN):
+        b = Book.objects.filter(ISBN=ISBN).values('bookid')        
+        return b[0]['bookid']
