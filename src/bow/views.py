@@ -64,6 +64,16 @@ def login(request):
     else:
         return render(request, "login.html", context)
 
+def signup(request):
+    if request.method == "POST":
+        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
+        try:
+            nuser.addUser()            
+        except:
+               return render(request, "u.html")
+
+    return HttpResponseRedirect("/")
+
 
 def cart(request):
     try:
@@ -91,17 +101,17 @@ def getInfo(request):
         torent=request.POST.get('rent',False)
         sellprice=request.POST.get('sellprice',False)
         rentprice=request.POST.get('rentprice',False)
-        quantity=request.POST.get('quantity',False)
+        sellquantity=request.POST.get('sellquantity',False)
+        rentquantity=request.POST.get('rentquantity',False)
         b=BookClass()
         bookid=b.getBookid(t_isbn)
-
         if not bookid==-1:
             owner=request.session['userid']
-            b.add_seller(bookid,tosell,torent,sellprice,rentprice,quantity,owner)
+            b.add_seller(bookid,tosell,torent,sellprice,rentprice,int(sellquantity+rentquantity),owner)
             return HttpResponseRedirect("/")
 
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,quantity)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,sellquantity,rentquantity)
         need=[]
         for i in lst:
             if lst[i]=='':
@@ -122,23 +132,13 @@ def getInfo(request):
         CustObj.addBook(values,request)
         return HttpResponseRedirect("/")
 
+
 def wishlist(request):
     if request.session["userid"] is not None:
         w=WishlistClass(request.session["userid"])
         res=w.displayWishlist()
         context = {'result': res}
     return render(request, "wishlist.html", context)    
-
-def signup(request):
-    if request.method == "POST":
-        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
-        try:
-            nuser.addUser()
-        except:
-            return render(request, "u.html")
-
-    return HttpResponseRedirect("/")
-
 
 def search(request):
     if request.method == "POST":
@@ -163,9 +163,7 @@ def productdetails(request):
         b = BookClass()
 
         res = b.getBook(request.GET["id"])
-        print res
-        context = {'result': res}
-        print len(res)
+        context = {'result': res}        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
@@ -194,8 +192,10 @@ def resOfGenre(request):
 def addToCart(request):
     try:
         c=CartClass(request.session["userid"])
+
         c.addToCart(request.POST["ISBN"])
         context = {}
+
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")

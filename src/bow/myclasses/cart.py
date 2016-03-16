@@ -7,7 +7,7 @@ from ..models import Cart, Book, Order
 class CartClass:
     def __init__(self, userid):
         self.userid = userid
-        self.bookarray = Cart.objects.filter(userid=self.userid)
+        self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
     def addToCart(self, ISBN):
         """A method to add a new book in Cart"""
@@ -16,9 +16,10 @@ class CartClass:
         newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=1)
         newCartObj.save()
 
-    def removeFromCart(self, bookid):
+    def removeFromCart(self, ISBN):
         """To remove a book from Cart"""
-        Cart.objects.filter(userid=self.userid, bookid=bookid).delete()
+        newCartObj=Cart.objects.get(userid=self.userid, ISBN=ISBN)
+        #Come here after a while        
 
     def displayCart(self):
         """To display Cart Items"""
@@ -27,6 +28,7 @@ class CartClass:
             print "onn"
             b = Book.objects.filter(ISBN=i.ISBN)[0]
             print b
+
             books.append(b)
 
         return books
