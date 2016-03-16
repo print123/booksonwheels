@@ -77,7 +77,26 @@ class BookClass:
         #book=self.getBook(isbn)
 
         #bookobj=Book(ISBN=book['ISBN'],author=book['author'],title=book['author'],summary=book['summary'],imageurl=book['imageurl'],genre=book['genre'],publisher=book['publisher'],rating=book['rating'],language=book['language'],)
-        nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+        upObj=Upload.objects.get(owner_id_id=owner,bookid_id=bookid)
+        if upObj is not None:
+            if tosell and torent:                                            
+                if rentprice == upObj.rentprice and sellprice == upObj.sellprice:
+                    upObj.qtyuploaded = upObj.qtyuploaded + 1
+                else:
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+            elif tosell:
+                if sellprice == upObj.sellprice:
+                        upObj.qtyuploaded=upObj.qtyuploaded + 1
+                else:
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+            elif torent:
+                if rentprice == upObj.rentprice:
+                        upObj.qtyuploaded=upObj.qtyuploaded + 1
+                else:
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+        else:
+            nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+        
         nuser.save()
 
     def getBookid(self, ISBN):

@@ -68,9 +68,9 @@ def signup(request):
     if request.method == "POST":
         nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:
-            nuser.addUser()
+            nuser.addUser()            
         except:
-            return render(request, "u.html")
+               return render(request, "u.html")
 
     return HttpResponseRedirect("/")
 
@@ -100,16 +100,17 @@ def getInfo(request):
         torent=request.POST.get('rent',False)
         sellprice=request.POST.get('sellprice',False)
         rentprice=request.POST.get('rentprice',False)
-        quantity=request.POST.get('quantity',False)
+        sellquantity=request.POST.get('sellquantity',False)
+        rentquantity=request.POST.get('rentquantity',False)
         b=BookClass()
         bookid=b.getBookid(t_isbn)
         if not bookid==-1:
             owner=request.session['userid']
-            b.add_seller(bookid,tosell,torent,sellprice,rentprice,quantity,owner)
+            b.add_seller(bookid,tosell,torent,sellprice,rentprice,int(sellquantity+rentquantity),owner)
             return HttpResponseRedirect("/")
 
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,quantity)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,sellquantity,rentquantity)
         need=[]
         for i in lst:
             if lst[i]=='':
