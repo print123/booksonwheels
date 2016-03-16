@@ -103,20 +103,12 @@ class CustomerClass(UserClass):
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
 
-        imageurl=mydict['volumeInfo']['imageLinks']['thumbnail']
-        from urllib import urlretrieve
-        fname="bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
-        urlretrieve(imageurl,fname)
-        imageurl='images\\'+ISBN13+'.jpg'
-        genre=None
+        
         for i in mydict['volumeInfo']['categories']:
             genre=(yaml.safe_load(i))
-        summary=mydict['volumeInfo']['description']
+        #summary=mydict['volumeInfo']['description']
 
-        publisher=mydict['volumeInfo']['publisher']
-
-        language=mydict['volumeInfo']['language']
-        summary=summary[:490]
+        
 
         if 'imageLinks' in mydict["volumeInfo"]:
             lst['imageurl']=mydict['volumeInfo']['imageLinks']['thumbnail']
