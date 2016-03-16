@@ -23,6 +23,7 @@ class Wishlist(models.Model):
 class Cart(models.Model):
 	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
+	#sell_quantity=models.DecimalField(max_digits=8,decimal_places=0)
 	quantity=models.DecimalField(max_digits=5,decimal_places=0)
 
 class Upload(models.Model):
@@ -46,8 +47,18 @@ class Book(models.Model):
 	language=models.CharField(max_length=20,default='English')
 	rating=models.DecimalField(max_digits=2,decimal_places=1)
 	title=models.CharField(max_length=120,blank=False,null=False)
-	quantity=models.DecimalField(max_digits=10,decimal_places=0)
+	quantity=models.DecimalField(max_digits=8,decimal_places=0)
+	sellquantity=models.DecimalField(max_digits=8,decimal_places=0)
 
+	def __unicode__(self):
+		return self.title
+
+class Status(models.Model):
+	ISBN=models.CharField(max_length=20,blank=False,null=False)
+	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
+	sellquantity=models.DecimalField(max_digits=8,decimal_places=0)
+	rentquantity=models.DecimalField(max_digits=8,decimal_places=0)
+	rentprice=models.DecimalField(max_digits=8,decimal_places=2)
 	def __unicode__(self):
 		return self.title
 
