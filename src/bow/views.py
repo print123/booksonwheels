@@ -79,6 +79,7 @@ def cart(request):
     try:
         if request.session["userid"] is not None:
             c = CartClass(request.session["userid"])
+            print "hi"
             result = c.displayCart()
             context = {'result': result}
         return render(request, "cart.html", context)
@@ -191,8 +192,10 @@ def resOfGenre(request):
 def addToCart(request):
     try:
         c=CartClass(request.session["userid"])
-        c.addToCart(request.POST["bookid"])
-        context = {'success':True}
+
+        c.addToCart(request.POST["ISBN"])
+        context = {}
+
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
