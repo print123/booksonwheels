@@ -78,7 +78,7 @@ class BookClass:
 
         #bookobj=Book(ISBN=book['ISBN'],author=book['author'],title=book['author'],summary=book['summary'],imageurl=book['imageurl'],genre=book['genre'],publisher=book['publisher'],rating=book['rating'],language=book['language'],)
         upObj=Upload.objects.filter(owner_id_id=owner,bookid_id=bookid).first()
-
+        print quantity
         if upObj is not None:
             if tosell and torent:                                            
                 if rentprice == upObj.rentprice and sellprice == upObj.sellprice:
