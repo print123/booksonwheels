@@ -94,9 +94,8 @@
 								<h2>{{b.title}}</h2>								
 								<p>ISBN: {{b.ISBN}}</p>
 								<!--<img src="{%static 'images/product-details/rating.png'%}" alt="" />-->
-								
-									<span>{{b.actual_price}} Rs</span>
-									
+									<span>Selling Price: {{sellp}} Rs</span><br/>
+									<span>Renting Price: {{rentp}} Rs</span>
 									<br/>
 									<form action="/select" id="form1" method="post">{%csrf_token%}
 									{% if b.dosell %}
@@ -111,7 +110,6 @@
       <label for="test2">Rent</label>
     </p>
 									{%endif%}<br/>
-									<input type="Text" name="quantity" placeholder="Quantity" value="1">
 									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart
@@ -125,15 +123,17 @@
 										Checkout
 									</button>
 									
+									<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
+									<input type="hidden" name="ISBN" value={{b.ISBN}}><br/>
+									<div class="col-sm-4">
+									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1">
 									
-									<input type="hidden" name="ISBN" value={{b.ISBN}}>
-									</form>
-									
+									</form><br/>						
 									
 									
 								
 								<p><b>Availability:</b> 
-								{%if b.available %}		
+								{%if b.quantity %}		
 								In Stock</p>
 								{%else%}
 								Out of Stock</p>
@@ -141,6 +141,7 @@
 								<p><b>Author:</b> {{b.author}}</p>
 								
 								<a href=""><img src="{%static 'images/product-details/share.png' %}" class="share img-responsive"  alt="" /></a>
+							</div>
 							</div><!--/product-information-->
 						</div>
 					</div><!--/product-details-->

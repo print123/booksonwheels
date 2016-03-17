@@ -1,7 +1,7 @@
 """A Class for Book"""
 from __future__ import unicode_literals
-from ..models import Book, Rents,Upload
-from django.db.models import Count
+from ..models import Book, Rents, Upload, Status 
+from django.db.models import Count, Min
 
 
 class BookClass:
@@ -45,6 +45,8 @@ class BookClass:
 
     def getBook(self, ISBN):
         b = Book.objects.filter(ISBN=ISBN)[:1]
+        #print type(b)
+        print b
         return b
 
     def getCategory(self):
@@ -102,3 +104,33 @@ class BookClass:
         except:
             return -1
 
+    def getPrice(self, ISBN):
+        price={}
+        c = Status.objects.filter(ISBN=ISBN)
+        #d = Status.objects.filter(ISBN=ISBN).aggregate(Min('rentprice'))
+        #print type(c)
+        print "Sessions"
+        print c
+        minsellprice=9999999999
+        minrentprice=9999999999
+        for i in c:
+            if i.sellprice < minsellprice and i.sellquantity>0: 
+                minsellprice=i.sellprice
+            if i.rentprice<minrentprice and i.quantity-i.sellquantity>0:
+                minrentprice=i.rentprice
+        price['rentprice']=minrentprice
+        price['sellprice']=minsellprice
+        #print c['ISBN']
+        #print type(c)
+        #print d
+        
+        #price['sellprice'] = c['sellprice']
+        #price['rentprice'] = d['rentprice']
+        return price
+
+    def getISBN(self, bookid):
+        b = Book.objects.filter(bookid=bookid).values('ISBN')
+        try:
+            return b[0]['ISBN']
+        except:
+            return -1    

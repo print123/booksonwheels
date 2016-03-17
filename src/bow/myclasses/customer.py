@@ -132,7 +132,8 @@ class CustomerClass(UserClass):
        # b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         #b.save()
 
-    def addBook(self,lst,request):        
+    def addBook(self,lst,request):
+        print lst        
         if 'author' in lst:
             author=lst['author']
         else:
@@ -164,8 +165,12 @@ class CustomerClass(UserClass):
         del request.session['rentquantity']
         if 'imageurl' in lst:
             imageurl=lst['imageurl']
+            print "list"
+            print imageurl
         else:
             imageurl1=request.session['imageurl']
+            print "session"
+            print imageurl1
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
             urlretrieve(imageurl1,fname)

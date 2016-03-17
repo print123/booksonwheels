@@ -63,7 +63,9 @@ def login(request):
             request.session["cartquant"]=l
                 
             wishObj=WishlistClass(requestuser.userid)
+
             x=wishObj.getLen()            
+
             request.session["wishquant"]=x
 
             return HttpResponseRedirect('/')
@@ -89,7 +91,12 @@ def cart(request):
         if request.session["userid"] is not None:
             c = CartClass(request.session["userid"])            
             result = c.displayCart()
-            context = {'result': result}
+            total=0
+            for r in result:
+                total += r['quantity'] * r['sellprice']
+            print "total"
+            print total
+            context = {'result': result, 'total': total}
         return render(request, "cart.html", context)
     except:
         return HttpResponseRedirect("/")
@@ -149,6 +156,7 @@ def getInfo(request):
             elif i=='imageurl' and lst[i]=='':
                 flag=True
             else:
+                print i
                 request.session[i]=lst[i]
         print need
         context={'find':need,'ISBN':t_isbn}
@@ -171,11 +179,13 @@ def addInfo(request):
                 handle_uploaded_file(request.FILES['file'],request.POST['ISBN'])
             values={}
             values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
+            print values['imageurl']
             for attr in request.POST:
-                if not attr=="imageurl" and not attr=="ISBN":
+                if not (attr=="imageurl" or attr=="ISBN"):
+                    print attr
                     values[attr]=request.POST[attr]
-                    CustObj=CustomerClass(request.session["userid"])
-                    CustObj.addBook(values,request)
+            CustObj=CustomerClass(request.session["userid"])
+            CustObj.addBook(values,request)
             return HttpResponseRedirect("/")
         else:
             values={}
@@ -220,9 +230,19 @@ def search(request):
 def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
-
+        b1 = BookClass()
+        print request.GET["id"]
         res = b.getBook(request.GET["id"])
-        context = {'result': res}        
+        #isbn = b.getISBN(request.GET["id"])
+        price = b1.getPrice(request.GET["id"])
+        sellp = price['sellprice']
+        rentp = price['rentprice']
+        if sellp==9999999999:
+            context = {'result': res, 'rentp': rentp}
+        elif rentp==9999999999:
+            context = {'result': res, 'sellp': sellp}
+        else:
+            context = {'result': res, 'rentp': rentp,'sellp':sellp}        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
