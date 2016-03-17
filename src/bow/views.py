@@ -96,22 +96,43 @@ def upload(request):
 
 def getInfo(request):
     if request.method=="POST":
-        t_isbn=request.POST.get('name',False)
-        tosell=request.POST.get('sell',False)
-        torent=request.POST.get('rent',False)
-        sellprice=request.POST.get('sellprice',False)
-        rentprice=request.POST.get('rentprice',False)
-        sellquantity=request.POST.get('sellquantity',False)
-        rentquantity=request.POST.get('rentquantity',False)
-        b=BookClass()
-        bookid=b.getBookid(t_isbn)
-        if not bookid==-1:
-            owner=request.session['userid']
-            b.add_seller(bookid,tosell,torent,sellprice,rentprice,int(sellquantity+rentquantity),owner)
-            return HttpResponseRedirect("/")
+        t_isbn=request.POST.get('name')
+        t_sell=request.POST.get('sell')
+        if t_sell == 'on':
+            tosell=True
+        else:
+            tosell=False
+        t_rent=request.POST.get('rent')        
+        if t_rent =='on':
+            torent=True
+        else:
+            torent=False
+                  
+        sellprice=request.POST.get('sellprice')
+        rentprice=request.POST.get('rentprice')
+        sellquantity=request.POST.get('sellquantity')
 
+        rentquantity=request.POST.get('rentquantity')
+        b=BookClass()
+        bookid=b.getBookid(t_isbn)        
+        if not bookid==-1:
+            owner=request.session['userid']                    
+            custObj=CustomerClass(owner)            
+            bookObj=BookClass()
+            b1=bookObj.getBook(t_isbn)  
+            b=b1[0]          
+            author=b.author
+            imageurl=b.imageurl
+            genre=b.genre
+            summary=b.summary
+            publisher=b.publisher
+            language=b.language
+            title=b.title
+            rating=4.0
+            custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
+            return HttpResponseRedirect("/")    
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,sellquantity,rentquantity)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,int(sellquantity),int(rentquantity))
         need=[]
         flag=False
         for i in lst:
@@ -123,6 +144,7 @@ def getInfo(request):
                 request.session[i]=lst[i]
         print need
         context={'find':need,'ISBN':t_isbn}
+
         '''for i in lst:
             if not lst[i]=='':
                 context[i]=lst[i]'''
