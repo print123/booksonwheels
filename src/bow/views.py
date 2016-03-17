@@ -141,6 +141,7 @@ def getInfo(request):
             elif i=='imageurl' and lst[i]=='':
                 flag=True
             else:
+                print i
                 request.session[i]=lst[i]
         print need
         context={'find':need,'ISBN':t_isbn}
@@ -163,11 +164,13 @@ def addInfo(request):
                 handle_uploaded_file(request.FILES['file'],request.POST['ISBN'])
             values={}
             values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
+            print values['imageurl']
             for attr in request.POST:
-                if not attr=="imageurl" and not attr=="ISBN":
+                if not (attr=="imageurl" or attr=="ISBN"):
+                    print attr
                     values[attr]=request.POST[attr]
-                    CustObj=CustomerClass(request.session["userid"])
-                    CustObj.addBook(values,request)
+            CustObj=CustomerClass(request.session["userid"])
+            CustObj.addBook(values,request)
             return HttpResponseRedirect("/")
         else:
             values={}
