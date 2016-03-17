@@ -10,8 +10,7 @@ class CartClass:
         self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
     def addToCart(self, ISBN,quantity,dosell):
-        """A method to add a new book in Cart"""
-        print ISBN
+        """A method to add a new book in Cart"""        
         print self.userid
         newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=100)
         newCartObj.save()
@@ -38,3 +37,6 @@ class CartClass:
         bookObj = BookClass(bookid)
         bookObj.mark_it_unavailable()
         self.removeFromCart(bookid)
+    
+    def getTotal(self):
+        return len(self.bookarray)

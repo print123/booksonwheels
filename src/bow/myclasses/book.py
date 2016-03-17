@@ -11,6 +11,7 @@ class BookClass:
     def __init__(self):
         bookid = None
 
+
     def mark_it_unavailable(self):
         Book.Object.filter(bookid=self.bookid).update(available=False)
 

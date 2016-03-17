@@ -57,9 +57,18 @@ def login(request):
             context["is_not_auth"] = False
             request.session["userid"] = requestuser.userid
             request.session["name"] = requestuser.name
+            
+            cartObj=CartClass(requestuser.userid)
+            l=cartObj.getTotal()            
+            request.session["cartquant"]=l
+                
+            wishObj=WishlistClass(requestuser.userid)
+            x=wishObj.getTotal()
+            request.session["wishquanr"]=x
+
             return HttpResponseRedirect('/')
         else:
-            context["is_not_auth"] = True
+            context["is_not_auth"] = True            
             return render(request, "login.html", context)
     else:
         return render(request, "login.html", context)
@@ -78,8 +87,7 @@ def signup(request):
 def cart(request):
     try:
         if request.session["userid"] is not None:
-            c = CartClass(request.session["userid"])
-            print "hi"
+            c = CartClass(request.session["userid"])            
             result = c.displayCart()
             context = {'result': result}
         return render(request, "cart.html", context)
@@ -211,6 +219,7 @@ def resOfGenre(request):
 
 def addToCart(request):
     try:
+
         c=CartClass(request.session["userid"])
         dosell=False
         if 'sell' in request.POST:
@@ -219,7 +228,8 @@ def addToCart(request):
         quantity=request.POST['quantity']
         c.addToCart(request.POST["ISBN"],quantity,dosell)
         context = {}
-
+        temp=request.session["cartquant"]+1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
@@ -228,7 +238,9 @@ def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
         w.addToWishlist(request.POST["ISBN"])
-        context = {}
+        context = {}                
+        temp=request.session["wishquant"]+1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/")
     except:
         return HttpResponseRedirect("/login")
@@ -237,7 +249,10 @@ def remove(request):
     try:
         c=CartClass(request.session["userid"])
         c.removeFromCart(request.GET["ISBN"])
+        temp=request.session["cartquant"]-1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/cart")
+
     except:
         return HttpResponseRedirect("/login")            
 
@@ -251,9 +266,10 @@ def displayMyBooks(request):
 
 def removeFromWishlist(request):
     try:
-        c=WishlistClass(request.session["userid"])
-        print request.GET["ISBN"]
+        c=WishlistClass(request.session["userid"])        
         c.removeFromWishlist(request.GET["ISBN"])
+        temp=request.session["wishquant"]-1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/wishlist")
     except:
         return HttpResponseRedirect("/login")                    
