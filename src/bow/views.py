@@ -63,8 +63,8 @@ def login(request):
             request.session["cartquant"]=l
                 
             wishObj=WishlistClass(requestuser.userid)
-            x=wishObj.getTotal()
-            request.session["wishquanr"]=x
+            x=wishObj.getLen()            
+            request.session["wishquant"]=x
 
             return HttpResponseRedirect('/')
         else:
@@ -270,8 +270,8 @@ def addToWishlist(request):
         w=WishlistClass(request.session["userid"])
         w.addToWishlist(request.POST["ISBN"])
         context = {}                
-        temp=request.session["wishquant"]+1
-        request.session["wishquant"]=temp
+        temp1=request.session["wishquant"]+1
+        request.session["wishquant"]=temp1
         return HttpResponseRedirect("/")
     except:
         return HttpResponseRedirect("/login")

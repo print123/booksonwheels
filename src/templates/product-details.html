@@ -28,10 +28,23 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
+   
     <script>
     	$( "#searchForm" ).submit(function( event ) 
 		{	
-			
+			 $.ajax({
+   			 url : "AJAX_POST_URL",
+    		type: "POST",
+    		data : formData,
+    		success: function(data, textStatus, jqXHR)
+    		{
+        		//data - response from server
+    		},
+    error: function (jqXHR, textStatus, errorThrown)
+    {
+ 
+    }
+});
 		});
     </script>
 </head><!--/head-->

@@ -7,7 +7,7 @@ from ..models import Wishlist, Book, Order
 class WishlistClass:
     def __init__(self, userid):
         self.userid = userid
-        self.bookarray = Wishlist.objects.filter(userid=self.userid)
+        self.bookarray = Wishlist.objects.filter(userid_id=self.userid)
 
     def addToWishlist(self, ISBN):
         """A method to add a new book in Wishlist"""
@@ -27,5 +27,5 @@ class WishlistClass:
             b = Book.objects.filter(ISBN=i.ISBN)[0]
             books.append(b)
         return books
-    def getTotal(self):
+    def getLen(self):
         return len(self.bookarray)
