@@ -120,7 +120,7 @@ class CustomerClass(UserClass):
 
         if 'description' in mydict["volumeInfo"]:
             lst['summary']=mydict['volumeInfo']['description']
-            lst['summary']=lst['summary'][:490]
+            lst['summary']=lst['summary'][:990]
         if 'publisher' in mydict["volumeInfo"]:
             lst['publisher']=mydict['volumeInfo']['publisher']
         if 'description' in mydict["volumeInfo"]:

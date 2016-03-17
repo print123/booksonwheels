@@ -84,16 +84,17 @@
 									<form action="/select" method="post">{%csrf_token%}
 									{% if b.dosell %}
 									<p>
-      <input name="group1" type="radio" id="test1"/>
+      <input name="group1" type="radio" id="test1" name="sell" checked />
       <label for="test1">Buy</label>
     </p>
 									{%endif%}
 									{% if b.dorent %}
 									<p>
-      <input name="group1" type="radio" id="test2" checked/>
+      <input name="group1" type="radio" id="test2" name="rent" checked/>
       <label for="test2">Rent</label>
     </p>
 									{%endif%}<br/>
+									<input type="Text" name="quantity" placeholder="Quantity" value="1">
 									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart

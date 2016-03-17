@@ -9,16 +9,16 @@ class CartClass:
         self.userid = userid
         self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
-    def addToCart(self, ISBN):
+    def addToCart(self, ISBN,quantity,dosell):
         """A method to add a new book in Cart"""
         print ISBN
         print self.userid
-        newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=1)
+        newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=100)
         newCartObj.save()
 
     def removeFromCart(self, ISBN):
         """To remove a book from Cart"""
-        newCartObj=Cart.objects.get(userid=self.userid, ISBN=ISBN)
+        Cart.objects.filter(userid=self.userid, ISBN=ISBN).delete()
         #Come here after a while        
 
     def displayCart(self):

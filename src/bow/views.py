@@ -212,8 +212,12 @@ def resOfGenre(request):
 def addToCart(request):
     try:
         c=CartClass(request.session["userid"])
-
-        c.addToCart(request.POST["ISBN"])
+        dosell=False
+        if 'sell' in request.POST:
+            if request.POST["sell"]=="on":
+                dosell=True
+        quantity=request.POST['quantity']
+        c.addToCart(request.POST["ISBN"],quantity,dosell)
         context = {}
 
         return HttpResponseRedirect("/")         
@@ -232,8 +236,7 @@ def addToWishlist(request):
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
-        print request.GET["bookid"]
-        c.removeFromCart(request.GET["bookid"])
+        c.removeFromCart(request.GET["ISBN"])
         return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/login")            
