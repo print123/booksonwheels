@@ -31,6 +31,6 @@ class SignUpForm(ModelForm):
             raise forms.ValidationError("Pswd dnt match")
 
 class UploadForm(forms.Form):
-    file=forms.FileField()
+    file=forms.ImageField()
 
 

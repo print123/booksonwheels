@@ -68,6 +68,7 @@ class CustomerClass(UserClass):
     def uploadBook(self,t_ISBN,tosell,torent,sellprice,rentprice,sellquantity,rentquantity):
         #incorrect isbn not handled only if info not found handled
         lst={}
+
         lst['dosell']=tosell
         lst['dorent']=torent
         lst['ISBN']=t_ISBN
@@ -75,6 +76,7 @@ class CustomerClass(UserClass):
         lst['rentprice']=int(rentprice)
         lst['sellquantity']=int(sellquantity)
         lst['rentquantity']=int(rentquantity)        
+
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
         
         lst['imageurl']=''
@@ -91,17 +93,17 @@ class CustomerClass(UserClass):
             return lst
         temp=resp['items']
         mydict=temp[0]        
-        lst['title']=mydict['volumeInfo']['title']
+        if 'title' in mydict['volumeInfo']:
+            lst['title']=mydict['volumeInfo']['title']
         
-
-        for i in mydict['volumeInfo']['authors']:
-            lst['author']=(yaml.safe_load(i))
+        if 'authors' in mydict['volumeInfo']:
+            for i in mydict['volumeInfo']['authors']:
+                lst['author']=(yaml.safe_load(i))
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-
+        lst['ISBN']=ISBN13
         
-        for i in mydict['volumeInfo']['categories']:
-            genre=(yaml.safe_load(i))
+
         #summary=mydict['volumeInfo']['description']
 
         
@@ -183,7 +185,7 @@ class CustomerClass(UserClass):
             language=lst['language']
         else:
             language=request.session['language']
-            del request.session['language']
+            del request.session['language']     
         if 'title' in lst:
             title=lst['title']
         else:

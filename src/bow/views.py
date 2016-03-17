@@ -142,24 +142,55 @@ def getInfo(request):
         CustObj=CustomerClass(request.session["userid"])
         lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,int(sellquantity),int(rentquantity))
         need=[]
+        flag=False
         for i in lst:
-            if lst[i]=='':
+            if lst[i]=='' and not i=='imageurl':
                 need.append(i)
+            elif i=='imageurl' and lst[i]=='':
+                flag=True
             else:
-                request.session[i]=lst[i]        
-        context={'find':need}
+                request.session[i]=lst[i]
+        print need
+        context={'find':need,'ISBN':t_isbn}
+
         '''for i in lst:
             if not lst[i]=='':
                 context[i]=lst[i]'''
+        if flag==True:
+            context['imageurl']=True
+            uform=UploadForm()
+            context['uform']=uform
         return render(request,"addinfo.html",context)
-    else:
-        values={}
-        for attr in request.GET:
-            values[attr]=request.GET[attr]
-        CustObj=CustomerClass(request.session["userid"])
-        CustObj.addBook(values,request)
-        return HttpResponseRedirect("/")
+        
 
+def addInfo(request):
+    if request.method=="POST":
+        if 'imageurl' in request.POST:
+            form=UploadForm(request.POST,request.FILES)
+            if form.is_valid():
+                handle_uploaded_file(request.FILES['file'],request.POST['ISBN'])
+            values={}
+            values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
+            for attr in request.POST:
+                if not attr=="imageurl" and not attr=="ISBN":
+                    values[attr]=request.POST[attr]
+                    CustObj=CustomerClass(request.session["userid"])
+                    CustObj.addBook(values,request)
+            return HttpResponseRedirect("/")
+        else:
+            values={}
+            for attr in request.POST:
+                values[attr]=request.POST[attr]
+                CustObj=CustomerClass(request.session["userid"])
+                CustObj.addBook(values,request)
+            return HttpResponseRedirect("/")
+
+def handle_uploaded_file(f,isbn):
+    d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    destination = open(d, 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
 
 def wishlist(request):
     if request.session["userid"] is not None:
