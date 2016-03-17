@@ -7,26 +7,37 @@ from ..models import Cart, Book, Order
 class CartClass:
     def __init__(self, userid):
         self.userid = userid
-        self.bookarray = Cart.objects.filter(userid=self.userid)
+        self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
-    def addToCart(self, ISBN, quantity):
+    def addToCart(self, ISBN,quantity,dosell):
         """A method to add a new book in Cart"""
-        print self.userid
         print ISBN
-        print quantity
-        newCartObj = Cart(userid_id=self.userid , ISBN=ISBN , quantity=quantity)
+        print self.userid
+        newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=100)
         newCartObj.save()
 
     def removeFromCart(self, ISBN):
         """To remove a book from Cart"""
-        Cart.objects.filter(userid=self.userid, ISBN=ISBN , quantity=quantity).delete()
+        Cart.objects.filter(userid=self.userid, ISBN=ISBN).delete()
+        #Come here after a while  
 
     def displayCart(self):
         """To display Cart Items"""
         books = []
+        quant=[]
         for i in self.bookarray:
-            b = Book.objects.get(ISBN=i.ISBN , quantity=i.quantity)
-            books.append(b)
+            print "onn"
+            b = Book.objects.filter(ISBN=i.ISBN)[0]
+            #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')
+            print i.sellprice
+            #print "k"
+            q=i.quantity
+            boo=b.__dict__
+            boo['quantity']=i.quantity
+            boo['sellprice']=i.sellprice
+            books.append(boo)
+            #quant.append(q)
+
         return books
 
     def checkOut(self,ISBN):

@@ -77,20 +77,19 @@
 								<h2>{{b.title}}</h2>								
 								<p>ISBN: {{b.ISBN}}</p>
 								<!--<img src="{%static 'images/product-details/rating.png'%}" alt="" />-->
-								
-									<span>{{b.actual_price}} Rs</span>
-									
+									<span>Selling Price: {{sellp}} Rs</span><br/>
+									<span>Renting Price: {{rentp}} Rs</span>
 									<br/>
 									<form action="/select" method="post">{%csrf_token%}
 									{% if b.dosell %}
 									<p>
-      <input name="group1" type="radio" id="test1"/>
+      <input name="group1" type="radio" id="test1" name="sell" checked />
       <label for="test1">Buy</label>
     </p>
 									{%endif%}
 									{% if b.dorent %}
 									<p>
-      <input name="group1" type="radio" id="test2" checked/>
+      <input name="group1" type="radio" id="test2" name="rent" checked/>
       <label for="test2">Rent</label>
     </p>
 									{%endif%}<br/>
@@ -112,8 +111,7 @@
 									<div class="col-sm-4">
 									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1">
 									
-									</form><br/>
-									
+									</form><br/>						
 									
 									
 								

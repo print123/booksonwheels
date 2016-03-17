@@ -64,13 +64,29 @@ def login(request):
     else:
         return render(request, "login.html", context)
 
+def signup(request):
+    if request.method == "POST":
+        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
+        try:
+            nuser.addUser()            
+        except:
+               return render(request, "u.html")
+
+    return HttpResponseRedirect("/")
+
 
 def cart(request):
     try:
         if request.session["userid"] is not None:
             c = CartClass(request.session["userid"])
+            print "hi"
             result = c.displayCart()
-            context = {'result': result}
+            total=0
+            for r in result:
+                total += r['quantity'] * r['sellprice']
+            print "total"
+            print total
+            context = {'result': result, 'total': total}
         return render(request, "cart.html", context)
     except:
         return HttpResponseRedirect("/")
@@ -90,17 +106,17 @@ def getInfo(request):
         torent=request.POST.get('rent',False)
         sellprice=request.POST.get('sellprice',False)
         rentprice=request.POST.get('rentprice',False)
-        quantity=request.POST.get('quantity',False)
+        sellquantity=request.POST.get('sellquantity',False)
+        rentquantity=request.POST.get('rentquantity',False)
         b=BookClass()
         bookid=b.getBookid(t_isbn)
-
         if not bookid==-1:
             owner=request.session['userid']
-            b.add_seller(bookid,tosell,torent,sellprice,rentprice,quantity,owner)
+            b.add_seller(bookid,tosell,torent,sellprice,rentprice,int(sellquantity+rentquantity),owner)
             return HttpResponseRedirect("/")
 
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,quantity)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,sellquantity,rentquantity)
         need=[]
         for i in lst:
             if lst[i]=='':
@@ -121,23 +137,13 @@ def getInfo(request):
         CustObj.addBook(values,request)
         return HttpResponseRedirect("/")
 
+
 def wishlist(request):
     if request.session["userid"] is not None:
         w=WishlistClass(request.session["userid"])
         res=w.displayWishlist()
         context = {'result': res}
     return render(request, "wishlist.html", context)    
-
-def signup(request):
-    if request.method == "POST":
-        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
-        try:
-            nuser.addUser()
-        except:
-            return render(request, "u.html")
-
-    return HttpResponseRedirect("/")
-
 
 def search(request):
     if request.method == "POST":
@@ -160,11 +166,19 @@ def search(request):
 def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
-
+        b1 = BookClass()
+        print request.GET["id"]
         res = b.getBook(request.GET["id"])
-        print res
-        context = {'result': res}
-        print len(res)
+        #isbn = b.getISBN(request.GET["id"])
+        price = b1.getPrice(request.GET["id"])
+        sellp = price['sellprice']
+        rentp = price['rentprice']
+        if sellp==9999999999:
+            context = {'result': res, 'rentp': rentp}
+        elif rentp==9999999999:
+            context = {'result': res, 'sellp': sellp}
+        else:
+            context = {'result': res, 'rentp': rentp,'sellp':sellp}        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
@@ -193,8 +207,14 @@ def resOfGenre(request):
 def addToCart(request):
     try:
         c=CartClass(request.session["userid"])
-        c.addToCart(request.POST["ISBN"] , request.POST["quantity"])
+        dosell=False
+        if 'sell' in request.POST:
+            if request.POST["sell"]=="on":
+                dosell=True
+        quantity=request.POST['quantity']
+        c.addToCart(request.POST["ISBN"],quantity,dosell)
         context = {}
+
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
@@ -211,8 +231,7 @@ def addToWishlist(request):
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
-        print request.GET["bookid"]
-        c.removeFromCart(request.GET["bookid"])
+        c.removeFromCart(request.GET["ISBN"])
         return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/login")            

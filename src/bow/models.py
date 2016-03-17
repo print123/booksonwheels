@@ -23,8 +23,8 @@ class Wishlist(models.Model):
 class Cart(models.Model):
 	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
-	price=models.DecimalField(max_digits=8,decimal_places=2)
-
+	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
+	dosell=models.BooleanField(default=False)
 	quantity=models.DecimalField(max_digits=5,decimal_places=0)
 
 class Upload(models.Model):
@@ -61,12 +61,12 @@ class Status(models.Model):
 	quantity=models.DecimalField(max_digits=8,decimal_places=0)
 	rentprice=models.DecimalField(max_digits=8,decimal_places=2)
 	def __unicode__(self):
-		return self.title
+		return self.ISBN
 
 class Rents(models.Model):
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
-	userid=models.ForeignKey('User',on_delete=models.CASCADE)
+	userid=models.ForeignKey('User',related_name="rents_userid",on_delete=models.CASCADE)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	date_of_issue=models.DateTimeField(auto_now_add=True)
 	date_of_return=models.DateTimeField()
@@ -78,7 +78,7 @@ class Rents(models.Model):
 
 class Order(models.Model):# for every new (owner and book combination) new entry
 	orderid=models.AutoField(primary_key=True)
-	userid=models.ForeignKey('User',on_delete=models.CASCADE)
+	userid=models.ForeignKey('User',related_name="order_userid",on_delete=models.CASCADE)
 	date_of_order=models.DateTimeField(auto_now_add=True)
 	paymentid=models.ForeignKey('Payment',on_delete=models.CASCADE)
 	bookid=models.ForeignKey('Book',related_name="order_bookid",on_delete=models.CASCADE)
