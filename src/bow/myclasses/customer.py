@@ -68,17 +68,15 @@ class CustomerClass(UserClass):
     def uploadBook(self,t_ISBN,tosell,torent,sellprice,rentprice,sellquantity,rentquantity):
         #incorrect isbn not handled only if info not found handled
         lst={}
-        lst['dosell']=False
-        lst['dorent']=False
-        if tosell == "on":
-            lst['dosell']=True
-        if torent == "on":
-            lst['dorent']=True
+
+        lst['dosell']=tosell
+        lst['dorent']=torent
         lst['ISBN']=t_ISBN
-        lst['sellprice']=sellprice
-        lst['rentprice']=rentprice
-        lst['sellquantity']=sellquantity
-        lst['rentquantity']=rentquantity        
+        lst['sellprice']=int(sellprice)
+        lst['rentprice']=int(rentprice)
+        lst['sellquantity']=int(sellquantity)
+        lst['rentquantity']=int(rentquantity)        
+
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
         
         lst['imageurl']=''
@@ -95,17 +93,17 @@ class CustomerClass(UserClass):
             return lst
         temp=resp['items']
         mydict=temp[0]        
-        lst['title']=mydict['volumeInfo']['title']
+        if 'title' in mydict['volumeInfo']:
+            lst['title']=mydict['volumeInfo']['title']
         
-
-        for i in mydict['volumeInfo']['authors']:
-            lst['author']=(yaml.safe_load(i))
+        if 'authors' in mydict['volumeInfo']:
+            for i in mydict['volumeInfo']['authors']:
+                lst['author']=(yaml.safe_load(i))
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-
+        lst['ISBN']=ISBN13
         
-        for i in mydict['volumeInfo']['categories']:
-            genre=(yaml.safe_load(i))
+
         #summary=mydict['volumeInfo']['description']
 
         
@@ -134,8 +132,7 @@ class CustomerClass(UserClass):
        # b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         #b.save()
 
-    def addBook(self,lst,request):
-        print lst
+    def addBook(self,lst,request):        
         if 'author' in lst:
             author=lst['author']
         else:
@@ -148,11 +145,17 @@ class CustomerClass(UserClass):
             t_ISBN=request.session['ISBN']
             del request.session['ISBN']
         dorent=request.session['dorent']
+        #print dorent        
         dosell=request.session['dosell']
-        sellprice=request.session['sellprice']
-        rentprice=request.session['rentprice']
-        sellquantity=request.session['sellquantity']
-        rentquantity=request.session['rentquantity']
+        #print dosell
+        sellprice=int(request.session['sellprice'])
+        #print sellprice
+        rentprice=int(request.session['rentprice'])
+        #print rentprice
+        sellquantity=int(request.session['sellquantity'])
+        #print sellquantity
+        rentquantity=int(request.session['rentquantity'])
+        #print rentquantity
         del request.session['rentprice']
         del request.session['dorent']
         del request.session['dosell']
@@ -182,7 +185,7 @@ class CustomerClass(UserClass):
             language=lst['language']
         else:
             language=request.session['language']
-            del request.session['language']
+            del request.session['language']     
         if 'title' in lst:
             title=lst['title']
         else:
@@ -193,10 +196,13 @@ class CustomerClass(UserClass):
         else:
             genre=request.session['genre']
             del request.session['genre']
-        bookObj=Book.objects.filter(ISBN='ISBN')
-        if len(bookObj) > 0:
-            if dosell:
-                bookObj.quantity=bookObj.quantity+sellquantity+rentquantity
+        self.updatetables(request.session['userid'],t_ISBN,dosell,dorent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,4.0,sellprice,rentprice) 
+
+    def updatetables(self,owner,ISBN,dosell,dorent,sellquantity,rentquantity,author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice):
+        bookObj=Book.objects.filter(ISBN=ISBN).first()
+        if bookObj is not None:
+            if dosell:       
+                bookObj.quantity=bookObj.quantity+sellquantity         
                 bookObj.sellquantity=bookObj.sellquantity+sellquantity
             if dorent:
                 bookObj.quantity=bookObj.quantity+rentquantity
@@ -204,26 +210,24 @@ class CustomerClass(UserClass):
         else:
             qty=sellquantity+rentquantity
             qtys=sellquantity
-            b=Book(author=author,ISBN=t_ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0,quantity=qty,sellquantity=qtys)        
+            b=Book(author=author,ISBN=ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0,quantity=qty,sellquantity=qtys)        
             b.save()
         b1=BookClass()
-        bookid=b1.getBookid(t_ISBN)
-        owner=request.session["userid"]
-        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,sellquantity+rentquantity,owner)
+        bookid=b1.getBookid(ISBN)        
+        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,int(int(sellquantity)+int(rentquantity)),owner)
 
         if dosell and dorent:
-            statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice)
-            if len(statObj) > 0:
+            statObj=Status.objects.filter(ISBN=ISBN,sellprice=sellprice,rentprice=rentprice).first()
+            if statObj is not None:
                 statObj.sellquantity=statObj.sellquantity+sellquantity
                 statObj.quantity=statObj.quantity+sellquantity+rentquantity
                 statObj.save()
-            else:
-                print int(sellquantity  + rentquantity)
-                st=Status(ISBN=t_ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=rentprice,quantity=sellquantity+rentquantity)
+            else:                
+                st=Status(ISBN=ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=rentprice,quantity=int(int(sellquantity)+int(rentquantity)))
                 st.save()
         elif dosell:
-            statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice)
-            if len(statObj) > 0:
+            statObj=Status.objects.filter(ISBN=ISBN,sellprice=sellprice).first()
+            if statObj is not None:
                 statObj.sellquantity=statObj.sellquantity+sellquantity
                 statObj.quantity=statObj.quantity+sellquantity
                 statObj.save()
@@ -231,10 +235,10 @@ class CustomerClass(UserClass):
                 st=Status(ISBN=t_ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=0,quantity=sellquantity)
                 st.save()
         elif dorent:
-            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice)
-            if len(statObj) > 0:                
+            statObj=Status.objects.filter(ISBN=ISBN,rentprice=rentprice).first()
+            if statObj is not None:                
                 statObj.quantity=statObj.quantity+rentquantity
                 statObj.save()
             else:
-                st=Status(ISBN=t_ISBN,sellprice=0,sellquantity=0,rentprice=rentprice,quantity=rentquantity)
+                st=Status(ISBN=ISBN,sellprice=0,sellquantity=0,rentprice=rentprice,quantity=rentquantity)
                 st.save()

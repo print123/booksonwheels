@@ -73,16 +73,36 @@ $('.dropdown-button').dropdown({
 			<div class="row">			
 				<h2 class="title text-center">Upload a Book</h2>							
 				<div class="signup-form"><!--sign up form-->						
-						<form action="/getInfo/" name="formName" method="get">
+						
+						{%if imageurl%}
+						<form enctype="multipart/form-data" action="/addinfo/" name="formName" method="post">{%csrf_token%}
 							
 							{%for i in find%}
 							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
 							
 							{%endfor%}					
-							<!--{%if imageurl%}
-							<input type="hidden" name="imageurl" value={{imageurl}}>
-							{%endif%}
-							{%if genre%}
+							
+							
+							Image {{uform}}
+							<input type="hidden" value="1" name="imageurl">
+							<input type="hidden" value={{ISBN}} name="ISBN">
+							
+								<button type="submit" id="submit" class="btn btn-default">Add info</button>
+						</form>
+						{%else%}
+							<form  action="/addinfo/" name="formName" method="post">{%csrf_token%}
+							
+							{%for i in find%}
+							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
+							
+							{%endfor%}
+							
+							
+							
+								<button type="submit" id="submit" class="btn btn-default">Add info</button>
+						</form>
+						{%endif%}
+							<!--{%if genre%}
 							<input type="hidden" name="genre" value={{genre}}>
 							{%endif%}
 							{%if author %}
@@ -112,8 +132,7 @@ $('.dropdown-button').dropdown({
 							{%if title%}
 							<input type="hidden" name="title" value={{title}}>
 							{%endif%}-->
-							<button type="submit" id="submit" class="btn btn-default">Add info</button>
-						</form>					
+											
 				</div>
 			</div>
 		</div>

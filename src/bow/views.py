@@ -57,9 +57,18 @@ def login(request):
             context["is_not_auth"] = False
             request.session["userid"] = requestuser.userid
             request.session["name"] = requestuser.name
+            
+            cartObj=CartClass(requestuser.userid)
+            l=cartObj.getTotal()            
+            request.session["cartquant"]=l
+                
+            wishObj=WishlistClass(requestuser.userid)
+            x=wishObj.getTotal()
+            request.session["wishquant"]=x
+
             return HttpResponseRedirect('/')
         else:
-            context["is_not_auth"] = True
+            context["is_not_auth"] = True            
             return render(request, "login.html", context)
     else:
         return render(request, "login.html", context)
@@ -78,8 +87,7 @@ def signup(request):
 def cart(request):
     try:
         if request.session["userid"] is not None:
-            c = CartClass(request.session["userid"])
-            print "hi"
+            c = CartClass(request.session["userid"])            
             result = c.displayCart()
             total=0
             for r in result:
@@ -101,42 +109,93 @@ def upload(request):
 
 def getInfo(request):
     if request.method=="POST":
-        t_isbn=request.POST.get('name',False)
-        tosell=request.POST.get('sell',False)
-        torent=request.POST.get('rent',False)
-        sellprice=request.POST.get('sellprice',False)
-        rentprice=request.POST.get('rentprice',False)
-        sellquantity=request.POST.get('sellquantity',False)
-        rentquantity=request.POST.get('rentquantity',False)
-        b=BookClass()
-        bookid=b.getBookid(t_isbn)
-        if not bookid==-1:
-            owner=request.session['userid']
-            b.add_seller(bookid,tosell,torent,sellprice,rentprice,int(sellquantity+rentquantity),owner)
-            return HttpResponseRedirect("/")
+        t_isbn=request.POST.get('name')
+        t_sell=request.POST.get('sell')
+        if t_sell == 'on':
+            tosell=True
+        else:
+            tosell=False
+        t_rent=request.POST.get('rent')        
+        if t_rent =='on':
+            torent=True
+        else:
+            torent=False
+                  
+        sellprice=request.POST.get('sellprice')
+        rentprice=request.POST.get('rentprice')
+        sellquantity=request.POST.get('sellquantity')
 
+        rentquantity=request.POST.get('rentquantity')
+        b=BookClass()
+        bookid=b.getBookid(t_isbn)        
+        if not bookid==-1:
+            owner=request.session['userid']                    
+            custObj=CustomerClass(owner)            
+            bookObj=BookClass()
+            b1=bookObj.getBook(t_isbn)  
+            b=b1[0]          
+            author=b.author
+            imageurl=b.imageurl
+            genre=b.genre
+            summary=b.summary
+            publisher=b.publisher
+            language=b.language
+            title=b.title
+            rating=4.0
+            custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
+            return HttpResponseRedirect("/")    
         CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,sellquantity,rentquantity)
+        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,int(sellquantity),int(rentquantity))
         need=[]
+        flag=False
         for i in lst:
-            if lst[i]=='':
+            if lst[i]=='' and not i=='imageurl':
                 need.append(i)
+            elif i=='imageurl' and lst[i]=='':
+                flag=True
             else:
                 request.session[i]=lst[i]
         print need
-        context={'find':need}
+        context={'find':need,'ISBN':t_isbn}
+
         '''for i in lst:
             if not lst[i]=='':
                 context[i]=lst[i]'''
+        if flag==True:
+            context['imageurl']=True
+            uform=UploadForm()
+            context['uform']=uform
         return render(request,"addinfo.html",context)
-    else:
-        values={}
-        for attr in request.GET:
-            values[attr]=request.GET[attr]
-        CustObj=CustomerClass(request.session["userid"])
-        CustObj.addBook(values,request)
-        return HttpResponseRedirect("/")
+        
 
+def addInfo(request):
+    if request.method=="POST":
+        if 'imageurl' in request.POST:
+            form=UploadForm(request.POST,request.FILES)
+            if form.is_valid():
+                handle_uploaded_file(request.FILES['file'],request.POST['ISBN'])
+            values={}
+            values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
+            for attr in request.POST:
+                if not attr=="imageurl" and not attr=="ISBN":
+                    values[attr]=request.POST[attr]
+                    CustObj=CustomerClass(request.session["userid"])
+                    CustObj.addBook(values,request)
+            return HttpResponseRedirect("/")
+        else:
+            values={}
+            for attr in request.POST:
+                values[attr]=request.POST[attr]
+                CustObj=CustomerClass(request.session["userid"])
+                CustObj.addBook(values,request)
+            return HttpResponseRedirect("/")
+
+def handle_uploaded_file(f,isbn):
+    d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    destination = open(d, 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
 
 def wishlist(request):
     if request.session["userid"] is not None:
@@ -206,6 +265,7 @@ def resOfGenre(request):
 
 def addToCart(request):
     try:
+
         c=CartClass(request.session["userid"])
         dosell=False
         if 'sell' in request.POST:
@@ -214,7 +274,8 @@ def addToCart(request):
         quantity=request.POST['quantity']
         c.addToCart(request.POST["ISBN"],quantity,dosell)
         context = {}
-
+        temp=request.session["cartquant"]+1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
@@ -223,7 +284,9 @@ def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
         w.addToWishlist(request.POST["ISBN"])
-        context = {}
+        context = {}                
+        temp=request.session["wishquant"]+1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/")
     except:
         return HttpResponseRedirect("/login")
@@ -232,7 +295,10 @@ def remove(request):
     try:
         c=CartClass(request.session["userid"])
         c.removeFromCart(request.GET["ISBN"])
+        temp=request.session["cartquant"]-1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/cart")
+
     except:
         return HttpResponseRedirect("/login")            
 
@@ -246,9 +312,10 @@ def displayMyBooks(request):
 
 def removeFromWishlist(request):
     try:
-        c=WishlistClass(request.session["userid"])
-        print request.GET["ISBN"]
+        c=WishlistClass(request.session["userid"])        
         c.removeFromWishlist(request.GET["ISBN"])
+        temp=request.session["wishquant"]-1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/wishlist")
     except:
         return HttpResponseRedirect("/login")                    
