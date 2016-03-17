@@ -193,7 +193,7 @@ def resOfGenre(request):
 def addToCart(request):
     try:
         c=CartClass(request.session["userid"])
-        c.addToCart(request.POST["bookid"])
+        c.addToCart(request.POST["ISBN"] , request.POST["quantity"])
         context = {}
         return HttpResponseRedirect("/")         
     except:

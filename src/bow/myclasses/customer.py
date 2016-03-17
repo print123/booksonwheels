@@ -183,7 +183,7 @@ class CustomerClass(UserClass):
             genre=request.session['genre']
             del request.session['genre']
 
-        b=Book(author=author,ISBN=t_ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
+        b=Book(author=author,ISBN=t_ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0,quantity=quantity,sellquantity=quantity)
         b.save()
         nuser=Upload(owner_id_id=request.session['userid'],bookid=b,dorent=dorent,dosell=dosell,sellprice=sellprice,rentprice=rentprice,qtyuploaded=quantity,qtyavailable=quantity)
         nuser.save()
