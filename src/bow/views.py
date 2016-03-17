@@ -57,9 +57,18 @@ def login(request):
             context["is_not_auth"] = False
             request.session["userid"] = requestuser.userid
             request.session["name"] = requestuser.name
+            
+            cartObj=CartClass(requestuser.userid)
+            l=cartObj.getTotal()            
+            request.session["cartquant"]=l
+                
+            wishObj=WishlistClass(requestuser.userid)
+            x=wishObj.getTotal()
+            request.session["wishquant"]=x
+
             return HttpResponseRedirect('/')
         else:
-            context["is_not_auth"] = True
+            context["is_not_auth"] = True            
             return render(request, "login.html", context)
     else:
         return render(request, "login.html", context)
@@ -78,10 +87,14 @@ def signup(request):
 def cart(request):
     try:
         if request.session["userid"] is not None:
-            c = CartClass(request.session["userid"])
-            print "hi"
+            c = CartClass(request.session["userid"])            
             result = c.displayCart()
-            context = {'result': result}
+            total=0
+            for r in result:
+                total += r['quantity'] * r['sellprice']
+            print "total"
+            print total
+            context = {'result': result, 'total': total}
         return render(request, "cart.html", context)
     except:
         return HttpResponseRedirect("/")
@@ -215,9 +228,19 @@ def search(request):
 def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
-
+        b1 = BookClass()
+        print request.GET["id"]
         res = b.getBook(request.GET["id"])
-        context = {'result': res}        
+        #isbn = b.getISBN(request.GET["id"])
+        price = b1.getPrice(request.GET["id"])
+        sellp = price['sellprice']
+        rentp = price['rentprice']
+        if sellp==9999999999:
+            context = {'result': res, 'rentp': rentp}
+        elif rentp==9999999999:
+            context = {'result': res, 'sellp': sellp}
+        else:
+            context = {'result': res, 'rentp': rentp,'sellp':sellp}        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
@@ -245,6 +268,7 @@ def resOfGenre(request):
 
 def addToCart(request):
     try:
+
         c=CartClass(request.session["userid"])
         dosell=False
         if 'sell' in request.POST:
@@ -253,7 +277,8 @@ def addToCart(request):
         quantity=request.POST['quantity']
         c.addToCart(request.POST["ISBN"],quantity,dosell)
         context = {}
-
+        temp=request.session["cartquant"]+1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/")         
     except:
         return HttpResponseRedirect("/login")
@@ -262,7 +287,9 @@ def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
         w.addToWishlist(request.POST["ISBN"])
-        context = {}
+        context = {}                
+        temp=request.session["wishquant"]+1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/")
     except:
         return HttpResponseRedirect("/login")
@@ -271,7 +298,10 @@ def remove(request):
     try:
         c=CartClass(request.session["userid"])
         c.removeFromCart(request.GET["ISBN"])
+        temp=request.session["cartquant"]-1
+        request.session["cartquant"]=temp
         return HttpResponseRedirect("/cart")
+
     except:
         return HttpResponseRedirect("/login")            
 
@@ -285,9 +315,10 @@ def displayMyBooks(request):
 
 def removeFromWishlist(request):
     try:
-        c=WishlistClass(request.session["userid"])
-        print request.GET["ISBN"]
+        c=WishlistClass(request.session["userid"])        
         c.removeFromWishlist(request.GET["ISBN"])
+        temp=request.session["wishquant"]-1
+        request.session["wishquant"]=temp
         return HttpResponseRedirect("/wishlist")
     except:
         return HttpResponseRedirect("/login")                    

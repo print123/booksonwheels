@@ -61,7 +61,7 @@ class Status(models.Model):
 	quantity=models.DecimalField(max_digits=8,decimal_places=0)
 	rentprice=models.DecimalField(max_digits=8,decimal_places=2)
 	def __unicode__(self):
-		return self.title
+		return self.ISBN
 
 class Rents(models.Model):
 	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
