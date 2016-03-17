@@ -74,7 +74,7 @@ class CustomerClass(UserClass):
             lst['dosell']=True
         if torent == "on":
             lst['dorent']=True
-        lst['ISBN']=t_ISBN
+        lst['ISBN']=''
         lst['sellprice']=sellprice
         lst['rentprice']=rentprice
         lst['sellquantity']=sellquantity
@@ -95,17 +95,17 @@ class CustomerClass(UserClass):
             return lst
         temp=resp['items']
         mydict=temp[0]        
-        lst['title']=mydict['volumeInfo']['title']
+        if 'title' in mydict['volumeInfo']:
+            lst['title']=mydict['volumeInfo']['title']
         
-
-        for i in mydict['volumeInfo']['authors']:
-            lst['author']=(yaml.safe_load(i))
+        if 'authors' in mydict['volumeInfo']:
+            for i in mydict['volumeInfo']['authors']:
+                lst['author']=(yaml.safe_load(i))
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-
+        lst['ISBN']=ISBN13
         
-        for i in mydict['volumeInfo']['categories']:
-            genre=(yaml.safe_load(i))
+
         #summary=mydict['volumeInfo']['description']
 
         
@@ -182,7 +182,7 @@ class CustomerClass(UserClass):
             language=lst['language']
         else:
             language=request.session['language']
-            del request.session['language']
+            del request.session['language']     
         if 'title' in lst:
             title=lst['title']
         else:
