@@ -155,9 +155,7 @@ def getInfo(request):
             title=b.title
             request.session['title']=title
             rating=4.0
-            request.session['old']=True
-            #custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
-            #return HttpResponseRedirect("/")    
+            request.session['old']=True              
         else:
             CustObj=CustomerClass(request.session["userid"])
             lst=CustObj.uploadBook(t_isbn)
@@ -343,6 +341,14 @@ def addToWishlist(request):
     except:
         return HttpResponseRedirect("/login")
 
+def removeFromBooks(request):
+    try:        
+        bookid=request.POST["id"]        
+        custObj=CustomerClass(request.session["userid"])        
+        custObj.removeBook(bookid)        
+        return HttpResponseRedirect("/mybooks")
+    except:
+        return HttpResponseRedirect("/login")
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
