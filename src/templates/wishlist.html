@@ -50,7 +50,7 @@
 						<tr class="cart_menu">
 							<td class="image">Item</td>
 							<td class="description"></td>
-							<!--<td class="price"></td>-->
+							<td class="price"></td>
 							<!--<td class="quantity">Quantity</td>-->
 							<!--<td class="total">Total</td>-->
 							<td></td>
@@ -80,9 +80,19 @@
 							<!--<td class="cart_total">
 								<p class="cart_total_price">{{ b.actual_price }}</p>
 							</td>-->
+							<td >
+								<form action="/wltocart" method="post" >{%csrf_token%}
+									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
+										<i class="fa fa-shopping-cart pull-left"></i>
+										Add to cart
+									</button><br/>
+									<input type="hidden" name="ISBN" value="{{ b.ISBN }}" />
+								</form>	
+							</td>
 							<td class="cart_delete">
 								<a class="cart_quantity_delete" href="/removefromwishlist?ISBN={{b.ISBN}}"><i class="fa fa-times"></i></a>
 							</td>
+
 						</tr>
 						{%endfor%}
 					</tbody>
