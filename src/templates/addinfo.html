@@ -77,6 +77,14 @@ $('.dropdown-button').dropdown({
 						{%if imageurl%}
 						<form enctype="multipart/form-data" action="/addinfo/" name="formName" method="post">{%csrf_token%}
 							
+							<p>Purpose :<br/>
+						<input type="checkbox" name="rent" id="rent">
+							<label for="rent">To Rent</label></p>							
+							<p><input type="checkbox" name="sell" id="sell">															
+								<label for="sell">To Sell</label></p>
+							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price">						Rent Price:<input type="Text" name="rentprice" id="rentprice" class="form-control" placeholder="Enter your book's Price">	
+							SellQuantity:<input type="Text" name="sellquantity" id="sellquantity" class="form-control" placeholder="sellQuantity">				
+							RentQuantity:<input type="Text" name="rentquantity" id="rentquantity" class="form-control" placeholder="rentQuantity">				
 							{%for i in find%}
 							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
 							
@@ -92,6 +100,14 @@ $('.dropdown-button').dropdown({
 						{%else%}
 							<form  action="/addinfo/" name="formName" method="post">{%csrf_token%}
 							
+							<p>Purpose :<br/>
+						<input type="checkbox" name="rent" id="rent">
+							<label for="rent">To Rent</label></p>							
+							<p><input type="checkbox" name="sell" id="sell">															
+								<label for="sell">To Sell</label></p>
+							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price">						Rent Price:<input type="Text" name="rentprice" id="rentprice" class="form-control" placeholder="Enter your book's Price">	
+							SellQuantity:<input type="Text" name="sellquantity" id="sellquantity" class="form-control" placeholder="sellQuantity">				
+							RentQuantity:<input type="Text" name="rentquantity" id="rentquantity" class="form-control" placeholder="rentQuantity">				
 							{%for i in find%}
 							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
 							
