@@ -292,9 +292,10 @@ def addToCart(request):
 def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
-        w.addToWishlist(request.POST["ISBN"])
+        i=w.addToWishlist(request.POST["ISBN"])
+        print i
         context = {}                
-        temp=request.session["wishquant"]+1
+        temp=request.session["wishquant"]+i
         request.session["wishquant"]=temp
         return HttpResponseRedirect("/")
     except:
