@@ -8,12 +8,18 @@ class CartClass:
     def __init__(self, userid):
         self.userid = userid
         self.bookarray = Cart.objects.filter(userid_id=self.userid)
-
-    def addToCart(self, ISBN,quantity,dosell):
+    def addToCart(self, ISBN,quantity,dosell,price):
         """A method to add a new book in Cart"""        
         print self.userid
-        newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=100)
-        newCartObj.save()
+        try:
+            res=Cart.objects.get(userid_id=self.userid,ISBN=ISBN,dosell=dosell,sellprice=price)
+            res.quantity=int(res.quantity)+int(quantity)
+            res.save()
+            print "Done success"
+        except:
+            print "Try something else"
+            newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=price)
+            newCartObj.save()
 
     def removeFromCart(self, ISBN):
         """To remove a book from Cart"""
@@ -24,11 +30,9 @@ class CartClass:
         """To display Cart Items"""
         books = []
         quant=[]
-        for i in self.bookarray:
-            print "onn"
+        for i in self.bookarray:            
             b = Book.objects.filter(ISBN=i.ISBN)[0]
-            #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')
-            print i.sellprice
+            #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')            
             #print "k"
             q=i.quantity
             boo=b.__dict__

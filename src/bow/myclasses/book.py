@@ -45,8 +45,7 @@ class BookClass:
 
     def getBook(self, ISBN):
         b = Book.objects.filter(ISBN=ISBN)[:1]
-        #print type(b)
-        print b
+        #print type(b)        
         return b
 
     def getCategory(self):
@@ -108,9 +107,7 @@ class BookClass:
         price={}
         c = Status.objects.filter(ISBN=ISBN)
         #d = Status.objects.filter(ISBN=ISBN).aggregate(Min('rentprice'))
-        #print type(c)
-        print "Sessions"
-        print c
+        #print type(c)        
         minsellprice=9999999999
         minrentprice=9999999999
         for i in c:

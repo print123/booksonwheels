@@ -27,6 +27,14 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/images/ico/apple-touch-icon-57-precomposed.png">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/js/notify.js"></script>
+	<script>
+		function notif()
+		{						
+			$.notify("added to wishlist","success")	
+		}		
+	</script>
 </head><!--/head-->
 
 <body>
@@ -56,7 +64,12 @@
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>					
+					<tbody>								
+					{%if addedW%}
+					<script>											
+						notif();
+					</script>	
+					{% endif %}			
 						{% for b in result%}
 						<tr>
 							<td class="cart_product">
@@ -229,5 +242,6 @@
 	<script src="/static/js/jquery.scrollUp.min.js"></script>
     <script src="/static/js/jquery.prettyPhoto.js"></script>
     <script src="/static/js/main.js"></script>
+    <script src="{% static 'js/notify.js'%}"></script>
 </body>
 </html>
