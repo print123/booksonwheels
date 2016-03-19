@@ -110,6 +110,61 @@ def upload(request):
 def getInfo(request):
     if request.method=="POST":
         t_isbn=request.POST.get('name')
+        b=BookClass()
+        bookid=b.getBookid(t_isbn)        
+        need=[]
+        flag=False
+        if not bookid==-1:
+            owner=request.session['userid']                    
+            custObj=CustomerClass(owner)            
+            bookObj=BookClass()
+            b1=bookObj.getBook(t_isbn)
+            request.session["ISBN"]=t_isbn  
+            b=b1[0]          
+            author=b.author
+            request.session['author']=author
+            imageurl=b.imageurl
+            request.session['imageurl']=imageurl
+            genre=b.genre
+            request.session['genre']=genre
+            summary=b.summary
+            request.session['summary']=summary
+            publisher=b.publisher
+            request.session['publisher']=publisher
+            language=b.language
+            request.session['language']=language
+            title=b.title
+            request.session['title']=title
+            rating=4.0
+            request.session['old']=True
+            #custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
+            #return HttpResponseRedirect("/")    
+        else:
+            CustObj=CustomerClass(request.session["userid"])
+            lst=CustObj.uploadBook(t_isbn)
+            
+            
+            for i in lst:
+                if lst[i]=='' and not i=='imageurl':
+                    need.append(i)
+                elif i=='imageurl' and lst[i]=='':
+                    flag=True
+                else:
+                    print i
+                    request.session[i]=lst[i]
+        #print need
+        context={'find':need,'ISBN':t_isbn}
+
+        
+        if flag==True:
+            context['imageurl']=True
+            uform=UploadForm()
+            context['uform']=uform
+        return render(request,"addinfo.html",context)
+        
+
+def addInfo(request):
+    if request.method=="POST":
         t_sell=request.POST.get('sell')
         if t_sell == 'on':
             tosell=True
@@ -126,51 +181,6 @@ def getInfo(request):
         sellquantity=request.POST.get('sellquantity')
 
         rentquantity=request.POST.get('rentquantity')
-        b=BookClass()
-        bookid=b.getBookid(t_isbn)        
-        if not bookid==-1:
-            owner=request.session['userid']                    
-            custObj=CustomerClass(owner)            
-            bookObj=BookClass()
-            b1=bookObj.getBook(t_isbn)  
-            b=b1[0]          
-            author=b.author
-            imageurl=b.imageurl
-            genre=b.genre
-            summary=b.summary
-            publisher=b.publisher
-            language=b.language
-            title=b.title
-            rating=4.0
-            custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
-            return HttpResponseRedirect("/")    
-        CustObj=CustomerClass(request.session["userid"])
-        lst=CustObj.uploadBook(t_isbn,tosell,torent,sellprice,rentprice,int(sellquantity),int(rentquantity))
-        need=[]
-        flag=False
-        for i in lst:
-            if lst[i]=='' and not i=='imageurl':
-                need.append(i)
-            elif i=='imageurl' and lst[i]=='':
-                flag=True
-            else:
-                print i
-                request.session[i]=lst[i]
-        print need
-        context={'find':need,'ISBN':t_isbn}
-
-        '''for i in lst:
-            if not lst[i]=='':
-                context[i]=lst[i]'''
-        if flag==True:
-            context['imageurl']=True
-            uform=UploadForm()
-            context['uform']=uform
-        return render(request,"addinfo.html",context)
-        
-
-def addInfo(request):
-    if request.method=="POST":
         if 'imageurl' in request.POST:
             form=UploadForm(request.POST,request.FILES)
             if form.is_valid():
