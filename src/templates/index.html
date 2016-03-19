@@ -73,22 +73,22 @@ $('.dropdown-button').dropdown({
 					</div>
 				</div>
 				
-				<div class="col-sm-9 padding-right">
+				<div class="col-sm-9 padding-right ">
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Featured Books</h2>
 						{% for b in books%}
-						<div class="col-sm-4">
+						<div class="col-sm-2">
 							<div class="product-image-wrapper">
 								<div class="single-products">
-										<div class="productinfo text-center" >
-											<h2>{{b.title}}</h2>
+										<div class="productinfo1 text-center " >
+											
 								
-											<img src="{%static b.imageurl %}" alt=""/><br/><br/><br/>
+											<img src="{%static b.imageurl %}" alt=""/><br/>
 										<!--	Rent Price:
-											<h2>{{b.min_rent}}</h2>											
-											<p>{{b.title}}</p>-->
+											<h2>{{b.min_rent}}</h2>-->											
+											<p>{{b.title}}</p>
 											<form action="/productdetails" method="get">
-												<button type="submit" href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Know More</button>
+												<button type="submit" href="#" class="btn btn-default add-to-cart1"></i>Know More</button>
 												<input type="hidden" name="id" value={{b.ISBN}}>												
 												</form>										
 

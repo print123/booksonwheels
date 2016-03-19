@@ -66,6 +66,7 @@
 					</div>
 				</div>
 				<div class="col-sm-9">
+					<h4>{{ttl}} results found</h4>
 				<h2 class="title text-center">Search Results</h2>
 				</div>
 			{% for b in result%}
@@ -100,6 +101,8 @@
 											<!--<p>Price:{{b.actual_price}}</p>				-->
 											<p>Author:{{b.author}}</p>
 											<p>Publisher:{{b.publisher}}</p>
+											<p>Sell Price:{{b.sprice}}</p>
+											<p>Rent Price:{{b.rprice}}</p>
 											<!--<p>Availability:
 											{%if b.available%}
 												In Stock
