@@ -298,13 +298,31 @@ def addToCart(request):
     return HttpResponseRedirect("/")         
     #except:
     #    return HttpResponseRedirect("/login")
+def wlToCart(request):
+    c=CartClass(request.session["userid"])
+    b=BookClass()
+    dosell = True
+    quantity=1
+    print "1"
+    print request.POST["ISBN"]
+    print "2"
+    price=b.getPrice(request.POST["ISBN"])
+    if price['rentprice']< price['sellprice']:
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'])
+    else:
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'])   
+    context = {}
+    temp=request.session["cartquant"]+1
+    request.session["cartquant"]=temp
+    return HttpResponseRedirect("/")
 
 def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
-        w.addToWishlist(request.POST["ISBN"])
+        i=w.addToWishlist(request.POST["ISBN"])
+        print i
         context = {}                
-        temp=request.session["wishquant"]+1
+        temp=request.session["wishquant"]+i
         request.session["wishquant"]=temp
         return HttpResponseRedirect("/")
     except:
@@ -313,7 +331,7 @@ def addToWishlist(request):
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
-        c.removeFromCart(request.GET["ISBN"])
+        c.removeFromCart(request.GET["ISBN"],request.GET["sellprice"])
         temp=request.session["cartquant"]-1
         request.session["cartquant"]=temp
         return HttpResponseRedirect("/cart")

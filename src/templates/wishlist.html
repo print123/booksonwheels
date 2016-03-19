@@ -50,7 +50,7 @@
 						<tr class="cart_menu">
 							<td class="image">Item</td>
 							<td class="description"></td>
-							<td class="price">Price</td>
+							<td class="price"></td>
 							<!--<td class="quantity">Quantity</td>-->
 							<!--<td class="total">Total</td>-->
 							<td></td>
@@ -66,9 +66,9 @@
 								<h4><a href="">{{ b.title }}</a></h4>
 								<p>{{ b.ISBN }}</p>
 							</td>
-							<td class="cart_price">
+							<!--<td class="cart_price">
 								<p>{{ b.actual_price }}</p>
-							</td>
+							</td>-->
 							<!--<td class="cart_quantity">
 								<div class="cart_quantity_button">
 									<button class="cart_quantity_up" name="++" onclick="return document.getElementById('quantity').value++"> + </button>
@@ -80,9 +80,19 @@
 							<!--<td class="cart_total">
 								<p class="cart_total_price">{{ b.actual_price }}</p>
 							</td>-->
+							<td >
+								<form action="/wltocart" method="post" >{%csrf_token%}
+									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
+										<i class="fa fa-shopping-cart pull-left"></i>
+										Add to cart
+									</button><br/>
+									<input type="hidden" name="ISBN" value="{{ b.ISBN }}" />
+								</form>	
+							</td>
 							<td class="cart_delete">
 								<a class="cart_quantity_delete" href="/removefromwishlist?ISBN={{b.ISBN}}"><i class="fa fa-times"></i></a>
 							</td>
+
 						</tr>
 						{%endfor%}
 					</tbody>
