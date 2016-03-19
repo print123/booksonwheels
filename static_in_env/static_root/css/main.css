@@ -1,4 +1,4 @@
-
+﻿
 /*************************
 *******Typography******
 **************************/
@@ -883,7 +883,8 @@ h2.title {
 }
 
 .productinfo img{
-  width: 100%;
+  width: 50%;
+  
 }
 
 .productinfo{
@@ -1283,7 +1284,7 @@ h2.title {
 
 .cart {
   background: #FE980F;
-  border: 0 none; 
+  border: 0 none;
   border-radius: 0;
   color: #FFFFFF;
   font-family: 'Roboto', sans-serif;
