@@ -13,7 +13,16 @@ class CustomerClass(UserClass):
 
     def myBooks(self):
         """A method to display books uploaded by any  user"""
-        books = Book.objects.filter(owner_id_id=self.userid)
+        boo = Upload.objects.filter(owner_id_id=self.userid)
+        books=[]
+        for b in boo:
+            print b
+            print type(b)
+            t=Book.objects.get(bookid=b.bookid_id)
+            p={}
+            p=t.__dict__
+            p['actual_price']=b.sellprice
+            books.append(p)
         return books
 
     def currentBooks(self, userid):
@@ -178,7 +187,9 @@ class CustomerClass(UserClass):
             del request.session['imageurl']
         if 'summary' in lst:
             summary=lst['summary']
+            print "yes"
         else:
+            print "No"
             summary=request.session['summary']
             del request.session['summary']
         if 'publisher' in lst:

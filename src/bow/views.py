@@ -189,8 +189,8 @@ def addInfo(request):
             values={}
             for attr in request.POST:
                 values[attr]=request.POST[attr]
-                CustObj=CustomerClass(request.session["userid"])
-                CustObj.addBook(values,request)
+            CustObj=CustomerClass(request.session["userid"])
+            CustObj.addBook(values,request)
             return HttpResponseRedirect("/")
 
 def handle_uploaded_file(f,isbn):
@@ -267,21 +267,27 @@ def resOfGenre(request):
 
 
 def addToCart(request):
-    try:
+    #try:
 
-        c=CartClass(request.session["userid"])
-        dosell=False
-        if 'sell' in request.POST:
-            if request.POST["sell"]=="on":
-                dosell=True
-        quantity=request.POST['quantity']
-        c.addToCart(request.POST["ISBN"],quantity,dosell)
-        context = {}
-        temp=request.session["cartquant"]+1
-        request.session["cartquant"]=temp
-        return HttpResponseRedirect("/")         
-    except:
-        return HttpResponseRedirect("/login")
+    c=CartClass(request.session["userid"])
+    dosell=False
+    price=0
+    print request.POST
+    if 'group1' in request.POST:
+        if request.POST["group1"]=="sell":
+            dosell=True
+            print "Dosell"
+            price=request.POST["sellprice"]
+        else:
+            price=request.POST["rentprice"]
+    quantity=request.POST['quantity']
+    c.addToCart(request.POST["ISBN"],quantity,dosell,price)
+    context = {}
+    temp=request.session["cartquant"]+1
+    request.session["cartquant"]=temp
+    return HttpResponseRedirect("/")         
+    #except:
+    #    return HttpResponseRedirect("/login")
 
 def addToWishlist(request):
     try:

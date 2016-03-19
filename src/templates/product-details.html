@@ -28,12 +28,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72-precomposed.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'images/ico/apple-touch-icon-57-precomposed.png' %}">
-    <script>
-    	$( "#searchForm" ).submit(function( event ) 
-		{	
-			
-		});
-    </script>
+    
 </head><!--/head-->
 
 <body>
@@ -77,26 +72,34 @@
 						</div>
 						<div class="col-sm-9" style="padding-left: 10%">
 							<div class="product-information"><!--/product-information-->
-								<img src="images/product-details/new.jpg" class="newarrival" alt="" />
+								
 								<h2>{{b.title}}</h2>								
 								<p>ISBN: {{b.ISBN}}</p>
 								<!--<img src="{%static 'images/product-details/rating.png'%}" alt="" />-->
+								{% if sellp %}
 									<span>Selling Price: {{sellp}} Rs</span><br/>
+								{%endif%}
+								{%if rentp%}
 									<span>Renting Price: {{rentp}} Rs</span>
+								{%endif%}
 									<br/>
 									<form action="/select" id="form1" method="post">{%csrf_token%}
-									{% if b.dosell %}
+									{% if sellp %}
 									<p>
-      <input name="group1" type="radio" id="test1" name="sell" checked />
+      <input type="radio" id="test1" name="group1" value="sell"  />
       <label for="test1">Buy</label>
+      <input type="hidden" name="sellprice" value={{sellp}}>
     </p>
 									{%endif%}
-									{% if b.dorent %}
+									{% if rentp %}
 									<p>
-      <input name="group1" type="radio" id="test2" name="rent" checked/>
+      <input type="radio" id="test2" name="group1" value="rent" />
       <label for="test2">Rent</label>
+      <input type="hidden" value={{rentp}} name="rentprice">
     </p>
 									{%endif%}<br/>
+
+									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center"><br/>
 									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart
@@ -112,8 +115,9 @@
 									
 									<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
 									<input type="hidden" name="ISBN" value={{b.ISBN}}><br/>
+
 									<div class="col-sm-4">
-									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1">
+									
 									
 									</form><br/>						
 									
