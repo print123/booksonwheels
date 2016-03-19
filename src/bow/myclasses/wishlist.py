@@ -10,9 +10,17 @@ class WishlistClass:
         self.bookarray = Wishlist.objects.filter(userid_id=self.userid)
 
     def addToWishlist(self, ISBN):
-        """A method to add a new book in Wishlist"""        
-        newWishlistObj = Wishlist(userid_id=self.userid , ISBN=ISBN)
-        newWishlistObj.save()
+        """A method to add a new book in Wishlist"""
+        try:
+            res=Wishlist.objects.get(userid_id=self.userid,ISBN=ISBN)         
+            print "try"
+            return 0
+        except:
+            newWishlistObj = Wishlist(userid_id=self.userid , ISBN=ISBN)
+            newWishlistObj.save()
+            print "except"
+            i=0
+            return 1
 
     def removeFromWishlist(self, ISBN):
         """To remove a book from Wishlist"""

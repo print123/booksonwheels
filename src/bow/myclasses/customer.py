@@ -13,7 +13,16 @@ class CustomerClass(UserClass):
 
     def myBooks(self):
         """A method to display books uploaded by any  user"""
-        books = Book.objects.filter(owner_id_id=self.userid)
+        boo = Upload.objects.filter(owner_id_id=self.userid)
+        books=[]
+        for b in boo:
+            print b
+            print type(b)
+            t=Book.objects.get(bookid=b.bookid_id)
+            p={}
+            p=t.__dict__
+            p['actual_price']=b.sellprice
+            books.append(p)
         return books
 
     def currentBooks(self, userid):
@@ -65,17 +74,11 @@ class CustomerClass(UserClass):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
 '''
-    def uploadBook(self,t_ISBN,tosell,torent,sellprice,rentprice,sellquantity,rentquantity):
+    def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
-
-        lst['dosell']=tosell
-        lst['dorent']=torent
         lst['ISBN']=t_ISBN
-        lst['sellprice']=int(sellprice)
-        lst['rentprice']=int(rentprice)
-        lst['sellquantity']=int(sellquantity)
-        lst['rentquantity']=int(rentquantity)        
+        
 
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
         
@@ -145,28 +148,31 @@ class CustomerClass(UserClass):
         else:
             t_ISBN=request.session['ISBN']
             del request.session['ISBN']
-        dorent=request.session['dorent']
-        #print dorent        
-        dosell=request.session['dosell']
+        dorent=False
+        dosell=False
+        if 'rent' in lst:
+            if lst['rent']=="on":
+                dorent=True
+        #print dorent      
+        if 'sell' in lst:  
+            if lst['sell']=="on":
+                dosell=True
         #print dosell
-        sellprice=int(request.session['sellprice'])
+        sellprice=int(lst['sellprice'])
         #print sellprice
-        rentprice=int(request.session['rentprice'])
+        rentprice=int(lst['rentprice'])
         #print rentprice
-        sellquantity=int(request.session['sellquantity'])
+        sellquantity=int(lst['sellquantity'])
         #print sellquantity
-        rentquantity=int(request.session['rentquantity'])
+        rentquantity=int(lst['rentquantity'])
         #print rentquantity
-        del request.session['rentprice']
-        del request.session['dorent']
-        del request.session['dosell']
-        del request.session['sellprice']
-        del request.session['sellquantity']
-        del request.session['rentquantity']
+        
         if 'imageurl' in lst:
             imageurl=lst['imageurl']
             print "list"
             print imageurl
+        elif 'old' in request.session:
+            imageurl=request.session['imageurl']
         else:
             imageurl1=request.session['imageurl']
             print "session"
@@ -178,7 +184,9 @@ class CustomerClass(UserClass):
             del request.session['imageurl']
         if 'summary' in lst:
             summary=lst['summary']
+            print "yes"
         else:
+            print "No"
             summary=request.session['summary']
             del request.session['summary']
         if 'publisher' in lst:
@@ -206,6 +214,7 @@ class CustomerClass(UserClass):
     def updatetables(self,owner,ISBN,dosell,dorent,sellquantity,rentquantity,author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice):
         bookObj=Book.objects.filter(ISBN=ISBN).first()
         if bookObj is not None:
+            print "old"
             if dosell:       
                 bookObj.quantity=bookObj.quantity+sellquantity         
                 bookObj.sellquantity=bookObj.sellquantity+sellquantity
@@ -213,6 +222,7 @@ class CustomerClass(UserClass):
                 bookObj.quantity=bookObj.quantity+rentquantity
             bookObj.save()
         else:
+            print "new"
             qty=sellquantity+rentquantity
             qtys=sellquantity
             b=Book(author=author,ISBN=ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0,quantity=qty,sellquantity=qtys)        

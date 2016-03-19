@@ -94,7 +94,9 @@
 								<p class="cart_total_price">{{ total }}</p>
 							</td>-->
 							<td class="cart_delete">
-								<a class="cart_quantity_delete" href="/removefromcart?ISBN={{b.ISBN}}"><i class="fa fa-times"></i></a>
+								<a class="cart_quantity_delete" href="/removefromcart?ISBN={{b.ISBN}}&sellprice={{b.sellprice}}"><i class="fa fa-times"></i></a>
+								<!--<a class="cart_quantity_delete" href="/removefromcart?ISBN={{b.ISBN}}?sellprice={{b.sellprice}}"><i class="fa fa-times"></i></a>-->
+							</td>
 							</td>
 						</tr>
 						{%endfor%}
