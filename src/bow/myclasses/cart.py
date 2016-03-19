@@ -33,11 +33,9 @@ class CartClass:
         """To display Cart Items"""
         books = []
         quant=[]
-        for i in self.bookarray:
-            print "onn"
+        for i in self.bookarray:            
             b = Book.objects.filter(ISBN=i.ISBN)[0]
-            #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')
-            print i.sellprice
+            #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')            
             #print "k"
             q=i.quantity
             boo=b.__dict__

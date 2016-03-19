@@ -74,6 +74,34 @@ class CustomerClass(UserClass):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
 '''
+    def removeBook(self,bookid):#future arguments dosell,dorent and prices        
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
+        qty=upObj.qtyuploaded                        
+        upObj.delete()        
+        bookObj=Book.objects.filter(bookid=bookid).first()        
+        print "here 2"
+        t_ISBN=bookObj.ISBN
+        print "here 3"
+        if(bookObj.quantity == qty):
+            print "here 4"
+            bookObj.delete()
+        else:
+            print "here 5"
+            bookObj.quantity=bookObj.quantity-qty
+            print "6"
+            bookObj.save()        
+        print "7"
+        statObj=Status.objects.filter(ISBN=t_ISBN).first()
+        print "8"
+        if(statObj.quantity == qty):
+            print "9"
+            statObj.delete()
+        else:
+            print "10"
+            statObj.quantity=statObj.quantity-qty
+            print "11"
+            statObj.save()
+
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}

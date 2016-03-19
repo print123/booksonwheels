@@ -94,11 +94,16 @@
 											
 											</form>
 											</div>
+											<form action="/removefrombooks" method="post">{%csrf_token%}
 											<div class='col-sm-8'>
-																					
+											<input type="hidden" name="id" value={{b.bookid}}>							
 											<h2>{{b.title}}</h2>							
-											<p>Price:{{b.actual_price}}</p>				
-											<p>Author:{{b.author}}</p>
+											<p style="text-align:center">Price:{{b.actual_price}}</p>				
+											<p style="text-align:center">	Author:{{b.author}}</p>
+											<button name="remove" type="submit" class="btn btn-fefault cart" style="width:30%">
+											<i class="fa fa-shopping-cart pull-left"></i>
+												Remove
+											</button><br/>
 											<!--<p>Availability:
 											{%if b.available%}
 												In Stock
@@ -106,7 +111,9 @@
 												Out of Stock
 											{%endif%}	-->
 											</div>														
+											
 										</div>
+										</form>
 										<!--<div class='col-sm-8' style="padding-left: 25%">									
 												<form action="/productdetails" method="get">
 												<button type=" submit" href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Know More</button>
