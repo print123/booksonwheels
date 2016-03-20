@@ -229,21 +229,23 @@ def handle_uploaded_file(f,isbn):
 
 def search(request):
     if request.method == "POST":
-
         s = SearchClass()
-        # print request.POST["stext"]
         request.session["searchtext"] = request.POST["stext"]
         res = s.searchOnString(request.POST["stext"])
         category = BookClass().getCategoryOfRes(res)
-        # request.session["resultset"]=res
-        # res=s.searchOnTitle(request.POST["stext"])
-        context = {'result': res, 'category': category}
-        print res
-        if len(res) >= 1:
+        ttl = BookClass().getNumberOfRes(res)
+        '''
+        i=-1
+        for c in category:
+            i += 1
+        ttl = category[i]['tot']
+        '''
+        context = {'result': res, 'category': category, 'ttl': ttl}
+        
+        try:
             return render_to_response("search.html", RequestContext(request, context))  # know why this works
-        else:
+        except:
             return render_to_response("404.html", RequestContext(request, context))
-
 
 def productdetails(request):
     if request.GET["id"] != "":
