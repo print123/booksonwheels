@@ -66,7 +66,7 @@
 					</div>
 				</div>
 				<div class="col-sm-9">
-				<h2 class="title text-center">Search Results</h2>
+				<h2 class="title text-center">My Books</h2>
 				</div>
 			{% for b in result%}
 				<div class="row">
@@ -104,6 +104,7 @@
 											<i class="fa fa-shopping-cart pull-left"></i>
 												Remove
 											</button><br/>
+											<input type="Text" name="quantity" value={{}}>
 											<!--<p>Availability:
 											{%if b.available%}
 												In Stock

@@ -252,10 +252,12 @@ def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
         b1 = BookClass()
+        u = UserClass()
         print request.GET["id"]
         res = b.getBook(request.GET["id"])
         #isbn = b.getISBN(request.GET["id"])
         price = b1.getPrice(request.GET["id"])
+        quant = u.getQuantity(request.GET["id"])
         sellp = price['sellprice']
         rentp = price['rentprice']
         if sellp==9999999999:
