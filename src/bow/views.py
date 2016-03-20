@@ -195,7 +195,7 @@ def addInfo(request):
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
         sellquantity=request.POST.get('sellquantity')
-
+        t_ISBN=request.POST.get('ISBN')        
         rentquantity=request.POST.get('rentquantity')
         if 'imageurl' in request.POST:
             form=UploadForm(request.POST,request.FILES)
@@ -205,19 +205,22 @@ def addInfo(request):
             values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
             print values['imageurl']
             for attr in request.POST:
-                if not (attr=="imageurl" or attr=="ISBN"):
-                    print attr
+                if not (attr=="imageurl" or attr=="ISBN"):                    
                     values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
         else:
             values={}
             for attr in request.POST:
                 values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
     d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
@@ -257,12 +260,21 @@ def productdetails(request):
         price = b1.getPrice(request.GET["id"])
         sellp = price['sellprice']
         rentp = price['rentprice']
-        if sellp==9999999999:
+        addto=False
+        try:
+            if request.session["notify"] is not None:
+                del request.session["notify"] 
+                addto=True
+        except:
+            addto=False        
+        if sellp==9999999999 and addto:
             context = {'result': res, 'rentp': rentp}
         elif rentp==9999999999:
             context = {'result': res, 'sellp': sellp}
         else:
             context = {'result': res, 'rentp': rentp,'sellp':sellp}        
+        mydict={'addto':addto}
+        context.update(mydict)        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
