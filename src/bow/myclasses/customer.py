@@ -28,6 +28,43 @@ class CustomerClass(UserClass):
             p['qty']=b.qtyavailable
             books.append(p)
         return books
+    def getCategoryOf(self, res):
+        gen_counts = []
+        #t = 0
+        for r in res:
+            flag = False
+            if r['dosell']:
+                q="Sell"
+            else:
+                q="Rent"
+            for d in gen_counts:
+                if d['genre'] == q:
+                    d['total'] += 1
+                    #t += 1
+                    flag = True
+                    break
+            if flag == False:
+                #t += 1
+                gen_counts.append({'genre': q, 'total': 1})
+        return gen_counts
+
+
+    def showCategory(self, s):
+        boo = Upload.objects.filter(owner_id_id=self.userid, dosell=s)
+        books=[]
+        for b in boo:
+            print b
+            print type(b)
+            t=Book.objects.get(bookid=b.bookid_id)
+            p={}
+            p=t.__dict__
+            p['actual_price']=b.sellprice
+            p['rentprice']=b.rentprice
+            p['dosell']=b.dosell
+            p['dorent']=b.dorent
+            p['qty']=b.qtyavailable
+            books.append(p)
+        return books
 
     def currentBooks(self, userid):
         """A method to display books Rented by any  user"""
@@ -95,7 +132,19 @@ class CustomerClass(UserClass):
         else:            
             statObj.quantity=statObj.quantity-qty            
             statObj.save()
-
+    def updateQuantity(self,bookid,newQty):
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
+        oldQty=upObj.qtyuploaded
+        diff=newQty-oldQty
+        upObj.qtyuploaded=upObj.qtyuploaded+diff
+        upObj.save()
+        bookObj=Book.objects.filter(bookid=bookid).first()
+        t_ISBN=bookObj.ISBN
+        bookObj.quantity=bookObj.quantity+diff
+        bookObj.save()
+        statObj=Status.objects.filter(ISBN=t_ISBN).first()
+        statObj.quantity=statObj.quantity+diff
+        statObj.save()
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
@@ -266,7 +315,7 @@ class CustomerClass(UserClass):
                 statObj.quantity=statObj.quantity+sellquantity
                 statObj.save()
             else:
-                st=Status(ISBN=t_ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=0,quantity=sellquantity)
+                st=Status(ISBN=ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=0,quantity=sellquantity)
                 st.save()
         elif dorent:
             statObj=Status.objects.filter(ISBN=ISBN,rentprice=rentprice).first()

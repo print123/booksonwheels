@@ -270,6 +270,7 @@ def productdetails(request):
                 addto=True
         except:
             addto=False        
+
         if sellp==999999:
             context = {'result': res, 'rentp': rentp}
         elif rentp==999999:
@@ -296,12 +297,22 @@ def bookOfGenre(request):
 
 
 def resOfGenre(request):
-    if request.GET["genre"] is not None:
+    #print request.GET["genre"]
+    if (request.GET["genre"] != 'Sell' and request.GET["genre"] != 'Rent'):
         res = SearchClass().searchResOnGenre(request.GET["genre"], request.session["searchtext"])
         context = {'result': res}
         print len(res)
         return render_to_response("genre.html",RequestContext(request,context))    
-
+    elif request.GET["genre"] == 'Sell':
+        s=True
+        res = CustomerClass(request.session['userid']).showCategory(s)
+        context = {'result': res}
+        return render_to_response("genre.html",RequestContext(request,context))
+    elif request.GET["genre"] == 'Rent':
+        s=False
+        res = CustomerClass(request.session['userid']).showCategory(s)
+        context = {'result': res}
+        return render_to_response("genre.html",RequestContext(request,context))
 
 def addToCart(request):
     try:
@@ -368,6 +379,18 @@ def removeFromBooks(request):
         return HttpResponseRedirect("/mybooks")
     except:
         return HttpResponseRedirect("/login")
+
+def updateQuantity(request):
+    try:
+        bookid=request.POST["id"]        
+        newQty=int(request.POST["newquant"])        
+        custObj=CustomerClass(request.session["userid"])        
+        custObj.updateQuantity(bookid,newQty)
+        print "flagged"
+        return HttpResponseRedirect("/mybooks")
+    except:
+        return HttpResponseRedirect("/login")
+
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
@@ -383,7 +406,8 @@ def remove(request):
 def displayMyBooks(request):
     CustObj=CustomerClass(request.session["userid"])
     result=CustObj.myBooks()
-    context={'result':result}
+    category = CustObj.getCategoryOf(result)
+    context={'result':result, 'category':category}
     return render(request,"mybooks.html",context)
 
 
@@ -405,3 +429,13 @@ def select(request):
             return addToWishlist(request)
 
     return HttpResponseRedirect('/')
+
+def update(request):
+    if request.method == 'POST':
+        if 'update' in request.POST:
+            return updateQuantity(request)
+        elif 'remove' in request.POST:
+            return removeFromBooks(request)
+    
+    return HttpResponseRedirect('/')
+
