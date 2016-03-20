@@ -10,17 +10,14 @@ class CartClass:
         self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
     def addToCart(self, ISBN,quantity,dosell,price,timeperiod):
-        """A method to add a new book in Cart"""        
-        print self.userid
-        try:
-            res=Cart.objects.get(userid_id=self.userid,ISBN=ISBN,dosell=dosell,sellprice=price,timeperiod=timeperiod)
+        """A method to add a new book in Cart"""                
+        try:            
+            res=Cart.objects.get(userid_id=self.userid,ISBN=ISBN,dosell=dosell,sellprice=price,timeperiod=timeperiod)            
             res.quantity=int(res.quantity)+int(quantity)
-            res.save()
-            print "Done success"
-        except:
-            print "Try something else"
-            newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=price,timeperiod=timeperiod)
-            newCartObj.save()
+            res.save()            
+        except:            
+            newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=price,timeperiod=timeperiod)            
+            newCartObj.save()            
 
     def removeFromCart(self, ISBN, sellprice):
         """To remove a book from Cart"""
@@ -55,3 +52,12 @@ class CartClass:
     
     def getTotal(self):
         return len(self.bookarray)
+
+
+    def update(self,ISBN,userid,qty):
+        print "here now updating"
+        print ISBN
+        print userid
+        cartObj=Cart.objects.filter(ISBN=ISBN,userid_id=userid).first()
+        cartObj.quantity=qty
+        cartObj.save()
