@@ -260,7 +260,6 @@ def productdetails(request):
         b1 = BookClass()
         print request.GET["id"]
         res = b.getBook(request.GET["id"])
-        #isbn = b.getISBN(request.GET["id"])
         price = b1.getPrice(request.GET["id"])
         sellp = price['sellprice']
         rentp = price['rentprice']
@@ -298,12 +297,22 @@ def bookOfGenre(request):
 
 
 def resOfGenre(request):
-    if request.GET["genre"] is not None:
+    #print request.GET["genre"]
+    if (request.GET["genre"] != 'Sell' and request.GET["genre"] != 'Rent'):
         res = SearchClass().searchResOnGenre(request.GET["genre"], request.session["searchtext"])
         context = {'result': res}
         print len(res)
         return render_to_response("genre.html",RequestContext(request,context))    
-
+    elif request.GET["genre"] == 'Sell':
+        s=True
+        res = CustomerClass(request.session['userid']).showCategory(s)
+        context = {'result': res}
+        return render_to_response("genre.html",RequestContext(request,context))
+    elif request.GET["genre"] == 'Rent':
+        s=False
+        res = CustomerClass(request.session['userid']).showCategory(s)
+        context = {'result': res}
+        return render_to_response("genre.html",RequestContext(request,context))
 
 def addToCart(request):
     try:
@@ -396,7 +405,8 @@ def remove(request):
 def displayMyBooks(request):
     CustObj=CustomerClass(request.session["userid"])
     result=CustObj.myBooks()
-    context={'result':result}
+    category = CustObj.getCategoryOf(result)
+    context={'result':result, 'category':category}
     return render(request,"mybooks.html",context)
 
 

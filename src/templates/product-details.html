@@ -98,7 +98,7 @@
 									<form action="/select" id="form1" method="post">{%csrf_token%}
 									{% if sellp %}
 									<p>
-      <input type="radio" id="test1" name="group1" value="sell" onclick="myfunction1()" />
+      <input type="radio" id="test1" name="group1" value="sell" onclick="myfunction1()" checked/>
       <label for="test1">Buy</label>
       <input type="hidden" name="sellprice" value={{sellp}} >
     </p>
