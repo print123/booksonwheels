@@ -19,7 +19,7 @@ class BookClass:
         return Book.object.filter(bookid=self.bookid).values('summary')
 
     def getTrending(self):
-        rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:3]
+        rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:6]
         res = []
         for i in rentTrend:
             res += self.getBook(i['ISBN'])
@@ -55,16 +55,35 @@ class BookClass:
 
     def getCategoryOfRes(self, res):
         gen_counts = []
+        #t = 0
         for r in res:
             flag = False
             for d in gen_counts:
-                if d['genre'] == r.genre:
+                if d['genre'] == r['genre']:
                     d['total'] += 1
+                    #t += 1
                     flag = True
                     break
             if flag == False:
-                gen_counts.append({'genre': r.genre, 'total': 1})
+                #t += 1
+                gen_counts.append({'genre': r['genre'], 'total': 1})
         return gen_counts
+
+    def getNumberOfRes(self, res):
+        gen_counts = []
+        t = 0
+        for r in res:
+            flag = False
+            for d in gen_counts:
+                if d['genre'] == r['genre']:
+                    d['total'] += 1
+                    t += 1
+                    flag = True
+                    break
+            if flag == False:
+                t += 1
+                gen_counts.append({'genre': r['genre'], 'total': 1, 'tot': t})
+        return t
 
 
     def add_seller(self,bookid,tosell,torent,sellprice,rentprice,quantity,owner):                

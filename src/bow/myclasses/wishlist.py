@@ -33,5 +33,5 @@ class WishlistClass:
             b = Book.objects.filter(ISBN=i.ISBN)[0]
             books.append(b)
         return books
-    def getLen(self):
+    def getTotal(self):
         return len(self.bookarray)

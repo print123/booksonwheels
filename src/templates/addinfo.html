@@ -80,11 +80,16 @@ $('.dropdown-button').dropdown({
 							<p>Purpose :<br/>
 						<input type="checkbox" name="rent" id="rent">
 							<label for="rent">To Rent</label></p>							
-							<p><input type="checkbox" name="sell" id="sell">															
+							<p><input type="checkbox" name="sell" id="sell" >															
 								<label for="sell">To Sell</label></p>
-							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price">						Rent Price:<input type="Text" name="rentprice" id="rentprice" class="form-control" placeholder="Enter your book's Price">	
-							SellQuantity:<input type="Text" name="sellquantity" id="sellquantity" class="form-control" placeholder="sellQuantity">				
+							<div id="sellblock" style="display: none">
+							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price">						
+							SellQuantity:<input type="Text" name="sellquantity" id="sellquantity" class="form-control" placeholder="sellQuantity">	
+							</div>
+							<div id="rentblock" style="display: none">			
+							Rent Price:<input type="Text" name="rentprice" id="rentprice" class="form-control" placeholder="Enter your book's Price">	
 							RentQuantity:<input type="Text" name="rentquantity" id="rentquantity" class="form-control" placeholder="rentQuantity">				
+							</div>
 							{%for i in find%}
 							{{i}}<input type="Text" name={{i}} id={{i}} class="form-control"  style="color:black"><br>		
 							
@@ -114,7 +119,7 @@ $('.dropdown-button').dropdown({
 							{%endfor%}
 							
 							
-							
+								<input type="hidden" value={{ISBN}} name="ISBN">
 								<button type="submit" id="submit" class="btn btn-default">Add info</button>
 						</form>
 						{%endif%}
@@ -153,15 +158,25 @@ $('.dropdown-button').dropdown({
 			</div>
 		</div>
 	</section>	
+
 	<footer id="footer"><!--Footer-->
 		
 		{% include 'footer.html' %}
 		
 		
 	</footer><!--/Footer-->
-	
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   
+	<script>
+		
+	$('#sell').click(function() {
+    $("#sellblock").toggle(this.checked);
+});
+	$('#rent').click(function() {
+    $("#rentblock").toggle(this.checked);
+});
+	</script>
+
     <script src="{% static 'js/jquery.js'%}"></script>
 	<script src="{% static 'js/bootstrap.min.js'%}"></script>
 	<script src="{% static 'js/jquery.scrollUp.min.js'%}"></script>

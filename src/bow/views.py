@@ -28,7 +28,6 @@ def autocomplete(request):
     return HttpResponse(resp, content_type='application/json')
 
 
-
 def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
@@ -101,7 +100,7 @@ def cart(request):
             context = {'result': result, 'total': total,'added':False}                    
             return render(request, "cart.html", context)
     except:
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/login")
 
 def wishlist(request):
     try:
@@ -155,9 +154,7 @@ def getInfo(request):
             title=b.title
             request.session['title']=title
             rating=4.0
-            request.session['old']=True
-            #custObj.updatetables(owner,t_isbn,tosell,torent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice)
-            #return HttpResponseRedirect("/")    
+            request.session['old']=True              
         else:
             CustObj=CustomerClass(request.session["userid"])
             lst=CustObj.uploadBook(t_isbn)
@@ -198,7 +195,7 @@ def addInfo(request):
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
         sellquantity=request.POST.get('sellquantity')
-
+        t_ISBN=request.POST.get('ISBN')        
         rentquantity=request.POST.get('rentquantity')
         if 'imageurl' in request.POST:
             form=UploadForm(request.POST,request.FILES)
@@ -208,19 +205,22 @@ def addInfo(request):
             values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
             print values['imageurl']
             for attr in request.POST:
-                if not (attr=="imageurl" or attr=="ISBN"):
-                    print attr
+                if not (attr=="imageurl" or attr=="ISBN"):                    
                     values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
         else:
             values={}
             for attr in request.POST:
                 values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
     d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
@@ -232,21 +232,23 @@ def handle_uploaded_file(f,isbn):
 
 def search(request):
     if request.method == "POST":
-
         s = SearchClass()
-        # print request.POST["stext"]
         request.session["searchtext"] = request.POST["stext"]
         res = s.searchOnString(request.POST["stext"])
         category = BookClass().getCategoryOfRes(res)
-        # request.session["resultset"]=res
-        # res=s.searchOnTitle(request.POST["stext"])
-        context = {'result': res, 'category': category}
-        print res
-        if len(res) >= 1:
+        ttl = BookClass().getNumberOfRes(res)
+        '''
+        i=-1
+        for c in category:
+            i += 1
+        ttl = category[i]['tot']
+        '''
+        context = {'result': res, 'category': category, 'ttl': ttl}
+        
+        try:
             return render_to_response("search.html", RequestContext(request, context))  # know why this works
-        else:
+        except:
             return render_to_response("404.html", RequestContext(request, context))
-
 
 def productdetails(request):
     if request.GET["id"] != "":
@@ -258,12 +260,21 @@ def productdetails(request):
         price = b1.getPrice(request.GET["id"])
         sellp = price['sellprice']
         rentp = price['rentprice']
-        if sellp==9999999999:
+        addto=False
+        try:
+            if request.session["notify"] is not None:
+                del request.session["notify"] 
+                addto=True
+        except:
+            addto=False        
+        if sellp==9999999999 and addto:
             context = {'result': res, 'rentp': rentp}
         elif rentp==9999999999:
             context = {'result': res, 'sellp': sellp}
         else:
             context = {'result': res, 'rentp': rentp,'sellp':sellp}        
+        mydict={'addto':addto}
+        context.update(mydict)        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
@@ -343,6 +354,14 @@ def addToWishlist(request):
     except:
         return HttpResponseRedirect("/login")
 
+def removeFromBooks(request):
+    try:        
+        bookid=request.POST["id"]        
+        custObj=CustomerClass(request.session["userid"])        
+        custObj.removeBook(bookid)        
+        return HttpResponseRedirect("/mybooks")
+    except:
+        return HttpResponseRedirect("/login")
 def remove(request):
     try:
         c=CartClass(request.session["userid"])

@@ -74,14 +74,29 @@ class CustomerClass(UserClass):
             """Display current items in wishlist of a user"""
             return Wishlist.object.filter(userid=self.userid)
 '''
+    def removeBook(self,bookid):#future arguments dosell,dorent and prices        
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
+        qty=upObj.qtyuploaded                        
+        upObj.delete()        
+        bookObj=Book.objects.filter(bookid=bookid).first()                
+        t_ISBN=bookObj.ISBN        
+        if(bookObj.quantity == qty):            
+            bookObj.delete()
+        else:            
+            bookObj.quantity=bookObj.quantity-qty            
+            bookObj.save()                
+        statObj=Status.objects.filter(ISBN=t_ISBN).first()        
+        if(statObj.quantity == qty):            
+            statObj.delete()
+        else:            
+            statObj.quantity=statObj.quantity-qty            
+            statObj.save()
+
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
-        lst['ISBN']=t_ISBN
-        
-
-        url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
-        
+        lst['ISBN']=t_ISBN                
+        url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)        
         lst['imageurl']=''
         lst['author']=''
         lst['title']=''
@@ -141,8 +156,7 @@ class CustomerClass(UserClass):
             author=lst['author']
         else:
             author=request.session['author']
-            del request.session['author']
-        
+            del request.session['author']                    
         if 'ISBN' in lst:
             t_ISBN=lst['ISBN']
         else:
@@ -168,25 +182,25 @@ class CustomerClass(UserClass):
         #print rentquantity
         
         if 'imageurl' in lst:
-            imageurl=lst['imageurl']
-            print "list"
-            print imageurl
+            imageurl=lst['imageurl']            
         elif 'old' in request.session:
             imageurl=request.session['imageurl']
+            imageurl1=request.session['imageurl']            
+            from urllib import urlretrieve
+            fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
+            urlretrieve(imageurl1,fname)
+            imageurl='images\\'+t_ISBN+'.jpg'
+            del request.session['imageurl']
         else:
-            imageurl1=request.session['imageurl']
-            print "session"
-            print imageurl1
+            imageurl1=request.session['imageurl']            
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
             urlretrieve(imageurl1,fname)
             imageurl='images\\'+t_ISBN+'.jpg'
             del request.session['imageurl']
         if 'summary' in lst:
-            summary=lst['summary']
-            print "yes"
-        else:
-            print "No"
+            summary=lst['summary']            
+        else:            
             summary=request.session['summary']
             del request.session['summary']
         if 'publisher' in lst:
@@ -209,6 +223,7 @@ class CustomerClass(UserClass):
         else:
             genre=request.session['genre']
             del request.session['genre']
+        
         self.updatetables(request.session['userid'],t_ISBN,dosell,dorent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,4.0,sellprice,rentprice) 
 
     def updatetables(self,owner,ISBN,dosell,dorent,sellquantity,rentquantity,author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice):
