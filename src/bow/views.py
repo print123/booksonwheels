@@ -370,6 +370,18 @@ def removeFromBooks(request):
         return HttpResponseRedirect("/mybooks")
     except:
         return HttpResponseRedirect("/login")
+
+def updateQuantity(request):
+    try:
+        bookid=request.POST["id"]        
+        newQty=int(request.POST["newquant"])        
+        custObj=CustomerClass(request.session["userid"])        
+        custObj.updateQuantity(bookid,newQty)
+        print "flagged"
+        return HttpResponseRedirect("/mybooks")
+    except:
+        return HttpResponseRedirect("/login")
+
 def remove(request):
     try:
         c=CartClass(request.session["userid"])
@@ -407,3 +419,13 @@ def select(request):
             return addToWishlist(request)
 
     return HttpResponseRedirect('/')
+
+def update(request):
+    if request.method == 'POST':
+        if 'update' in request.POST:
+            return updateQuantity(request)
+        elif 'remove' in request.POST:
+            return removeFromBooks(request)
+    
+    return HttpResponseRedirect('/')
+

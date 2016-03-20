@@ -91,7 +91,19 @@ class CustomerClass(UserClass):
         else:            
             statObj.quantity=statObj.quantity-qty            
             statObj.save()
-
+    def updateQuantity(self,bookid,newQty):
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
+        oldQty=upObj.qtyuploaded
+        diff=newQty-oldQty
+        upObj.qtyuploaded=upObj.qtyuploaded+diff
+        upObj.save()
+        bookObj=Book.objects.filter(bookid=bookid).first()
+        t_ISBN=bookObj.ISBN
+        bookObj.quantity=bookObj.quantity+diff
+        bookObj.save()
+        statObj=Status.objects.filter(ISBN=t_ISBN).first()
+        statObj.quantity=statObj.quantity+diff
+        statObj.save()
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
@@ -262,7 +274,7 @@ class CustomerClass(UserClass):
                 statObj.quantity=statObj.quantity+sellquantity
                 statObj.save()
             else:
-                st=Status(ISBN=t_ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=0,quantity=sellquantity)
+                st=Status(ISBN=ISBN,sellprice=sellprice,sellquantity=sellquantity,rentprice=0,quantity=sellquantity)
                 st.save()
         elif dorent:
             statObj=Status.objects.filter(ISBN=ISBN,rentprice=rentprice).first()

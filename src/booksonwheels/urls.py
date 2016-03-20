@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^addtowishlist', 'bow.views.addToWishlist', name='addtowishlist'),
     url(r'^wltocart', 'bow.views.wlToCart', name='wltocart'),
 	url(r'^upload','bow.views.upload',name='upload'),
+    url(r'^update','bow.views.update',name='update'),
     url(r'^mybooks','bow.views.displayMyBooks',name='mybooks'),
     url(r'^removefromcart', 'bow.views.remove', name='removefromcart'),
     url(r'^removefromwishlist', 'bow.views.removeFromWishlist', name='removefromwishlist'),

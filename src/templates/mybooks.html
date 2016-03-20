@@ -94,12 +94,19 @@
 											
 											</form>
 											</div>
-											<form action="/removefrombooks" method="post">{%csrf_token%}
+											<form action="/update" method="post">{%csrf_token%}
 											<div class='col-sm-8'>
 											<input type="hidden" name="id" value={{b.bookid}}>							
 											<h2>{{b.title}}</h2>							
 											<p style="text-align:center">Price:{{b.actual_price}}</p>				
 											<p style="text-align:center">	Author:{{b.author}}</p>
+											
+											<input type="text" name="newquant" placeholder="Enter Quantity"  style="width:15%;font-size:80%;text-align:center">											
+											<button name="update" type="submit" class="btn btn-fefault cart" style="width:15%;font-size:80%">
+											<i class="fa fa-shopping-cart pull-left"></i>
+												Update
+											</button>
+											<br/>
 											<button name="remove" type="submit" class="btn btn-fefault cart" style="width:30%">
 											<i class="fa fa-shopping-cart pull-left"></i>
 												Remove
