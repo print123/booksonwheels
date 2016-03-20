@@ -127,8 +127,8 @@ class BookClass:
         c = Status.objects.filter(ISBN=ISBN)
         #d = Status.objects.filter(ISBN=ISBN).aggregate(Min('rentprice'))
         #print type(c)        
-        minsellprice=9999999999
-        minrentprice=9999999999
+        minsellprice=999999
+        minrentprice=999999
         for i in c:
             if i.sellprice < minsellprice and i.sellquantity>0: 
                 minsellprice=i.sellprice

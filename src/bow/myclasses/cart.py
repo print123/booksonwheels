@@ -9,17 +9,17 @@ class CartClass:
         self.userid = userid
         self.bookarray = Cart.objects.filter(userid_id=self.userid)
 
-    def addToCart(self, ISBN,quantity,dosell,price):
+    def addToCart(self, ISBN,quantity,dosell,price,timeperiod):
         """A method to add a new book in Cart"""        
         print self.userid
         try:
-            res=Cart.objects.get(userid_id=self.userid,ISBN=ISBN,dosell=dosell,sellprice=price)
+            res=Cart.objects.get(userid_id=self.userid,ISBN=ISBN,dosell=dosell,sellprice=price,timeperiod=timeperiod)
             res.quantity=int(res.quantity)+int(quantity)
             res.save()
             print "Done success"
         except:
             print "Try something else"
-            newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=price)
+            newCartObj = Cart(userid_id=self.userid , ISBN=ISBN,quantity=quantity,dosell=dosell,sellprice=price,timeperiod=timeperiod)
             newCartObj.save()
 
     def removeFromCart(self, ISBN, sellprice):
@@ -41,6 +41,7 @@ class CartClass:
             boo=b.__dict__
             boo['quantity']=i.quantity
             boo['sellprice']=i.sellprice
+            boo['timeperiod']=i.timeperiod
             books.append(boo)
             #quant.append(q)
 
