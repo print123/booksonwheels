@@ -26,6 +26,7 @@ class Cart(models.Model):
 	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
 	dosell=models.BooleanField(default=False)
 	quantity=models.DecimalField(max_digits=5,decimal_places=0)
+	timeperiod=models.DecimalField(max_digits=5,decimal_places=0)
 
 class Upload(models.Model):
 	owner_id=models.ForeignKey('User',on_delete=models.CASCADE)

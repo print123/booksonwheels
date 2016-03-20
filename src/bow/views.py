@@ -28,7 +28,6 @@ def autocomplete(request):
     return HttpResponse(resp, content_type='application/json')
 
 
-
 def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
@@ -91,7 +90,11 @@ def cart(request):
             result = c.displayCart()        
             total=0
             for r in result:
-                total += r['quantity'] * r['sellprice']                
+                if r['timeperiod']==0:
+                    total += r['quantity'] * r['sellprice']                
+                else:
+                    total += r['quantity'] * r['sellprice']*r['timeperiod']                
+
         try:
             if request.session["added"] is not None:            
                 context = {'result': result, 'total': total,'added':True}
@@ -101,7 +104,7 @@ def cart(request):
             context = {'result': result, 'total': total,'added':False}                    
             return render(request, "cart.html", context)
     except:
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/login")
 
 def wishlist(request):
     try:
@@ -196,7 +199,7 @@ def addInfo(request):
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
         sellquantity=request.POST.get('sellquantity')
-
+        t_ISBN=request.POST.get('ISBN')        
         rentquantity=request.POST.get('rentquantity')
         if 'imageurl' in request.POST:
             form=UploadForm(request.POST,request.FILES)
@@ -206,19 +209,22 @@ def addInfo(request):
             values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
             print values['imageurl']
             for attr in request.POST:
-                if not (attr=="imageurl" or attr=="ISBN"):
-                    print attr
+                if not (attr=="imageurl" or attr=="ISBN"):                    
                     values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
         else:
             values={}
             for attr in request.POST:
                 values[attr]=request.POST[attr]
             CustObj=CustomerClass(request.session["userid"])
             CustObj.addBook(values,request)
-            return HttpResponseRedirect("/")
+            url="/productdetails?id="+t_ISBN
+            request.session["notify"]=True
+            return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
     d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
@@ -252,20 +258,26 @@ def productdetails(request):
     if request.GET["id"] != "":
         b = BookClass()
         b1 = BookClass()
-        u = UserClass()
         print request.GET["id"]
         res = b.getBook(request.GET["id"])
-        #isbn = b.getISBN(request.GET["id"])
         price = b1.getPrice(request.GET["id"])
-        quant = u.getQuantity(request.GET["id"])
         sellp = price['sellprice']
         rentp = price['rentprice']
-        if sellp==9999999999:
+        addto=False
+        try:
+            if request.session["notify"] is not None:
+                del request.session["notify"] 
+                addto=True
+        except:
+            addto=False        
+        if sellp==999999:
             context = {'result': res, 'rentp': rentp}
-        elif rentp==9999999999:
+        elif rentp==999999:
             context = {'result': res, 'sellp': sellp}
         else:
             context = {'result': res, 'rentp': rentp,'sellp':sellp}        
+        mydict={'addto':addto}
+        context.update(mydict)        
         return render_to_response("product-details.html", RequestContext(request, context))
 
 
@@ -297,6 +309,7 @@ def addToCart(request):
         c=CartClass(request.session["userid"])
         dosell=False
         price=0
+        timeperiod=0
         if 'group1' in request.POST:
             if request.POST["group1"]=="sell":
                 dosell=True
@@ -304,8 +317,9 @@ def addToCart(request):
                 price=request.POST["sellprice"]
             else:
                 price=request.POST["rentprice"]
+                timeperiod=request.POST["time"]
         quantity=request.POST['quantity']
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price)
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price,timeperiod)
         context = {}
         temp=request.session["cartquant"]+1
         request.session["cartquant"]=temp
@@ -323,11 +337,12 @@ def wlToCart(request):
     print "1"
     print request.POST["ISBN"]
     print "2"
+    timeperiod=1
     price=b.getPrice(request.POST["ISBN"])
     if price['rentprice']< price['sellprice']:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'])
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'],timeperiod)
     else:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'])   
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'],timeperiod)   
     context = {}
     temp=request.session["cartquant"]+1
     request.session["cartquant"]=temp

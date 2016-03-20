@@ -1,6 +1,6 @@
 """A Class that represents a User in the System"""
 
-from ..models import User
+from ..models import User, Upload
 
 
 class UserClass:
