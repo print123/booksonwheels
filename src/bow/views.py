@@ -329,8 +329,8 @@ def addToCart(request):
             else:
                 price=request.POST["rentprice"]
                 timeperiod=request.POST["time"]
-        quantity=request.POST['quantity']
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price,timeperiod)
+        quantity=request.POST['quantity']        
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price,timeperiod)        
         context = {}
         temp=request.session["cartquant"]+1
         request.session["cartquant"]=temp
@@ -338,7 +338,7 @@ def addToCart(request):
         return HttpResponseRedirect("/cart")         
 
     except:
-        HttpResponseRedirect("/login")
+        return HttpResponseRedirect("/login")
 
 def wlToCart(request):
     c=CartClass(request.session["userid"])
@@ -385,8 +385,7 @@ def updateQuantity(request):
         bookid=request.POST["id"]        
         newQty=int(request.POST["newquant"])        
         custObj=CustomerClass(request.session["userid"])        
-        custObj.updateQuantity(bookid,newQty)
-        print "flagged"
+        custObj.updateQuantity(bookid,newQty)       
         return HttpResponseRedirect("/mybooks")
     except:
         return HttpResponseRedirect("/login")
@@ -439,3 +438,14 @@ def update(request):
     
     return HttpResponseRedirect('/')
 
+def updateCart(request):
+  #  try:
+    if request.method == 'POST':
+        cartObj=CartClass(request.session["userid"])   
+        for i in request.POST:
+            print i            
+        cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]))            
+        print "hey man"
+        return HttpResponseRedirect("/cart")            
+   # except:
+    #    return HttpResponseRedirect("/cart")

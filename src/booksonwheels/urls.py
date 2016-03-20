@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^wishlist', 'bow.views.wishlist', name='wishlist'),
     url(r'^select', 'bow.views.select', name='select'),
     url(r'^addinfo', 'bow.views.addInfo', name='addinfo'),
-    url(r'^removefrombooks', 'bow.views.removeFromBooks', name='addinfo')
+    url(r'^removefrombooks', 'bow.views.removeFromBooks', name='addinfo'),
+    url(r'^updn', 'bow.views.updateCart', name='updateCart'),
 ]
