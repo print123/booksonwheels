@@ -86,24 +86,25 @@
 									<form action="/select" id="form1" method="post">{%csrf_token%}
 									{% if sellp %}
 									<p>
-      <input type="radio" id="test1" name="group1" value="sell"  />
+      <input type="radio" id="test1" name="group1" value="sell" onclick="myfunction1()" />
       <label for="test1">Buy</label>
-      <input type="hidden" name="sellprice" value={{sellp}}>
+      <input type="hidden" name="sellprice" value={{sellp}} >
     </p>
 									{%endif%}
 									{% if rentp %}
 									<p>
-<<<<<<< HEAD
-      <input type="radio" id="test2" name="group1" value="rent" />
-=======
-      <input type="radio" id="test2" name="group1" value="rent" checked/>
->>>>>>> 2e3710f7cec2588f1171cc4373241f9678221fb2
+
+      <input type="radio" id="test2" name="group1" value="rent" onclick="myfunction()" />
+
       <label for="test2">Rent</label>
       <input type="hidden" value={{rentp}} name="rentprice">
     </p>
 									{%endif%}<br/>
 
-									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center"><br/>
+									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center">
+									<div id="time" style="display: none">
+									Rent Period (Months) : <input type="Text" style="width: 20%;text-align: center" placeholder="Time period(Months)" value="1">
+									</div><br/>
 									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
 										Add to cart
@@ -114,7 +115,7 @@
 									</button><br/>
 									<button name="checkout" type="submit" class="btn btn-fefault cart" style="width:30%">
 										<i class="fa fa-shopping-cart pull-left"></i>
-										Buy/Rent Now
+										<span id="checkout" style="margin-top: 0%">Buy/Rent Now</span>
 									</button>
 									
 									<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
@@ -294,7 +295,18 @@
 		{% include 'footer.html' %}
 		
 	</footer><!--/Footer-->
-	
+	<script>
+		function myfunction()
+		{
+			document.getElementById("checkout").innerHTML="Rent Now";
+			document.getElementById("time").style.display="block";
+		}
+		function myfunction1()
+		{
+			document.getElementById("checkout").innerHTML="Buy Now";
+			document.getElementById("time").style.display="none";
+		}
+	</script>
 
   
     <script src="/static/js/jquery.js"></script>
