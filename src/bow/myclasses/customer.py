@@ -78,38 +78,25 @@ class CustomerClass(UserClass):
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
         qty=upObj.qtyuploaded                        
         upObj.delete()        
-        bookObj=Book.objects.filter(bookid=bookid).first()        
-        print "here 2"
-        t_ISBN=bookObj.ISBN
-        print "here 3"
-        if(bookObj.quantity == qty):
-            print "here 4"
+        bookObj=Book.objects.filter(bookid=bookid).first()                
+        t_ISBN=bookObj.ISBN        
+        if(bookObj.quantity == qty):            
             bookObj.delete()
-        else:
-            print "here 5"
-            bookObj.quantity=bookObj.quantity-qty
-            print "6"
-            bookObj.save()        
-        print "7"
-        statObj=Status.objects.filter(ISBN=t_ISBN).first()
-        print "8"
-        if(statObj.quantity == qty):
-            print "9"
+        else:            
+            bookObj.quantity=bookObj.quantity-qty            
+            bookObj.save()                
+        statObj=Status.objects.filter(ISBN=t_ISBN).first()        
+        if(statObj.quantity == qty):            
             statObj.delete()
-        else:
-            print "10"
-            statObj.quantity=statObj.quantity-qty
-            print "11"
+        else:            
+            statObj.quantity=statObj.quantity-qty            
             statObj.save()
 
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
-        lst['ISBN']=t_ISBN
-        
-
-        url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)
-        
+        lst['ISBN']=t_ISBN                
+        url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)        
         lst['imageurl']=''
         lst['author']=''
         lst['title']=''
@@ -169,8 +156,7 @@ class CustomerClass(UserClass):
             author=lst['author']
         else:
             author=request.session['author']
-            del request.session['author']
-        
+            del request.session['author']                    
         if 'ISBN' in lst:
             t_ISBN=lst['ISBN']
         else:

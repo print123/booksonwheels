@@ -28,7 +28,6 @@ def autocomplete(request):
     return HttpResponse(resp, content_type='application/json')
 
 
-
 def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
@@ -101,7 +100,7 @@ def cart(request):
             context = {'result': result, 'total': total,'added':False}                    
             return render(request, "cart.html", context)
     except:
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/login")
 
 def wishlist(request):
     try:
