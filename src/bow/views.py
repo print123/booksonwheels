@@ -267,7 +267,7 @@ def productdetails(request):
                 addto=True
         except:
             addto=False        
-        if sellp==9999999999 and addto:
+        if sellp==9999999999:
             context = {'result': res, 'rentp': rentp}
         elif rentp==9999999999:
             context = {'result': res, 'sellp': sellp}
