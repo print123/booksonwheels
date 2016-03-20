@@ -90,7 +90,11 @@ def cart(request):
             result = c.displayCart()        
             total=0
             for r in result:
-                total += r['quantity'] * r['sellprice']                
+                if r['timeperiod']==0:
+                    total += r['quantity'] * r['sellprice']                
+                else:
+                    total += r['quantity'] * r['sellprice']*r['timeperiod']                
+
         try:
             if request.session["added"] is not None:            
                 context = {'result': result, 'total': total,'added':True}
@@ -267,9 +271,10 @@ def productdetails(request):
                 addto=True
         except:
             addto=False        
-        if sellp==9999999999:
+
+        if sellp==999999:
             context = {'result': res, 'rentp': rentp}
-        elif rentp==9999999999:
+        elif rentp==999999:
             context = {'result': res, 'sellp': sellp}
         else:
             context = {'result': res, 'rentp': rentp,'sellp':sellp}        
@@ -306,6 +311,7 @@ def addToCart(request):
         c=CartClass(request.session["userid"])
         dosell=False
         price=0
+        timeperiod=0
         if 'group1' in request.POST:
             if request.POST["group1"]=="sell":
                 dosell=True
@@ -313,8 +319,9 @@ def addToCart(request):
                 price=request.POST["sellprice"]
             else:
                 price=request.POST["rentprice"]
+                timeperiod=request.POST["time"]
         quantity=request.POST['quantity']
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price)
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price,timeperiod)
         context = {}
         temp=request.session["cartquant"]+1
         request.session["cartquant"]=temp
@@ -332,11 +339,12 @@ def wlToCart(request):
     print "1"
     print request.POST["ISBN"]
     print "2"
+    timeperiod=1
     price=b.getPrice(request.POST["ISBN"])
     if price['rentprice']< price['sellprice']:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'])
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'],timeperiod)
     else:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'])   
+        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'],timeperiod)   
     context = {}
     temp=request.session["cartquant"]+1
     request.session["cartquant"]=temp

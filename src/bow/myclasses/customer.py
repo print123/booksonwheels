@@ -119,7 +119,7 @@ class CustomerClass(UserClass):
                 lst['author']=(yaml.safe_load(i))
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-        lst['ISBN']=ISBN13
+        #lst['ISBN']=t_ISBN
         
 
         #summary=mydict['volumeInfo']['description']
