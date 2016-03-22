@@ -16,8 +16,6 @@ class CustomerClass(UserClass):
         boo = Upload.objects.filter(owner_id_id=self.userid)
         books=[]
         for b in boo:
-            print b
-            print type(b)
             t=Book.objects.get(bookid=b.bookid_id)
             p={}
             p=t.__dict__
@@ -53,8 +51,6 @@ class CustomerClass(UserClass):
         boo = Upload.objects.filter(owner_id_id=self.userid, dosell=s)
         books=[]
         for b in boo:
-            print b
-            print type(b)
             t=Book.objects.get(bookid=b.bookid_id)
             p={}
             p=t.__dict__
@@ -135,8 +131,11 @@ class CustomerClass(UserClass):
     def updateQuantity(self,bookid,newQty):
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
         oldQty=upObj.qtyuploaded
+        oldaQty=upObj.qtyavailable
         diff=newQty-oldQty
+        diff1=newQty-oldaQty
         upObj.qtyuploaded=upObj.qtyuploaded+diff
+        upObj.qtyavailable=upObj.qtyavailable+diff1
         upObj.save()
         bookObj=Book.objects.filter(bookid=bookid).first()
         t_ISBN=bookObj.ISBN
