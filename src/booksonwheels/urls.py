@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'^addinfo', 'bow.views.addInfo', name='addinfo'),
     url(r'^removefrombooks', 'bow.views.removeFromBooks', name='addinfo'),
     url(r'^updn', 'bow.views.updateCart', name='updateCart'),
+    url(r'^checkout', 'bow.views.checkout', name='checkout'),
+    url(r'^invoice', 'bow.views.invoice', name='invoice'),
 ]

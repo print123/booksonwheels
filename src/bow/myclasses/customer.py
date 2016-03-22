@@ -1,9 +1,9 @@
 """A Class that represents a Customer """
-
+import time
 from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
-from ..models import User, Wishlist, Book, Rents,Upload,Status
+from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status
 import json
 import requests
 import yaml
@@ -67,50 +67,26 @@ class CustomerClass(UserClass):
         r_books = Rents.objects.filter(userid=userid)
         return r_books
 
-    def buyBook(self, ISBN):
-        """A method to buy any book"""
+    def bookCheckout(self):
+        cartObj=Cart.objects.filter(userid_id=self.userid)
+        for i in cartObj:
+            if cartObj.dosell:
+                payment=Payment()
+                payment.save()
+                bookObj=BookClass()
+                temp_id=bookObj.getBookid(i.ISBN)
+                while (i.quantity>0):
+                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity)
+                    order=Order(userid_id=self.userid,date_of_order=time.strftime("%x"),paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=i.quantity)
+                order.save()
 
-        books = Book.object.get(ISBN=ISBN, available=True)
-        isAvailable = books.available
-        if (isAvailable):            
-            cartObj=CartClass(userid,books.bookid)
-            cartObj.addToCart(books.bookid,userid)			
-            cartObj.checkOut(userid,books.bookid)
-        return isAvailable
-    def rentBook(self,ISBN):
-        book_to_rent=Book.object.get(ISBN=ISBN,available=True)
-        bookObj=Book(book_to_rent.bookid)
-        timdur=1#to be discussed yet
-        temp_var=bookObj.getQuotation(timedur)
-        #ask for confirmation from user
-        cartObj=CartClass(userid,book_to_rent.bookid)
-        cartObj.addToCart(book_to_rent.bookid,userid)
-        cartObj.checkOut(userid,book_to_rent.bookid)
+            else:
+                rents=Rents()
+                rents.save()
+            i.delete()
 
-    '''
-    class WishListClass:
-        """WishList Class associated with each User"""
-        def addBook(self, ISBN):
-            """A method to add a new book in Wishlist"""
-            try:
-                w = Wishlist(userid=self.userid, ISBN=ISBN)
-                w.save()
-                return True
-            except:
-                return False
 
-        def removeBook(self, ISBN):
-            """To remove a book from wishlist"""
-            try:
-                Wishlist.objects.filter(userid=self.userid, ISBN=ISBN).delete()
-                return True
-            except:
-                return False
 
-        def getItems(self):
-            """Display current items in wishlist of a user"""
-            return Wishlist.object.filter(userid=self.userid)
-'''
     def removeBook(self,bookid):#future arguments dosell,dorent and prices        
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
         qty=upObj.qtyuploaded                        
@@ -128,6 +104,8 @@ class CustomerClass(UserClass):
         else:            
             statObj.quantity=statObj.quantity-qty            
             statObj.save()
+
+    
     def updateQuantity(self,bookid,newQty):
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
         oldQty=upObj.qtyuploaded
