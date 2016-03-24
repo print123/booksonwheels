@@ -449,3 +449,31 @@ def updateCart(request):
         return HttpResponseRedirect("/cart")            
    # except:
     #    return HttpResponseRedirect("/cart")
+
+
+@csrf_exempt
+def checkout(request):
+    try:        
+        if request.session["userid"] is not None:
+            c = CartClass(request.session["userid"])            
+            result = c.displayCart()        
+            total=0
+            for r in result:
+                if r['timeperiod']==0:
+                    total += r['quantity'] * r['sellprice']                
+                else:
+                    total += r['quantity'] * r['sellprice']*r['timeperiod']                
+     
+                context = {'result': result, 'total': total}
+
+            return render(request, "checkout.html", context)        
+    except:
+        return HttpResponseRedirect("/login")
+
+@csrf_exempt
+def invoice(request):
+    try:
+        custObj = CustomerClass(request.session["userd"])
+        custObj.bookCheckout()
+    except:
+        return HttpResponseRedirect("/login")
