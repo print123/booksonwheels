@@ -492,8 +492,7 @@ def deliver(request):
 def invoice(request):
     try:
         custObj = CustomerClass(request.session["userid"])        
-        custObj.bookCheckout()
-        print "Finally"
+        custObj.bookCheckout()        
         return HttpResponseRedirect("/cart")
     except:
-        return HttpResponseRedirect("/login")
+        return HttpResponseRedirect("/cart")
