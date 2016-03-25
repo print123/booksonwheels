@@ -65,12 +65,14 @@
 						<div class="bill-to">
 							<p>Bill To</p>
 							<div class="form-one">
-								<form>
-									<input type="text" placeholder="Delivery Address">
+								<form action="/deliver" method="POST">
+									<input type="text" placeholder="Delivery Address" name="address">
 									<input type="text" placeholder="Email">
-									<input type="text" placeholder="Contact No">
+									<input type="text" placeholder="Contact No" name="contact">
 									<input type="text" placeholder="City">
 									<input type="text" placeholder="Zip/Postal Code">
+									<br/><br/>
+									<button type="submit" name="deliver"  class="btn default" >Deliver to this address</button>
 								</form>
 							</div>							
 						</div>
@@ -112,7 +114,7 @@
 								</div>
 							</td>
 							<td class="cart_total">
-								<p class="cart_total_price">$59</p>
+								<p class="cart_total_price">{{price}}</p>
 							</td>
 							<td class="cart_delete">
 								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>

@@ -444,8 +444,7 @@ def updateCart(request):
         cartObj=CartClass(request.session["userid"])   
         for i in request.POST:
             print i            
-        cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]))            
-        print "hey man"
+        cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]))                    
         return HttpResponseRedirect("/cart")            
    # except:
     #    return HttpResponseRedirect("/cart")
@@ -456,14 +455,17 @@ def checkout(request):
     try:        
         if request.session["userid"] is not None:
             c = CartClass(request.session["userid"])            
-            result = c.displayCart()        
+            result = c.displayCart()    
+            price=[]
             total=0
             for r in result:
                 if r['timeperiod']==0:
                     total += r['quantity'] * r['sellprice']                
+                    price.append(r['quantity'] * r['sellprice'])
                 else:
                     total += r['quantity'] * r['sellprice']*r['timeperiod']                
-     
+                    price.append(r['quantity'] * r['sellprice']*r['timeperiod'])
+                
                 context = {'result': result, 'total': total}
 
             return render(request, "checkout.html", context)        
@@ -471,9 +473,27 @@ def checkout(request):
         return HttpResponseRedirect("/login")
 
 @csrf_exempt
+def deliver(request):
+    try:
+        if request.session["userid"] is not None:                
+            contactNo=request.POST.get('contact')
+            print contactNo        
+            address=request.POST.get('address')        
+            print address
+            custObj = CustomerClass(request.session["userid"])            
+            custObj.addDeliveryDetails(contactNo,address)
+            return HttpResponseRedirect("/checkout")
+    except:
+        return HttpResponseRedirect("/login")
+
+
+
+@csrf_exempt
 def invoice(request):
     try:
-        custObj = CustomerClass(request.session["userd"])
+        custObj = CustomerClass(request.session["userid"])        
         custObj.bookCheckout()
+        print "Finally"
+        return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/login")

@@ -3,7 +3,7 @@ import time
 from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
-from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status
+from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status,Cart,Order
 import json
 import requests
 import yaml
@@ -67,24 +67,54 @@ class CustomerClass(UserClass):
         r_books = Rents.objects.filter(userid=userid)
         return r_books
 
-    def bookCheckout(self):
-        cartObj=Cart.objects.filter(userid_id=self.userid)
-        for i in cartObj:
-            if cartObj.dosell:
-                payment=Payment()
-                payment.save()
+    def addDeliveryDetails(self,contactno,address):
+        custObj=User.objects.filter(userid=self.userid).first()        
+        custObj.contact_no=contactno        
+        custObj.address=address        
+        custObj.save()
+        
+
+    def bookCheckout(self):                
+        cartObj=Cart.objects.filter(userid_id=self.userid)                            
+        for i in cartObj:            
+            if i.dosell:
+                
                 bookObj=BookClass()
                 temp_id=bookObj.getBookid(i.ISBN)
+                
+                statObj=Status.objects.filter(ISBN=i.ISBN,sellprice=i.sellprice).first()
+                try:
+                    if statObj is not None:
+                        if statObj.sellquantity >= i.quantity:
+                            statObj.sellquantity=statObj.sellquantity-i.quantity
+                            statObj.quantity=statObj.quantity-i.quantity
+                            statObj.save()
+                        else:
+                            print "here"                            
+                            # Logic to prompt user if he wants to see more products of same isbn
+                except:
+                    print "here"
+                            # Logic to prompt user if he wants to see more products of same isbn                                
+                # Still the quantity bug remains
+                bObj=Book.objects.filter(ISBN=i.ISBN).first()
+                bObj.quantity=bObj.quantity-i.quantity
+                bObj.sellquantity=bObj.sellquantity-i.quantity
+                bObj.save()                
                 while (i.quantity>0):
-                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity)
+                    temp=i.quantity
+                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)
+                    
+                    price=i.sellprice*(temp-i.quantity)
+                    payment=Payment(mode='cd',amount=price,ispending=True)
+                    payment.save()
+
                     order=Order(userid_id=self.userid,date_of_order=time.strftime("%x"),paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=i.quantity)
-                order.save()
-
+                    order.save()
             else:
-                rents=Rents()
-                rents.save()
+                print "bas yun hi"
+                #Rents Portion Remaining
             i.delete()
-
+            
 
 
     def removeBook(self,bookid):#future arguments dosell,dorent and prices        
@@ -180,8 +210,7 @@ class CustomerClass(UserClass):
        # b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         #b.save()
 
-    def addBook(self,lst,request):
-        print lst        
+    def addBook(self,lst,request):       
         if 'author' in lst:
             author=lst['author']
         else:
@@ -215,10 +244,12 @@ class CustomerClass(UserClass):
             imageurl=lst['imageurl']            
         elif 'old' in request.session:
             imageurl=request.session['imageurl']
-            imageurl1=request.session['imageurl']            
+            imageurl1=request.session['imageurl'] 
+            print imageurl
+            print imageurl1           
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
-            urlretrieve(imageurl1,fname)
+            #urlretrieve(imageurl1,fname)
             imageurl='images\\'+t_ISBN+'.jpg'
             del request.session['imageurl']
         else:

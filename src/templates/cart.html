@@ -36,20 +36,6 @@
 		}		
 	</script>
 
-	<script>
-		function increase()
-		{			
-			var x=document.getElementById("curr");
-			x.value++;
-		}
-	</script>
-	<script>	
-		function decrease()
-		{			
-			var t=document.getElementById("curr");
-			t.value--;
-		}
-	</script>
 </head><!--/head-->
 
 <body>
@@ -103,8 +89,22 @@
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
 									<a class="cart_quantity_up" href="javascript:increase();"> + </a>
+									<script>
+										function increase()
+										{															
+											x.value++;	
+										}
+									</script>
+									
 									<input class="cart_quantity_input" id="curr" type="text" name="quantity" value={{b.quantity}} autocomplete="off" size="2">
-									<a class="cart_quantity_down" href="javascript:decrease();"> - </a><br/>									
+									<a class="cart_quantity_down" href="javascript:decrease();"> - </a><br/>
+									<script>	
+										function decrease()
+										{			
+											var t=document.getElementById("curr");
+											t.value--;
+										}
+									</script>									
 										<button type="submit"  class="btn default" style="margin-left:30%">Update</button>
 										<input type="hidden" name="name" value={{b.ISBN}}> 										
 								</div>
