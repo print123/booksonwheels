@@ -23,8 +23,7 @@ class CartClass:
         """To remove a book from Cart"""
 
         Cart.objects.filter(userid=self.userid, ISBN=ISBN, sellprice=sellprice).delete()
-
-        #Come here after a while  
+ 
 
     def displayCart(self):
         """To display Cart Items"""
