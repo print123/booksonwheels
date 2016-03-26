@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <head>
 		<script>
 		function validateForm()
@@ -9,29 +10,75 @@
 				return false;
 			}
 		}
-		</script>    
-    <script>
-      function textchange()
-      {                
-        $.ajax({
-              url: '/auto',                
-              type: "POST",
-              data:{'stext':document.getElementById('search').value},
-              success: function(resp)
-              {                            
-              },  
-              complete: function(resp)
-              {                
-                alert('here')
-                alert(resp.result)
-                alert(JSON.parse(resp))
-                document.getElementById('test').value=resp.result
-              }
-            });
-      }
-    </script>
+
+		</script>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  type="text/javascript" src="{%static 'js/typeahead.min.js'%}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('input.typeahead').typeahead({
+    name: 'accounts',
+    //local: ['Audi', 'BMW', 'Bugatti', 'Ferrari', 'Ford', 'Lamborghini', 'Mercedes Benz', 'Porsche', 'Rolls-Royce', 'Volkswagen']
+    remote:{
+      url:"auto?stext=%QUERY",
+      wildcard:"%QUERY",
+    }
+  });
+});  
+</script>
+<style type="text/css">
+.bs-example{
+  font-family: sans-serif;
+  position: relative;
+  margin: 100px;
+}
+.typeahead, .tt-query, .tt-hint {
+  border: 2px ;
+  border-radius: 8px;
+  font-size: 1rem;
+  height: 30px;
+  line-height: 30px;
+  outline: medium none;
+  padding: 8px 12px;
+  width: 100%;
+}
+.typeahead {
+  background-color: #FFFFFF;
+}
+.typeahead:focus {
+  /*border: 2px solid #0097CF;*/
+}
+.tt-query {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.tt-hint {
+  color: #999999;
+}
+.tt-dropdown-menu {
+  background-color: #d1d1d1;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 12px;
+  padding: 8px 0;
+  width: 100%;
+}
+.tt-suggestion {
+  font-size: 1rem;
+  line-height: 24px;
+  padding: 3px 20px;
+}
+.tt-suggestion.tt-is-under-cursor {
+  background-color: #0097CF;
+  color: #FFFFFF;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+</style>
 </head>
-{% load staticfiles %}
+
 <div class="navbar-fixed">
 <input type="text" class="form-control" id="test" ><br/><br/><br/><br/>
 <nav>
@@ -45,18 +92,30 @@
 
       </div>
       <div class="col-md-6 col-sm-9">
+<<<<<<< HEAD
           <form action="/search" name="myform" method="post" onsubmit="return validateForm()">{% csrf_token %}
           <div class="input-group" >
 		  <div class="ui-widget">	
           <input type="text" class="form-control" id="search" name="stext" onkeyup="textchange()" placeholder="Search for..." style="color:white">		  		          		  
 		  </div>
 
+=======
+          <form action="/search" name="myform"method="post" onsubmit="return validateForm()" autocomplete="off">{% csrf_token %}
+         <div class="input-group" >
+		  <div class="ui-widget">	
+          <!--<input type="text" class="form-control" id="search" name="stext"   placeholder="Search for..." style="color:white">		  		-->          		  
+		  
+      <!--<div class="bs-example">-->
+    
+        <input type="text" class="typeahead tt-query" name="stext" autocomplete="off" spellcheck="false" >
+    </div>
+>>>>>>> 7cfbbdaf1fa8ffb7dd46ab2f75e29423fa563377
           <span class="input-group-btn">
             <button class="btn btn-default" type="submit" style="margin-left:0%;" >Search</button>
           </span>          
         </div>
         </form>
-      </div>
+     </div>
       
       <div class="col-md-3">
      <!-- <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>-->
@@ -83,7 +142,7 @@
           <!--<li><a href="collapsible.html">JavaScript</a></li>-->
         </ul>
         </div>
-
+        
       </div>
     </div>
   </nav>
