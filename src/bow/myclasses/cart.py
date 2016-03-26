@@ -38,6 +38,7 @@ class CartClass:
             boo['quantity']=i.quantity
             boo['sellprice']=i.sellprice
             boo['timeperiod']=i.timeperiod
+            boo['dosell']=i.dosell
             books.append(boo)
             #quant.append(q)
 
@@ -53,7 +54,7 @@ class CartClass:
         return len(self.bookarray)
 
 
-    def update(self,ISBN,userid,qty):        
-        cartObj=Cart.objects.filter(ISBN=ISBN,userid_id=userid).first()
+    def update(self,ISBN,userid,qty,price):        
+        cartObj=Cart.objects.filter(ISBN=ISBN,userid_id=userid,sellprice=price).first()
         cartObj.quantity=qty
         cartObj.save()
