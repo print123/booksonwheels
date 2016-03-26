@@ -22,6 +22,7 @@ class SearchClass:
             res1['sprice'] = p['sellprice']
             res1['rprice'] = p['rentprice']
             results.append(res1)
+        print results
         return results
 
     def searchOnGenre(self, genre):

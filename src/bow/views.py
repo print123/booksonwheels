@@ -7,7 +7,7 @@ from .myclasses.cart import CartClass
 from .myclasses.wishlist import WishlistClass
 from .myclasses.customer import CustomerClass
 from .forms import *
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from .myclasses.search import SearchClass
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
@@ -20,10 +20,20 @@ def autocomplete(request):
     print "In autocomplete"
     s = SearchClass()
     simple_qs = s.searchOnString(request.GET["stext"])
-    results = ['starting']
+    #results = ['starting']
+    print simple_qs
+    results=[]
     for r in simple_qs:
-        results.append(r.title)
-    resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'
+        #print r['title']
+        del r['sprice']
+        del r['rprice']
+        del r['sellquantity']
+        del r['quantity']
+        del r['rating']
+        del r['_state']
+        results.append(r['title'])
+    #resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'
+    resp = json.dumps(results,sort_keys=True,indent=4, separators=(',', ': '))
     print resp
     return HttpResponse(resp, content_type='application/json')
 
@@ -34,6 +44,9 @@ def home(request):
     context = {'books': books, 'category': category}
     return render(request, "index.html", context)
 
+def test(request):
+    return render(request, "type.html")
+    
 def login(request):
     try:
         if request.session["userid"] is not None:
