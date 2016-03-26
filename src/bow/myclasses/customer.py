@@ -322,8 +322,7 @@ class CustomerClass(UserClass):
             if dorent:
                 bookObj.quantity=bookObj.quantity+rentquantity
             bookObj.save()
-        else:
-            print "new"
+        else:            
             qty=sellquantity+rentquantity
             qtys=sellquantity
             b=Book(author=author,ISBN=ISBN,imageurl=imageurl,genre=genre,summary=summary,publisher=publisher,language=language,title=title,rating=4.0,quantity=qty,sellquantity=qtys)        

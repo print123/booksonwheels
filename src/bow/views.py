@@ -16,17 +16,21 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 @csrf_exempt
-def autocomplete(request):
-    print "In autocomplete"
-    s = SearchClass()
-    simple_qs = s.searchOnString(request.GET["stext"])
-    results = ['starting']
+def autocomplete(request):    
+    s = SearchClass()                
+    simple_qs = s.searchOnString(request.POST["stext"])            
+    results=[]
     for r in simple_qs:
-        results.append(r.title)
-    resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'
-    print resp
-    return HttpResponse(resp, content_type='application/json')
+        results.append(r['title'])            
+        #return HttpResponse (json.dumps({'result' : results } ),content_type='application/json' )    
+    return HttpResponse(json.dumps({"result": results}), mimetype="application/json")
+        #results.append(r.title)    
+    #print results
+    #resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'    
+    #print resp
+    #return HttpResponse(resp, content_type='application/json')
 
+    
 
 def home(request):
     books = BookClass().getTrending()

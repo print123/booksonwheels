@@ -9,10 +9,31 @@
 				return false;
 			}
 		}
-		</script>
+		</script>    
+    <script>
+      function textchange()
+      {                
+        $.ajax({
+              url: '/auto',                
+              type: "POST",
+              data:{'stext':document.getElementById('search').value},
+              success: function(resp)
+              {                            
+              },  
+              complete: function(resp)
+              {                
+                alert('here')
+                alert(resp.result)
+                alert(JSON.parse(resp))
+                document.getElementById('test').value=resp.result
+              }
+            });
+      }
+    </script>
 </head>
 {% load staticfiles %}
 <div class="navbar-fixed">
+<input type="text" class="form-control" id="test" ><br/><br/><br/><br/>
 <nav>
     <div class="nav-wrapper">
         <div class="col-md-3 col-sm-3">
@@ -24,10 +45,10 @@
 
       </div>
       <div class="col-md-6 col-sm-9">
-          <form action="/search" name="myform"method="post" onsubmit="return validateForm()">{% csrf_token %}
+          <form action="/search" name="myform" method="post" onsubmit="return validateForm()">{% csrf_token %}
           <div class="input-group" >
 		  <div class="ui-widget">	
-          <input type="text" class="form-control" id="search" name="stext"    placeholder="Search for..." style="color:white">		  		          		  
+          <input type="text" class="form-control" id="search" name="stext" onkeyup="textchange()" placeholder="Search for..." style="color:white">		  		          		  
 		  </div>
 
           <span class="input-group-btn">
@@ -68,3 +89,10 @@
   </nav>
 </div>
 
+<!--<script src="/static/js/jquery.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.scrollUp.min.js"></script>
+<script src="/static/js/jquery.prettyPhoto.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="{% static 'js/notify.js'%}"></script>
+-->
