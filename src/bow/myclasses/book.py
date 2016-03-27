@@ -4,6 +4,7 @@ from ..models import Book, Rents, Upload, Status
 from django.db.models import Count, Min
 
 
+
 class BookClass:
     def __init__(self, bookid):
         self.bookid = bookid
@@ -150,6 +151,7 @@ class BookClass:
             return b[0]['ISBN']
         except:
             return -1    
+
     def getOwner(self,bookid,quantity,dosell,price):
         if dosell:
             upObj=Upload.objects.filter(bookid_id=bookid,dosell=dosell,sellprice=price).first()
@@ -179,3 +181,4 @@ class BookClass:
                 upObj.save()
                 return (retOwnid,quantity)
 
+    

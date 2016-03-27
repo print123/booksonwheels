@@ -221,8 +221,7 @@ def addInfo(request):
             if form.is_valid():
                 handle_uploaded_file(request.FILES['file'],request.POST['ISBN'])
             values={}
-            values['imageurl']='images/'+request.POST['ISBN']+'.jpg'
-            print values['imageurl']
+            values['imageurl']='images/'+request.POST['ISBN']+'.jpg'            
             for attr in request.POST:
                 if not (attr=="imageurl" or attr=="ISBN"):                    
                     values[attr]=request.POST[attr]
@@ -469,8 +468,13 @@ def updateCart(request):
 def checkout(request):
     try:        
         if request.session["userid"] is not None:
-            c = CartClass(request.session["userid"])            
-            result = c.displayCart()    
+            uid=request.session["userid"]
+            cartObj = CartClass(uid)            
+            result = cartObj.displayCart()              
+            temp,result=cartObj.expurgate(result)                                                            
+            wishObj=WishlistClass(uid)                        
+            for i in temp:
+                wishObj.addToWishlist(i)
             price=[]
             total=0
             for r in result:
@@ -486,15 +490,12 @@ def checkout(request):
             return render(request, "checkout.html", context)        
     except:
         return HttpResponseRedirect("/login")
-
 @csrf_exempt
 def deliver(request):
     try:
         if request.session["userid"] is not None:                
-            contactNo=request.POST.get('contact')
-            print contactNo        
-            address=request.POST.get('address')        
-            print address
+            contactNo=request.POST.get('contact')              
+            address=request.POST.get('address')     
             custObj = CustomerClass(request.session["userid"])            
             custObj.addDeliveryDetails(contactNo,address)
             return HttpResponseRedirect("/checkout")

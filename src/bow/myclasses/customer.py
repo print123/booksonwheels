@@ -78,25 +78,9 @@ class CustomerClass(UserClass):
     def bookCheckout(self):                
         cartObj=Cart.objects.filter(userid_id=self.userid)                            
         for i in cartObj:            
-            if i.dosell:
-                
+            if i.dosell:                
                 bookObj=BookClass()
                 temp_id=bookObj.getBookid(i.ISBN)
-                
-                statObj=Status.objects.filter(ISBN=i.ISBN,sellprice=i.sellprice).first()
-                try:
-                    if statObj is not None:
-                        if statObj.sellquantity >= i.quantity:
-                            statObj.sellquantity=statObj.sellquantity-i.quantity
-                            statObj.quantity=statObj.quantity-i.quantity
-                            statObj.save()
-                        else:
-                            print "here"                            
-                            # Logic to prompt user if he wants to see more products of same isbn
-                except:
-                    print "here"
-                            # Logic to prompt user if he wants to see more products of same isbn                                
-                # Still the quantity bug remains
                 bObj=Book.objects.filter(ISBN=i.ISBN).first()
                 bObj.quantity=bObj.quantity-i.quantity
                 bObj.sellquantity=bObj.sellquantity-i.quantity
@@ -109,23 +93,11 @@ class CustomerClass(UserClass):
                     payment=Payment(mode='cd',amount=price,ispending=True)
                     payment.save()
 
-                    order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=i.quantity)
+                    order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=(temp-i.quantity))
                     order.save()
             else:
                 bookObj=BookClass()
-                temp_id=bookObj.getBookid(i.ISBN)    
-                statObj=Status.objects.filter(ISBN=i.ISBN,rentprice=i.sellprice).first()
-
-                try:
-                    if statObj is not None:
-                        if statObj.quantity >= i.quantity:
-                            statObj.quantity=statObj.quantity-i.quantity                            
-                            statObj.save()
-                        else:
-                            print "Remaining"
-                except:
-                    print "Remaining"
-                
+                temp_id=bookObj.getBookid(i.ISBN)                    
                 bObj=Book.objects.filter(ISBN=i.ISBN).first()
                 bObj.quantity=bObj.quantity-i.quantity
                 bObj.save()
@@ -136,7 +108,7 @@ class CustomerClass(UserClass):
                     payment=Payment(mode='cd',amount=price,ispending=True)                    
                     payment.save()                          
                     date_of_return = (datetime.today()+relativedelta(months=1)).isoformat()                    
-                    rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=i.quantity,date_of_return=date_of_return)                                        
+                    rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                        
                     rent.save()                                        
             i.delete()
             
@@ -177,6 +149,9 @@ class CustomerClass(UserClass):
         statObj=Status.objects.filter(ISBN=t_ISBN).first()
         statObj.quantity=statObj.quantity+diff
         statObj.save()
+
+
+
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
@@ -269,9 +244,7 @@ class CustomerClass(UserClass):
             imageurl=lst['imageurl']            
         elif 'old' in request.session:
             imageurl=request.session['imageurl']
-            imageurl1=request.session['imageurl'] 
-            print imageurl
-            print imageurl1           
+            imageurl1=request.session['imageurl']                     
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+t_ISBN+".jpg"#give absolute path as where to store image
             #urlretrieve(imageurl1,fname)
@@ -312,10 +285,11 @@ class CustomerClass(UserClass):
         
         self.updatetables(request.session['userid'],t_ISBN,dosell,dorent,int(sellquantity),int(rentquantity),author,imageurl,genre,summary,publisher,language,title,4.0,sellprice,rentprice) 
 
+
+
     def updatetables(self,owner,ISBN,dosell,dorent,sellquantity,rentquantity,author,imageurl,genre,summary,publisher,language,title,rating,sellprice,rentprice):
         bookObj=Book.objects.filter(ISBN=ISBN).first()
-        if bookObj is not None:
-            print "old"
+        if bookObj is not None:            
             if dosell:       
                 bookObj.quantity=bookObj.quantity+sellquantity         
                 bookObj.sellquantity=bookObj.sellquantity+sellquantity

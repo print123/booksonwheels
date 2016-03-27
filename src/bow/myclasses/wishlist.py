@@ -12,13 +12,11 @@ class WishlistClass:
     def addToWishlist(self, ISBN):
         """A method to add a new book in Wishlist"""
         try:
-            res=Wishlist.objects.get(userid_id=self.userid,ISBN=ISBN)         
-            print "try"
+            res=Wishlist.objects.get(userid_id=self.userid,ISBN=ISBN)                     
             return 0
         except:
             newWishlistObj = Wishlist(userid_id=self.userid , ISBN=ISBN)
-            newWishlistObj.save()
-            print "except"
+            newWishlistObj.save()            
             i=0
             return 1
 

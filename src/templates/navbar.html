@@ -80,7 +80,6 @@ $(document).ready(function(){
 </head>
 
 <div class="navbar-fixed">
-<input type="text" class="form-control" id="test" ><br/><br/><br/><br/>
 <nav>
     <div class="nav-wrapper">
         <div class="col-md-3 col-sm-3">
@@ -92,14 +91,6 @@ $(document).ready(function(){
 
       </div>
       <div class="col-md-6 col-sm-9">
-<<<<<<< HEAD
-          <form action="/search" name="myform" method="post" onsubmit="return validateForm()">{% csrf_token %}
-          <div class="input-group" >
-		  <div class="ui-widget">	
-          <input type="text" class="form-control" id="search" name="stext" onkeyup="textchange()" placeholder="Search for..." style="color:white">		  		          		  
-		  </div>
-
-=======
           <form action="/search" name="myform"method="post" onsubmit="return validateForm()" autocomplete="off">{% csrf_token %}
          <div class="input-group" >
 		  <div class="ui-widget">	
@@ -109,7 +100,7 @@ $(document).ready(function(){
     
         <input type="text" class="typeahead tt-query" name="stext" autocomplete="off" spellcheck="false" >
     </div>
->>>>>>> 7cfbbdaf1fa8ffb7dd46ab2f75e29423fa563377
+
           <span class="input-group-btn">
             <button class="btn btn-default" type="submit" style="margin-left:0%;" >Search</button>
           </span>          
