@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 import json
+from .myclasses.order import OrderClass
 from .myclasses.user import UserClass
 from .myclasses.book import BookClass
 from .myclasses.cart import CartClass
@@ -11,6 +12,9 @@ from django.http import HttpResponseRedirect,HttpResponse
 from .myclasses.search import SearchClass
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from couchdb import Server
+from datetime import datetime
+
 
 
 # Create your views here.
@@ -35,7 +39,7 @@ def autocomplete(request):
         results.append(r['title'])
     #resp = request.REQUEST['callback'] + '(' + json.dumps(results) + ');'
     resp = json.dumps(results,sort_keys=True,indent=4, separators=(',', ': '))
-    print resp
+    #print resp
     return HttpResponse(resp, content_type='application/json')
 
     
@@ -144,6 +148,18 @@ def upload(request):
     except:
         return HttpResponseRedirect("/")
 
+def order(request):
+    try:
+        if request.session["userid"] is not None:
+            
+            obj = OrderClass(request.session["userid"])
+            result = obj.displayOrders()
+            
+            context = {'result': result}        
+            return render(request,"order.html",context)
+    except:
+        return HttpResponseRedirect("/")
+
 def getInfo(request):
     if request.method=="POST":
         t_isbn=request.POST.get('name')
@@ -210,7 +226,12 @@ def addInfo(request):
             torent=True
         else:
             torent=False
-                  
+         
+        t_list=[]              
+        doc[request.POST['ISBN']]={'comments':t_list}
+        server=Server()
+        db=server['reviews']
+        db.save(doc)
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
         sellquantity=request.POST.get('sellquantity')
@@ -269,32 +290,51 @@ def search(request):
             return render_to_response("404.html", RequestContext(request, context))
 
 def productdetails(request):
-    if request.GET["id"] != "":
-        b = BookClass()
-        b1 = BookClass()
-        print request.GET["id"]
-        res = b.getBook(request.GET["id"])
-        price = b1.getPrice(request.GET["id"])
-        sellp = price['sellprice']
-        rentp = price['rentprice']
-        addto=False
-        try:
-            if request.session["notify"] is not None:
-                del request.session["notify"] 
-                addto=True
-        except:
-            addto=False        
+    context={}    
+    if request.method == 'GET':        
+        if request.GET["id"] != "":
+            b = BookClass()
+            b1 = BookClass()        
+            res = b.getBook(request.GET["id"])
+            price = b1.getPrice(request.GET["id"])
+            sellp = price['sellprice']
+            rentp = price['rentprice']
+            addto=False
+            try:
+                if request.session["notify"] is not None:
+                    del request.session["notify"] 
+                    addto=True
+            except:
+                addto=False        
 
-        if sellp==999999:
-            context = {'result': res, 'rentp': rentp}
-        elif rentp==999999:
-            context = {'result': res, 'sellp': sellp}
+
+            if sellp==999999:
+                context = {'result': res, 'rentp': rentp}
+            elif rentp==999999:
+                context = {'result': res, 'sellp': sellp}
+            else:
+                context = {'result': res, 'rentp': rentp,'sellp':sellp}   
+            couch=Server()
+            db=couch['reviews']     
+            doc=db[request.GET['id']]
+            doc=doc['comments']            
+            doc=doc[-5:]
+            
+            mydict={'addto':addto,'comment':doc}        
+            context.update(mydict)        
+            return render_to_response("product-details.html", RequestContext(request, context))
+    else:        
+        couch=Server()    
+        db=couch['reviews']              
+        doc=db[request.POST.get('ISBN')]#["ISBN"]]
+        comm={'name':request.session['name'],'rtext':request.POST.get('revw')}        
+        if doc['comments'] is not None:            
+            doc['comments'].append(comm)                        
         else:
-            context = {'result': res, 'rentp': rentp,'sellp':sellp}        
-        mydict={'addto':addto}
-        context.update(mydict)        
-        return render_to_response("product-details.html", RequestContext(request, context))
-
+            doc['comments']=[]            
+            doc['comments'].append(comm)
+        db.save(doc)
+        return HttpResponseRedirect("/productdetails?id="+request.POST.get('ISBN')) 
 
 def logout(request):
     del request.session["userid"]
