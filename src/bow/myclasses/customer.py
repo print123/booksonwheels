@@ -210,7 +210,9 @@ class CustomerClass(UserClass):
        # b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         #b.save()
 
-    def addBook(self,lst,request):       
+    def addBook(self,lst,request):  
+        for i in lst:
+            print i     
         if 'author' in lst:
             author=lst['author']
         else:

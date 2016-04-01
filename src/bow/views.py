@@ -227,10 +227,10 @@ def addInfo(request):
         else:
             torent=False
          
-        t_list=[]              
-        doc[request.POST['ISBN']]={'comments':t_list}
+        t_list=[]                          
+        doc={'_id':request.POST['ISBN'],'comments':t_list}
         server=Server()
-        db=server['reviews']
+        db=server['reviews']        
         db.save(doc)
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
