@@ -50,8 +50,7 @@ class BookClass:
         return b
 
     def getCategory(self):
-        catCount = Book.objects.all().values('genre').annotate(total=Count('genre'))
-        print catCount
+        catCount = Book.objects.all().values('genre').annotate(total=Count('genre'))        
         return catCount
 
     def getCategoryOfRes(self, res):

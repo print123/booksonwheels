@@ -81,15 +81,19 @@
 							</td>
 							<td class="cart_description" style="text-align:center">
 								<h4><a href="">{{ b.title }}</a></h4>
-								<p>{{ b.ISBN }}</p>
+								<p>{{b.ISBN}}</p>
 							</td>
 							<td class="cart_price">
+<<<<<<< HEAD
 								<p>{{ b.sellprice }} </p>
 								{%if b.dosell == True%}
 								{%else%}
 								<p>For {{b.timeperiod}} Months</p>
 								{%endif%}
 								
+=======
+								<p>{{b.sellprice}} </p>
+>>>>>>> 646e04bbf29402fc67b7620fd3e9ae192f40efc0
 							</td>
 
 							<td class="cart_quantity">
