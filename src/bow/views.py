@@ -515,3 +515,6 @@ def invoice(request):
         return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
+
+
+        

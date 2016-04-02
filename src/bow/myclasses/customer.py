@@ -231,13 +231,22 @@ class CustomerClass(UserClass):
             if lst['sell']=="on":
                 dosell=True
         #print dosell
-        sellprice=int(lst['sellprice'])
+        sellprice=999999 
+        rentprice=999999
+        sellquantity=0
+        rentquantity=0
+        if not lst['sellprice']=='':
+            sellprice=int(lst['sellprice'])
+            sellquantity=int(lst['sellquantity'])
         #print sellprice
-        rentprice=int(lst['rentprice'])
+        if not lst['rentprice']=='':
+            rentprice=int(lst['rentprice'])
+            rentquantity=int(lst['rentquantity'])
         #print rentprice
-        sellquantity=int(lst['sellquantity'])
+        
+
         #print sellquantity
-        rentquantity=int(lst['rentquantity'])
+        
         #print rentquantity
         
         if 'imageurl' in lst:

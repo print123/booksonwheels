@@ -25,8 +25,45 @@ $(document).ready(function(){
       wildcard:"%QUERY",
     }
   });
-});  
+}); 
+ 
 </script>
+<script>
+(function($) {
+    $(function() {
+      
+$('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      hover: true, // Activate on hover
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'right' // Displays dropdown with edge aligned to the left of button
+    }
+  );
+
+    }); // End Document Ready
+})(jQuery); // End of jQuery name space
+</script>
+<style>
+ .brand-logo{
+  font-weight:300;
+}
+
+.dropdown-content {
+  background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-width: 15%; /* Changed this to accomodate content width */
+  max-height: auto;
+  margin-left: -1px; /* Add this to keep dropdown in line with edge of navbar */
+  overflow: hidden; /* Changed this from overflow-y:auto; to overflow:hidden; */
+  opacity: 0;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1;
+  will-change: width, height;
+}
+</style>
 <style type="text/css">
 .bs-example{
   font-family: sans-serif;
@@ -76,17 +113,20 @@ $(document).ready(function(){
 .tt-suggestion p {
   margin: 0;
 }
+
+
+
 </style>
 </head>
-
+<!--
 <div class="navbar-fixed">
 <nav>
     <div class="nav-wrapper">
         <div class="col-md-3 col-sm-3">
         <ul id="nav-mobile" class="">
           <li><a href="/">booksonwheels</a></li>
-          <!--<li><a href="badges.html">Components</a></li>
-          <li><a href="collapsible.html">JavaScript</a></li>-->
+          <li><a href="badges.html">Components</a></li>
+          <li><a href="collapsible.html">JavaScript</a></li>
         </ul>
 
       </div>
@@ -94,11 +134,11 @@ $(document).ready(function(){
           <form action="/search" name="myform"method="post" onsubmit="return validateForm()" autocomplete="off">{% csrf_token %}
          <div class="input-group" >
 		  <div class="ui-widget">	
-          <!--<input type="text" class="form-control" id="search" name="stext"   placeholder="Search for..." style="color:white">		  		-->          		  
+          <input type="text" class="form-control" id="search" name="stext"   placeholder="Search for..." style="color:white">		  		-->          		  
 		  
       <!--<div class="bs-example">-->
     
-        <input type="text" class="typeahead tt-query" name="stext" autocomplete="off" spellcheck="false" >
+      <!--  <input type="text" class="typeahead tt-query" name="stext" autocomplete="off" spellcheck="false" >
     </div>
 
           <span class="input-group-btn">
@@ -107,37 +147,55 @@ $(document).ready(function(){
         </div>
         </form>
      </div>
-      
-      <div class="col-md-3">
+      -->
+     <!-- <div class="col-md-3">-->
      <!-- <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>-->
-      <ul id="mobile-demo" class="right hide-on-med-and-down">
+    <!--  <ul id="mobile-demo" class="right hide-on-med-and-down">
           {% if request.session.name %}
-          <li><a href="">{{request.session.name }}</a></li>
-		  <ul class="nav navbar-nav collapse navbar-collapse" style="margin-top:10px">								
-		  <li class="dropdown"><a href="#"><span class="caret" style="border-width:10px"></span></a>
-     		<ul role="menu" class="sub-menu">							
-			<li><a href="/mybooks">My Books</a></li>
-			<li><a href="checkout.html">Orders</a></li> 
-			<li><a href="/upload">Add Book</a></li> 
-			<li><a href="/cart">Cart({{request.session.cartquant}})<i class="fa fa-shopping-cart pull-left"></i></a></li> 
-      <li><a href="/wishlist">Wishlist({{request.session.wishquant}})</a></li> 
-		    </ul>
+          <li><a href="">{{request.session.name }}</a></li>-->
+		  <!--<ul class="nav navbar-nav collapse navbar-collapse" style="margin-top:10px">								-->
+		  <!--<li class="tt-dropdown-menu"><a href="#"><span class="caret" style="border-width:10px"></span></a>
+     		<div  class="tt-suggestion">
+			<li><a href="/mybooks">My Books</a></li></div>
+			<li class="tt-suggestion"><a href="checkout.html">Orders</a></li> 
+			<li class="tt-suggestion"><a href="/upload">Add Book</a></li> 
+			<li class="tt-suggestion"><a href="/cart">Cart({{request.session.cartquant}})<i class="fa fa-shopping-cart pull-left"></i></a></li> 
+      <li class="tt-suggestion"><a href="/wishlist">Wishlist({{request.session.wishquant}})</a></li> 
+		    
 	        </li> 
-		  </ul>
+		  -->
+      <!--
+      <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn" onclick="myFunction()">Dropdown</a>
+    <div class="dropdown-content" id="myDropdown" style="display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);">
+      <a href="#" style="color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;">Link 1</a>
+      <a href="#">Link 2</a>
+      <a href="#">Link 3</a>
+    </div>
+  </li>
+      
           <li><a href="logout">Logout</a></li>
           {% else %}  
           <li><a href="login">Login/Signup</a></li>
           {% endif %}
-          
+          -->
 
           <!--<li><a href="collapsible.html">JavaScript</a></li>-->
-        </ul>
+        <!--</ul>
         </div>
         
       </div>
     </div>
   </nav>
-</div>
+</div>-->
 
 <!--<script src="/static/js/jquery.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
@@ -146,3 +204,73 @@ $(document).ready(function(){
 <script src="/static/js/main.js"></script>
 <script src="{% static 'js/notify.js'%}"></script>
 -->
+<nav>
+    <div class="nav-wrapper grey darken-3">
+        <a href="/" class="brand-logo left" style="float:left;margin-left:0%;font-size:25px;padding-left:1%">booksonwheels</a>
+        {% if request.session.name %}
+        <ul class="right hide-on-med-and-down" style="float:right;">
+            
+            
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-button" href="" data-activates="dropdown" data-beloworigin="true">{{request.session.name }}<i class="mdi-navigation-arrow-drop-down right"></i></a></li>
+            <li><a href="logout">Logout</a></li>
+        </ul>
+        {%else%}
+          <ul class="right hide-on-med-and-down" style="float:right">
+          <li><a href="login">Login/Signup</a></li>
+          </ul>
+        {%endif%}
+        <div class="right" style="width: 40%;margin-right: 20%;float:left;">
+        <form action="/search" name="myform"method="post" onsubmit="return validateForm()" autocomplete="off">{% csrf_token %}
+        <div class="input-group" >
+        <input type="text" class="typeahead tt-query" name="stext" autocomplete="off" spellcheck="false" >
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit" style="margin-left:0%;" >Search</button>
+          </span>          
+        </div>
+        </form>
+        </div>
+        
+    </div>
+</nav>
+<!-- Dropdown Structure -->
+<ul id="dropdown" class="dropdown-content collection">
+    <li class="collection-item" style="padding:0px 0px;text-align: center;">
+        <!--<img src="http://materializecss.com/images/yuna.jpg" alt="" class="circle">
+        <span class="title">Name</span>
+        <p>First Line</p>
+        <a href="#!" class="secondary-content"><i class="material-icons">contact_mail</i></a>-->
+        <a href="/mybooks" >My Books</a>
+    </li>
+    <li class="collection-item" style="padding:0px 0px;text-align: center">
+        <!--<img src="http://materializecss.com/images/yuna.jpg" alt="" class="circle">
+        <span class="title">Name</span>
+        <p>First Line</p>
+        <a href="#!" class="secondary-content"><i class="material-icons">contact_mail</i></a>-->
+        <a href="checkout.html">Orders</a>
+    </li>
+    <li class="collection-item" style="padding:0px 0px;text-align: center">
+        <!--<img src="http://materializecss.com/images/yuna.jpg" alt="" class="circle">
+        <span class="title">Name</span>
+        <p>First Line</p>
+        <a href="#!" class="secondary-content"><i class="material-icons">contact_mail</i></a>-->
+        <a href="/upload">Add Book</a>
+    </li>
+    <li class="collection-item" style="padding:0px 0px;text-align: center">
+        <!--<img src="http://materializecss.com/images/yuna.jpg" alt="" class="circle">
+        <span class="title">Name</span>
+        <p>First Line</p>
+        <a href="#!" class="secondary-content"><i class="material-icons">contact_mail</i></a>-->
+        <a href="/cart"><i class="fa fa-shopping-cart"></i>&nbspCart({{request.session.cartquant}})</a>
+    </li>
+    <li class="collection-item" style="padding:0px 0px;text-align: center">
+        <!--<img src="http://materializecss.com/images/yuna.jpg" alt="" class="circle">
+        <span class="title">Name</span>
+        <p>First Line</p>
+        <a href="#!" class="secondary-content"><i class="material-icons">contact_mail</i></a>-->
+        <a href="/wishlist">Wishlist({{request.session.wishquant}})</a>  
+    </li>
+</ul>
+
+      
+      

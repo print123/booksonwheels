@@ -1,6 +1,6 @@
 """A Class for Book"""
 from __future__ import unicode_literals
-from ..models import Book, Rents, Upload, Status 
+from ..models import Book, Rents, Upload, Status , Payment 
 from django.db.models import Count, Min
 
 
@@ -181,4 +181,5 @@ class BookClass:
                 upObj.save()
                 return (retOwnid,quantity)
 
-    
+    def UpdatePayStatus(self,pid):
+        Payment.objects.filter(paymentid=pid).update(ispending=False)
