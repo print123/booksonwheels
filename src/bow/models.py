@@ -21,7 +21,7 @@ class Wishlist(models.Model):
 	#	return self.userid
 
 class Cart(models.Model):
-	userid=models.ForeignKey('User',on_delete=models.CASCADE,)
+	userid=models.ForeignKey('User',on_delete=models.CASCADE)
 	ISBN=models.CharField(max_length=20,blank=False,null=False)
 	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
 	dosell=models.BooleanField(default=False)
@@ -73,6 +73,7 @@ class Rents(models.Model):
 	date_of_return=models.DateTimeField()
 	owner_id=models.ForeignKey('User',on_delete=models.CASCADE)
 	quantity=models.DecimalField(max_digits=8,decimal_places=0)
+	status=models.CharField(max_length=2,default='p')
 
 	def __unicode__(self):
 		return self.userid

@@ -72,8 +72,9 @@
 						notif();
 					</script>
 					{%endif%}
-					<form action="/updn" method="POST">{%csrf_token%}
+					
 						{% for b in result%}
+						<form action="/updn" method="POST">{%csrf_token%}
 						<tr>
 							<td class="cart_product">
 								<a href=""><img src="{%static b.imageurl%}" height="200" weight="150" alt=""></a>
@@ -83,30 +84,43 @@
 								<p>{{b.ISBN}}</p>
 							</td>
 							<td class="cart_price">
+<<<<<<< HEAD
+								<p>{{ b.sellprice }} </p>
+								{%if b.dosell == True%}
+								{%else%}
+								<p>For {{b.timeperiod}} Months</p>
+								{%endif%}
+								
+=======
 								<p>{{b.sellprice}} </p>
+>>>>>>> 646e04bbf29402fc67b7620fd3e9ae192f40efc0
 							</td>
 
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href="javascript:increase();"> + </a>
-									<script>
-										function increase()
-										{															
-											x.value++;	
-										}
-									</script>
+									<a class="cart_quantity_up" href="javascript:increase({{b.ISBN}});"> + </a>
 									
-									<input class="cart_quantity_input" id="curr" type="text" name="quantity" value={{b.quantity}} autocomplete="off" size="2">
-									<a class="cart_quantity_down" href="javascript:decrease();"> - </a><br/>
-									<script>	
-										function decrease()
+									
+									<input class="cart_quantity_input" id={{b.ISBN}} type="text" name="quantity" value={{b.quantity}} autocomplete="off" size="2">
+									<a class="cart_quantity_down" href="javascript:decrease({{b.ISBN}});"> - </a><br/>
+									<script>
+									function increase(curr)
+										{
+											var x=document.getElementById(curr);															
+											x.value++;	
+											//alert(x.value+curr);
+											document.getElementById(curr).value=x.value;
+										}	
+										function decrease(curr)
 										{			
-											var t=document.getElementById("curr");
+											var t=document.getElementById(curr);
 											t.value--;
+											document.getElementById(curr).value=t.value;
 										}
 									</script>									
 										<button type="submit"  class="btn default" style="margin-left:30%">Update</button>
-										<input type="hidden" name="name" value={{b.ISBN}}> 										
+										<input type="hidden" name="name" value={{b.ISBN}}>
+										<input type="hidden" name="price" value={{b.sellprice}}>										 										
 								</div>
 							</td>
 							<!--<td class="cart_total">
@@ -118,8 +132,9 @@
 							</td>
 							</td>
 						</tr>
-						{%endfor%}
 						</form>
+						{%endfor%}
+						
 						<tr class ="cart_menu">
 							<td class="image"></td>
 							<td class="description"></td>
@@ -147,5 +162,6 @@
     <script src="/static/js/jquery.prettyPhoto.js"></script>
     <script src="/static/js/main.js"></script>
     <script src="{% static 'js/notify.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
 </body>
 </html>

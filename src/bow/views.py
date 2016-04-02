@@ -484,8 +484,13 @@ def update(request):
 def updateCart(request):
   #  try:
     if request.method == 'POST':
-        cartObj=CartClass(request.session["userid"])                       
-        cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]))                    
+        cartObj=CartClass(request.session["userid"])   
+        for i in request.POST:
+            print i            
+        if int(request.POST["quantity"])==0:
+            cartObj.removeFromCart(request.POST["name"],request.POST["price"])
+        else:
+            cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]),request.POST["price"])                    
         return HttpResponseRedirect("/cart")            
    # except:
     #    return HttpResponseRedirect("/cart")
@@ -540,3 +545,6 @@ def invoice(request):
             return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
+
+
+        

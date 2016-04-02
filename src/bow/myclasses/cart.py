@@ -54,8 +54,8 @@ class CartClass:
         return len(self.bookarray)
 
 
-    def update(self,ISBN,userid,qty):        
-        cartObj=Cart.objects.filter(ISBN=ISBN,userid_id=userid).first()
+    def update(self,ISBN,userid,qty,price):        
+        cartObj=Cart.objects.filter(ISBN=ISBN,userid_id=userid,sellprice=price).first()
         cartObj.quantity=qty
         cartObj.save()
 

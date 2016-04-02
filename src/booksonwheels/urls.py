@@ -1,5 +1,8 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from adminplus.sites import AdminSitePlus
+admin.site = AdminSitePlus()
+admin.autodiscover()
 
 urlpatterns = [
     # Examples:
@@ -33,5 +36,9 @@ urlpatterns = [
     url(r'^deliver', 'bow.views.deliver', name='deliver'),
     url(r'^invoice', 'bow.views.invoice', name='invoice'),
     url(r'^test', 'bow.views.test', name='test'),
+<<<<<<< HEAD
+    
+=======
     url(r'^comment', 'bow.views.productdetails', name='comment')
+>>>>>>> 646e04bbf29402fc67b7620fd3e9ae192f40efc0
 ]

@@ -1,0 +1,200 @@
+{%load staticfiles%}
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+</head>
+<style type="text/css">
+	/*!
+ * bootstrap-vertical-tabs - v1.2.1
+ * https://dbtek.github.io/bootstrap-vertical-tabs
+ * 2014-11-07
+ * Copyright (c) 2014 İsmail Demirbilek
+ * License: MIT
+ */
+.tabs-left, .tabs-right {
+  border-bottom: none;
+  padding-top: 2px;
+}
+.tabs-left {
+  border-right: 1px solid #ddd;
+}
+.tabs-right {
+  border-left: 1px solid #ddd;
+}
+.tabs-left>li, .tabs-right>li {
+  float: none;
+  margin-bottom: 2px;
+}
+.tabs-left>li {
+  margin-right: -1px;
+}
+.tabs-right>li {
+  margin-left: -1px;
+}
+.tabs-left>li.active>a,
+.tabs-left>li.active>a:hover,
+.tabs-left>li.active>a:focus {
+  border-bottom-color: #ddd;
+  border-right-color: transparent;
+}
+
+.tabs-right>li.active>a,
+.tabs-right>li.active>a:hover,
+.tabs-right>li.active>a:focus {
+  border-bottom: 1px solid #ddd;
+  border-left-color: transparent;
+}
+.tabs-left>li>a {
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+  display:block;
+}
+.tabs-right>li>a {
+  border-radius: 0 4px 4px 0;
+  margin-right: 0;
+}
+.sideways {
+  margin-top:50px;
+  border: none;
+  position: relative;
+}
+.sideways>li {
+  height: 20px;
+  width: 120px;
+  margin-bottom: 100px;
+}
+.sideways>li>a {
+  border-bottom: 1px solid #ddd;
+  border-right-color: transparent;
+  text-align: center;
+  border-radius: 4px 4px 0px 0px;
+}
+.sideways>li.active>a,
+.sideways>li.active>a:hover,
+.sideways>li.active>a:focus {
+  border-bottom-color: transparent;
+  border-right-color: #ddd;
+  border-left-color: #ddd;
+}
+.sideways.tabs-left {
+  left: -50px;
+}
+.sideways.tabs-right {
+  right: -50px;
+}
+.sideways.tabs-right>li {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.sideways.tabs-left>li {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+</style>
+<script>
+$(document).ready(function() {
+    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
+});
+</script>
+<body>
+<div class="container-fluid">
+  <div class="jumbotron">
+    <h1>Booksonwheels</h1>      
+    <p>Admin Tracking Page</p>
+  </div>
+  
+
+	
+	<div class="col-xs-3"> <!-- required for floating -->
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs tabs-left"><!-- 'tabs-right' for right tabs -->
+    <li class="active"><a href="#home" data-toggle="tab">Rent Today</a></li>
+    <li><a href="#profile" data-toggle="tab">Bought Today</a></li>
+    <li><a href="#messages" data-toggle="tab">To be Returned</a></li>
+    
+  </ul>
+</div>
+<div class="col-xs-9">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="home"><h3>Books Demanded for rent today</h3>
+	<form action="/admin/todeliver" method="post">{%csrf_token%}
+	<table class="table table-responsive"><th>&nbsp</th><th>User</th><th>Book Name</th><th>Owner</th><th>quantity</th><th>Status</th>
+	{% for b in rent %}
+	<tr><td>
+		<p>
+      <input type="checkbox" id={{b.paymentid_id}} name={{b.paymentid_id}}  />
+      <label for={{b.paymentid_id}}></label>
+    </p>
+	</td><td><a href="#" data-toggle="popover" title="User Info" data-content={{b.useradd}}{{b.userphone}}>{{b.username}}</a></td><td>{{b.name}}</td>
+	
+	<td><a href="#" data-toggle="popover" title="Owner Info" data-content={{b.owneradd}}{{b.ownerphone}}>{{b.ownername}}</a></td><td>{{b.quantity}}</td><td>{{b.status}}</td></tr>
+	{% endfor %}
+	</table>
+	<br/>
+	<button type="submit" class="btn btn-success">Mark as Done</button>
+	</form>
+	</div>
+     
+
+      <div class="tab-pane" id="profile"><h3>Books Demanded for Buy today</h3>
+      <form action="/admin/todeliver" method="post">{%csrf_token%}
+	<table class="table table-responsive"><th>&nbsp</th><th>User</th><th>Book Name</th><th>Owner</th><th>quantity</th><th>Status</th>
+	{% for b in order %}
+	<tr><td>
+		<p>
+      <input type="checkbox" id={{b.paymentid_id}} name={{b.paymentid_id}}  />
+      <label for={{b.paymentid_id}}></label>
+    </p>
+	</td><td><a href="#" data-toggle="popover" title="User Info" data-content={{b.useradd}}{{b.userphone}}>{{b.username}}</a></td><td>{{b.name}}</td>
+	<td><a href="#" data-toggle="popover" title="Owner Info" data-content={{b.owneradd}}{{b.ownerphone}}>{{b.ownername}}</a></td><td>{{b.quantity}}</td><td>{{b.status}}</td></tr>
+	{% endfor %}
+	</table>
+  <button type="submit" class="btn btn-success">Mark as Done</button>
+      </form>
+</div>
+      <div class="tab-pane" id="messages"><h3>Books to be returned today</h3>
+	<form action="/admin/doreturn" method="post">{%csrf_token%}
+  <table class="table table-responsive"><th>&nbsp</th><th>User</th><th>Book Name</th><th>Owner</th><th>quantity</th><th>Status</th>
+	{% for b in returnbooks %}
+	<tr><td>
+		<p>
+      <input type="checkbox" id={{b.paymentid_id}} name={{b.paymentid_id}} />
+      <label for={{b.paymentid_id}}></label>
+    </p>
+	</td><td><a href="#" data-toggle="popover" title="User Info" data-content={{b.useradd}}{{b.userphone}}>{{b.username}}</a></td><td>{{b.name}}</td><td><a href="#" data-toggle="popover" title="Owner Info" data-content={{b.owneradd}}{{b.ownerphone}}>{{b.ownername}}</a></td><td>{{b.quantity}}</td><td>{{b.status}}</td></tr>
+	{% endfor %}
+	</table>
+<button type="submit" class="btn btn-success">Mark as Done</button>
+</form>
+</div>
+    </div>
+</div>
+</div>
+<script src="{% static 'js/jquery-1.12.2.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();   
+});
+</script>
+
+</body>
+</html>
