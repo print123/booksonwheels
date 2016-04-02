@@ -394,24 +394,11 @@ def addToCart(request):
     except:
         return HttpResponseRedirect("/login")
 
-def wlToCart(request):
-    c=CartClass(request.session["userid"])
-    b=BookClass()
-    dosell = True
-    quantity=1
-    print "1"
-    print request.POST["ISBN"]
-    print "2"
-    timeperiod=1
-    price=b.getPrice(request.POST["ISBN"])
-    if price['rentprice']< price['sellprice']:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'],timeperiod)
-    else:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'],timeperiod)   
-    context = {}
-    temp=request.session["cartquant"]+1
-    request.session["cartquant"]=temp
-    return HttpResponseRedirect("/")
+def wlToCart(request):    
+    return HttpResponseRedirect("/productdetails?id="+request.POST.get('ISBN')) 
+
+
+
 
 def addToWishlist(request):
     try:
@@ -478,9 +465,11 @@ def select(request):
     if request.method=="POST":
         if 'cart' in request.POST:
             return addToCart(request)
-        else:
+        elif 'wishlist' in request.POST:
             return addToWishlist(request)
-
+        else:
+            addToCart(request)
+            return checkout(request)
     return HttpResponseRedirect('/')
 
 def update(request):
@@ -495,9 +484,7 @@ def update(request):
 def updateCart(request):
   #  try:
     if request.method == 'POST':
-        cartObj=CartClass(request.session["userid"])   
-        for i in request.POST:
-            print i            
+        cartObj=CartClass(request.session["userid"])                       
         cartObj.update(request.POST["name"],request.session["userid"],int(request.POST["quantity"]))                    
         return HttpResponseRedirect("/cart")            
    # except:
@@ -542,13 +529,14 @@ def deliver(request):
     except:
         return HttpResponseRedirect("/login")
 
-
-
 @csrf_exempt
 def invoice(request):
     try:
-        custObj = CustomerClass(request.session["userid"])        
-        custObj.bookCheckout()        
-        return HttpResponseRedirect("/cart")
+        if 'confirm' in request.POST:
+            custObj = CustomerClass(request.session["userid"])        
+            custObj.bookCheckout()        
+            return HttpResponseRedirect("/orders")
+        else:
+            return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
