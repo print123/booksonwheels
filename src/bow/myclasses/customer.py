@@ -249,8 +249,8 @@ class CustomerClass(UserClass):
 
         #print sellquantity
         
-        #print rentquantity
-        
+        #print rentquantity        
+        imageurl=""
         if 'imageurl' in lst:
             imageurl=lst['imageurl']            
         elif 'old' in request.session:
@@ -268,6 +268,13 @@ class CustomerClass(UserClass):
             urlretrieve(imageurl1,fname)
             imageurl='images\\'+t_ISBN+'.jpg'
             del request.session['imageurl']
+        
+        from PIL import Image
+        import PIL
+        furl="C:\Users\Lenovo\Documents\Github\\booksonwheels\src\\bow\\static\\"+imageurl                
+        img=Image.open(furl)
+        img=img.resize((128,192),PIL.Image.ANTIALIAS)
+        img.save(furl)
         if 'summary' in lst:
             summary=lst['summary']            
         else:            
