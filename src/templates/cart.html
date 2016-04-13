@@ -31,7 +31,7 @@
     <script src="/static/js/notify.js"></script>
 	<script>
 		function notif()
-		{			
+		{					
 			$.notify("added to cart","success")	
 		}		
 	</script>
@@ -84,16 +84,12 @@
 								<p>{{b.ISBN}}</p>
 							</td>
 							<td class="cart_price">
-<<<<<<< HEAD
 								<p>{{ b.sellprice }} </p>
 								{%if b.dosell == True%}
 								{%else%}
 								<p>For {{b.timeperiod}} Months</p>
 								{%endif%}
 								
-=======
-								<p>{{b.sellprice}} </p>
->>>>>>> 646e04bbf29402fc67b7620fd3e9ae192f40efc0
 							</td>
 
 							<td class="cart_quantity">
@@ -160,8 +156,9 @@
 	<script src="/static/js/bootstrap.min.js"></script>
 	<script src="/static/js/jquery.scrollUp.min.js"></script>
     <script src="/static/js/jquery.prettyPhoto.js"></script>
-    <script src="/static/js/main.js"></script>
-    <script src="{% static 'js/notify.js'%}"></script>
+    <script src="/static/js/main.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <script src="{% static 'js/notify.js'%}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </body>
 </html>

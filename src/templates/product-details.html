@@ -32,7 +32,7 @@
     <script src="/static/js/notify.js"></script>
 	<script>
 		function notif()
-		{			
+		{						
 			$.notify("Your Book has been added","success")	
 		}		
 	</script>
@@ -103,44 +103,51 @@
       <input type="hidden" name="sellprice" value={{sellp}} >
     </p>
 									{%endif%}
+									{% if b.quantity %}
 									{% if rentp %}
 									<p>
 
 
       <input type="radio" id="test2" name="group1" value="rent" onclick="myfunction()" />
 
-
       <label for="test2">Rent</label>
       <input type="hidden" value={{rentp}} name="rentprice">
     </p>
 									{%endif%}<br/>
+									{%endif%}
 
-									Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center">
-									<div id="time" style="display: none">
-									Rent Period (Months) : <input type="Text" name="time" style="width: 20%;text-align: center" placeholder="Time period(Months)" value="1">
-									</div><br/>
-									<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
-										<i class="fa fa-shopping-cart pull-left"></i>
-										Add to cart
-									</button><br/>
-									<button name="wishlist" type="submit" class="btn btn-fefault cart" style="width:30%">
-										<i class="fa fa-shopping-cart pull-left"></i>
-										Add to Wishlist
-									</button><br/>
-									<button name="checkout" type="submit" class="btn btn-fefault cart" style="width:30%">
-										<span id="checkout" style="margin-top: 0%">Buy/Rent Now</span>
-									</button>
-									
-									<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
-									<input type="hidden" name="ISBN" value={{b.ISBN}}><br/>
-
-									<div class="col-sm-4">
-									
-									
-									</form><br/>						
-									
-									
-								
+									{%if b.quantity %}
+										Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center">
+										<div id="time" style="display: none">
+										Rent Period (Months) : <input type="Text" name="time" style="width: 20%;text-align: center" placeholder="Time period(Months)" value="1">
+										</div><br/>
+										<button  name="cart" type="submit" class="btn btn-fefault cart" style="width:30%">
+											<i class="fa fa-shopping-cart pull-left"></i>
+											Add to cart
+										</button><br/>
+										<button name="wishlist" type="submit" class="btn btn-fefault cart" style="width:30%">
+											<i class="fa fa-shopping-cart pull-left"></i>
+											Add to Wishlist
+										</button><br/>
+										<button name="checkout" type="submit" class="btn btn-fefault cart" style="width:30%">
+											<span id="checkout" style="margin-top: 0%">Buy/Rent Now</span>
+										</button>									
+										<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
+										<input type="hidden" name="ISBN" value={{b.ISBN}}><br/>
+										<div class="col-sm-4">																		
+										</form><br/>						
+									{% else %}
+										Quantity:<input type="Text" name="quantity" placeholder="Quantity" value="1" style="width: 20%;text-align: center" disabled>
+										<br/>
+										<button name="wishlist" type="submit" class="btn btn-fefault cart" style="width:30%">
+											<i class="fa fa-shopping-cart pull-left"></i>
+											Add to Wishlist
+										</button><br/>																			
+										<!--<input type="hidden" name="bookid" value={{b.bookid}}>-->
+										<input type="hidden" name="ISBN" value={{b.ISBN}}><br/>
+										<div class="col-sm-4">																		
+										</form><br/>						
+										{%endif %}
 								<p><b>Availability:</b> 
 								{%if b.quantity %}		
 								In Stock</p>
@@ -168,9 +175,6 @@
 								<div class="col-sm-12">
 									
 									<p>{{b.summary}}</p>
-									
-									
-									
 								</div>
 							</div>
 							

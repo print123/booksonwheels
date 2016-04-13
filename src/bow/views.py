@@ -166,6 +166,7 @@ def getInfo(request):
         b=BookClass()
         bookid=b.getBookid(t_isbn)        
         need=[]
+        got={}
         flag=False
         if not bookid==-1:
             owner=request.session['userid']                    
@@ -173,21 +174,29 @@ def getInfo(request):
             bookObj=BookClass()
             b1=bookObj.getBook(t_isbn)
             request.session["ISBN"]=t_isbn  
+            got['ISBN']=t_isbn
             b=b1[0]          
             author=b.author
             request.session['author']=author
+            got['author']=author
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
+            got['imageurl']=imageurl
             genre=b.genre
             request.session['genre']=genre
+            got['genre']=genre
             summary=b.summary
             request.session['summary']=summary
+            got['summary']=summary
             publisher=b.publisher
             request.session['publisher']=publisher
+            got['publisher']=publisher
             language=b.language
             request.session['language']=language
-            title=b.title
+            got['language']=language
+            title=b.title            
             request.session['title']=title
+            got['title']=title
             rating=4.0
             request.session['old']=True              
         else:
@@ -200,11 +209,10 @@ def getInfo(request):
                     need.append(i)
                 elif i=='imageurl' and lst[i]=='':
                     flag=True
-                else:
-                    print i
+                else:                    
                     request.session[i]=lst[i]
         #print need
-        context={'find':need,'ISBN':t_isbn}
+        context={'got':got,'find':need,'ISBN':t_isbn}
 
         
         if flag==True:
