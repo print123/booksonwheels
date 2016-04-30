@@ -80,14 +80,15 @@
                             
                             <td class="cart_quantity">
                                 <div class="cart_quantity_button">                                  
-                                    <input class="cart_quantity_input" type="text" name="quantity" value={{b.quantity}} autocomplete="off" size="2">                                    
+                                    
+                                    <p>{{b.quantity}}</p>                                    
                                 </div>
                             </td>
                             <td class="cart_price">
                                 <p>{{b.sellprice}}</p>
                             </td>
                             <td class="cart_description">
-                                <p>{{type}}</p>
+                                <p>{{b.type}}</p>
                             </td>
                             <td class="cart_delete">
                             <form action="/review" method="POST" style="margin-left: 20%">                     

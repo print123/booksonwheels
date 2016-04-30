@@ -548,10 +548,10 @@ def deliver(request):
 
 @csrf_exempt
 def invoice(request):
-    try:
+    try:        
         if 'confirm' in request.POST:
             custObj = CustomerClass(request.session["userid"])        
-            custObj.bookCheckout()        
+            custObj.bookCheckout()             
             return HttpResponseRedirect("/orders")
         else:
             return HttpResponseRedirect("/cart")
