@@ -201,7 +201,7 @@ def getInfo(request):
             request.session['old']=True              
         else:
             CustObj=CustomerClass(request.session["userid"])
-            lst=CustObj.uploadBook(t_isbn)
+            lst=CustObj.uploadBook(t_isbn,got)
             
             
             for i in lst:
@@ -238,8 +238,10 @@ def addInfo(request):
         t_list=[]                          
         doc={'_id':request.POST['ISBN'],'comments':t_list}
         server=Server()
-        db=server['reviews']        
-        db.save(doc)
+        db=server['reviews']   
+        temp=db.get(request.POST['ISBN'])             
+        if temp is None:
+            db.save(doc)
         sellprice=request.POST.get('sellprice')
         rentprice=request.POST.get('rentprice')
         sellquantity=request.POST.get('sellquantity')
@@ -530,6 +532,8 @@ def checkout(request):
             return render(request, "checkout.html", context)        
     except:
         return HttpResponseRedirect("/login")
+
+
 @csrf_exempt
 def deliver(request):
     try:

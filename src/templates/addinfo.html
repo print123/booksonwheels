@@ -70,10 +70,10 @@ $('.dropdown-button').dropdown({
 	</header><!--/header-->				
 	<section>
 		<div class="container">
-		{%if got%}
+		{%if got%}				
 		<div class="row">			
 				<h2 class="title text-center">Your Book Details</h2>							
-				<div class="signup-form"><!--sign up form-->												
+				<div class="signup-form"><!--sign up form-->					
 					{%if got.title%}					
 						<h2>Title:{{got.title}}</h2>
 					{%endif%}
@@ -94,8 +94,7 @@ $('.dropdown-button').dropdown({
 					{%endif%}
 					{%if got.summary%}					
 						<h2>Summary:{{got.summary}}</h2>
-					{%endif%}
-					
+					{%endif%}					
 				</div>
 			</div>
 			{%endif%}

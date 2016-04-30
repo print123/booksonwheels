@@ -66,40 +66,21 @@ class CartClass:
         wish=[]                    
         for i in cartlist:                    
             if i['dosell']:                                                                                
-                statObj=Status.objects.filter(ISBN=i['ISBN'],sellprice=i['sellprice']).first()                
-                if statObj.sellquantity < i['quantity']:                                        
-                    if statObj.sellquantity == 0:                                                
-                        wish.append(i['ISBN'])             
-                        self.removeFromCart(i['ISBN'],i['sellprice'])
-                        del i                        
-                    else:                        
-                        i['quantity']=statObj.sellquantity                                                                                               
-                        wish.append(i['ISBN'])                                     
-                        statObj.quantity=statObj.quantity-statObj.sellquantity                                                       
-                        statObj.sellquantity=0                                                            
+                statObj=Status.objects.filter(ISBN=i['ISBN'],sellprice=i['sellprice']).first()                                                
+
+                if statObj.sellquantity == 0:                                                
+                    wish.append(i['ISBN'])             
+                    self.removeFromCart(i['ISBN'],i['sellprice'])
+                    del i                                           
                 else:
-                    statObj.quantity=statObj.quantity-i['quantity']
-                    statObj.sellquantity=statObj.sellquantity-i['quantity']                    
-                statObj.save()                
+                    i['quantity']=min(i['quantity'],statObj.sellquantity)
             else:
                 statObj=Status.objects.filter(ISBN=i['ISBN'],rentprice=i['sellprice']).first()
-                curr=statObj.quantity-statObj.sellquantity                
-                if curr < i['quantity']:
-                    if curr == 0:                        
-                        wish.append(i['ISBN'])  
-                        self.removeFromCart(i['ISBN'],i['sellprice'])           
-                        del i
-                    else:
-                        i['quantity']=curr
-                        wish.append(i['ISBN'])             
-                        statObj.quantity=statObj.quantity-curr
+                curr=statObj.quantity-statObj.sellquantity                                
+                if curr == 0:                        
+                    wish.append(i['ISBN'])  
+                    self.removeFromCart(i['ISBN'],i['sellprice'])           
+                    del i                     
                 else:
-                    statObj.quantity=statObj.quantity-i['quantity']
-                statObj.save()                 
-
-
-
-            for i in cartlist:
-                self.removeFromCart(i['ISBN'],i['sellprice'])           
-                self.addToCart(i['ISBN'],i['quantity'],i['dosell'],i['sellprice'],i['timeperiod'])
-            return wish,cartlist
+                    i['quantity']=min(i['quantity'],curr)                    
+        return wish,cartlist
