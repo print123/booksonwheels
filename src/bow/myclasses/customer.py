@@ -155,7 +155,9 @@ class CustomerClass(UserClass):
     def uploadBook(self,t_ISBN):
         #incorrect isbn not handled only if info not found handled
         lst={}
+        got={}
         lst['ISBN']=t_ISBN                
+        got['ISBN']=t_ISBN
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)        
         lst['imageurl']=''
         lst['author']=''
@@ -173,14 +175,15 @@ class CustomerClass(UserClass):
         mydict=temp[0]        
         if 'title' in mydict['volumeInfo']:
             lst['title']=mydict['volumeInfo']['title']
+            got['title']=lst['title']
         
         if 'authors' in mydict['volumeInfo']:
             for i in mydict['volumeInfo']['authors']:
                 lst['author']=(yaml.safe_load(i))
+                got['author']=lst['author']
         ISBN13=mydict['volumeInfo']['industryIdentifiers'][0]['identifier']
         ISBN10=mydict['volumeInfo']['industryIdentifiers'][1]['identifier']
-        #lst['ISBN']=t_ISBN
-        
+        #lst['ISBN']=t_ISBN        
 
         #summary=mydict['volumeInfo']['description']
 
@@ -191,22 +194,27 @@ class CustomerClass(UserClass):
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
             urlretrieve(lst['imageurl'],fname)
+            got['imageurl']=fname
             imageurl='images\\'+ISBN13+'.jpg'
 
 
         if 'categories' in mydict["volumeInfo"]:
             for i in mydict['volumeInfo']['categories']:
                 lst['genre']=(yaml.safe_load(i))
+                got['genre']=lst['genre']
 
         if 'description' in mydict["volumeInfo"]:
             lst['summary']=mydict['volumeInfo']['description']
             lst['summary']=lst['summary'][:990]
+            got['summary']=lst['summary']
         if 'publisher' in mydict["volumeInfo"]:
             lst['publisher']=mydict['volumeInfo']['publisher']
+            got['publisher']=lst['publisher']
         if 'description' in mydict["volumeInfo"]:
             lst['language']=mydict['volumeInfo']['language']
+            got['language']=lst['language']
         #print lst
-        return lst
+        return lst        
        # b=Book(owner_id_id=self.userid,author=author,actual_price=price,ISBN=t_ISBN,imageurl=imageurl,genre=genre,dosell=dosell,dorent=dorent,available=True,summary=summary,publisher=publisher,language=language,title=title,rating=4.0)
         #b.save()
 
@@ -249,8 +257,8 @@ class CustomerClass(UserClass):
 
         #print sellquantity
         
-        #print rentquantity
-        
+        #print rentquantity        
+        imageurl=""
         if 'imageurl' in lst:
             imageurl=lst['imageurl']            
         elif 'old' in request.session:
@@ -268,6 +276,13 @@ class CustomerClass(UserClass):
             urlretrieve(imageurl1,fname)
             imageurl='images\\'+t_ISBN+'.jpg'
             del request.session['imageurl']
+        
+        from PIL import Image
+        import PIL
+        furl="C:\Users\Lenovo\Documents\Github\\booksonwheels\src\\bow\\static\\"+imageurl                
+        img=Image.open(furl)
+        img=img.resize((128,192),PIL.Image.ANTIALIAS)
+        img.save(furl)
         if 'summary' in lst:
             summary=lst['summary']            
         else:            

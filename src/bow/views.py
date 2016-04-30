@@ -166,6 +166,7 @@ def getInfo(request):
         b=BookClass()
         bookid=b.getBookid(t_isbn)        
         need=[]
+        got={}
         flag=False
         if not bookid==-1:
             owner=request.session['userid']                    
@@ -173,21 +174,29 @@ def getInfo(request):
             bookObj=BookClass()
             b1=bookObj.getBook(t_isbn)
             request.session["ISBN"]=t_isbn  
+            got['ISBN']=t_isbn
             b=b1[0]          
             author=b.author
             request.session['author']=author
+            got['author']=author
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
+            got['imageurl']=imageurl
             genre=b.genre
             request.session['genre']=genre
+            got['genre']=genre
             summary=b.summary
             request.session['summary']=summary
+            got['summary']=summary
             publisher=b.publisher
             request.session['publisher']=publisher
+            got['publisher']=publisher
             language=b.language
             request.session['language']=language
-            title=b.title
+            got['language']=language
+            title=b.title            
             request.session['title']=title
+            got['title']=title
             rating=4.0
             request.session['old']=True              
         else:
@@ -200,11 +209,10 @@ def getInfo(request):
                     need.append(i)
                 elif i=='imageurl' and lst[i]=='':
                     flag=True
-                else:
-                    print i
+                else:                    
                     request.session[i]=lst[i]
         #print need
-        context={'find':need,'ISBN':t_isbn}
+        context={'got':got,'find':need,'ISBN':t_isbn}
 
         
         if flag==True:
@@ -262,7 +270,7 @@ def addInfo(request):
             return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
-    d='C:\\Users\\shunakthakar\\SDP\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    d='C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
     destination = open(d, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
@@ -394,24 +402,11 @@ def addToCart(request):
     except:
         return HttpResponseRedirect("/login")
 
-def wlToCart(request):
-    c=CartClass(request.session["userid"])
-    b=BookClass()
-    dosell = True
-    quantity=1
-    print "1"
-    print request.POST["ISBN"]
-    print "2"
-    timeperiod=1
-    price=b.getPrice(request.POST["ISBN"])
-    if price['rentprice']< price['sellprice']:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['rentprice'],timeperiod)
-    else:
-        c.addToCart(request.POST["ISBN"],quantity,dosell,price['sellprice'],timeperiod)   
-    context = {}
-    temp=request.session["cartquant"]+1
-    request.session["cartquant"]=temp
-    return HttpResponseRedirect("/")
+def wlToCart(request):    
+    return HttpResponseRedirect("/productdetails?id="+request.POST.get('ISBN')) 
+
+
+
 
 def addToWishlist(request):
     try:
@@ -478,9 +473,11 @@ def select(request):
     if request.method=="POST":
         if 'cart' in request.POST:
             return addToCart(request)
-        else:
+        elif 'wishlist' in request.POST:
             return addToWishlist(request)
-
+        else:
+            addToCart(request)
+            return checkout(request)
     return HttpResponseRedirect('/')
 
 def update(request):
@@ -545,14 +542,15 @@ def deliver(request):
     except:
         return HttpResponseRedirect("/login")
 
-
-
 @csrf_exempt
 def invoice(request):
     try:
-        custObj = CustomerClass(request.session["userid"])        
-        custObj.bookCheckout()        
-        return HttpResponseRedirect("/cart")
+        if 'confirm' in request.POST:
+            custObj = CustomerClass(request.session["userid"])        
+            custObj.bookCheckout()        
+            return HttpResponseRedirect("/orders")
+        else:
+            return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
 
