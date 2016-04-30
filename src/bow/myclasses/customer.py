@@ -279,7 +279,7 @@ class CustomerClass(UserClass):
         
         from PIL import Image
         import PIL
-        furl="C:\Users\Lenovo\Documents\Github\\booksonwheels\src\\bow\\static\\"+imageurl                
+        furl="C:\Users\JigarSoni\Documents\Github\\booksonwheels\src\\bow\\static\\"+imageurl                
         img=Image.open(furl)
         img=img.resize((128,192),PIL.Image.ANTIALIAS)
         img.save(furl)
