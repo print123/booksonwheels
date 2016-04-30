@@ -1,3 +1,5 @@
+
+
 """A Class that represents a Customer """
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -79,36 +81,44 @@ class CustomerClass(UserClass):
         cartObj=Cart.objects.filter(userid_id=self.userid)                            
         for i in cartObj:            
             if i.dosell:                
-                bookObj=BookClass()
+                bookObj=BookClass()                
                 temp_id=bookObj.getBookid(i.ISBN)
-                bObj=Book.objects.filter(ISBN=i.ISBN).first()
-                bObj.quantity=bObj.quantity-i.quantity
-                bObj.sellquantity=bObj.sellquantity-i.quantity
+                bObj=Book.objects.filter(ISBN=i.ISBN).first()            
+                statObj=Status.objects.filter(ISBN=i.ISBN,sellprice=i.sellprice).first()                                                                       
+                squant=statObj.sellquantity                
+                i.quantity=min(squant,i.quantity)                
+                bObj.quantity=bObj.quantity-i.quantity                
+                bObj.sellquantity=bObj.sellquantity-i.quantity                
                 bObj.save()                
                 while (i.quantity>0):
                     temp=i.quantity
-                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)
-                    
+                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                          
                     price=i.sellprice*(temp-i.quantity)
+                    statObj.sellquantity=statObj.sellquantity-(temp-i.quantity)
+                    statObj.quantity=statObj.quantity-(temp-i.quantity)                   
                     payment=Payment(mode='cd',amount=price,ispending=True)
                     payment.save()
-
                     order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=(temp-i.quantity))
                     order.save()
+                statObj.save()
             else:
-                bookObj=BookClass()
-                temp_id=bookObj.getBookid(i.ISBN)                    
-                bObj=Book.objects.filter(ISBN=i.ISBN).first()
-                bObj.quantity=bObj.quantity-i.quantity
+                bookObj=BookClass()                
+                temp_id=bookObj.getBookid(i.ISBN)                                    
+                bObj=Book.objects.filter(ISBN=i.ISBN).first()                
+                statObj=Status.objects.filter(ISBN=i.ISBN,rentprice=i.sellprice).first()                                                                      
+                squant=statObj.quantity
+                i.quantity=min(squant,i.quantity)                
+                bObj.quantity=bObj.quantity-i.quantity                
                 bObj.save()
-                while(i.quantity>0):
-                    temp=i.quantity                    
-                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                    
-                    price=i.sellprice*(temp-i.quantity)                    
-                    payment=Payment(mode='cd',amount=price,ispending=True)                    
+                while(i.quantity>0):                    
+                    temp=i.quantity                                        
+                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                        
+                    price=i.sellprice*(temp-i.quantity)                                        
+                    statObj.quantity=statObj.quantity-(temp-i.quantity)                    
+                    payment=Payment(mode='cd',amount=price,ispending=True)                                        
                     payment.save()                          
-                    date_of_return = (datetime.today()+relativedelta(months=1)).isoformat()                    
-                    rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                        
+                    date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
+                    rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
                     rent.save()                                        
             i.delete()
             
@@ -152,10 +162,9 @@ class CustomerClass(UserClass):
 
 
 
-    def uploadBook(self,t_ISBN):
+    def uploadBook(self,t_ISBN,got):
         #incorrect isbn not handled only if info not found handled
-        lst={}
-        got={}
+        lst={}        
         lst['ISBN']=t_ISBN                
         got['ISBN']=t_ISBN
         url='https://www.googleapis.com/books/v1/volumes?q=isbn:'+(t_ISBN)        
