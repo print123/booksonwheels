@@ -34,6 +34,30 @@ $('.dropdown-button').dropdown({
 
 		}); // End Document Ready
 })(jQuery); // End of jQuery name space
+	</script>
+	<script type="text/javascript">
+	function checkISBN()
+	{
+			var name = document.getElementById('ISBN');
+			var messag = document.getElementById('confirmationMessage1');
+			var goodColor = "#66cc66";
+		    var badColor = "#ff6666";
+			if(name.value.length == 13)
+			{
+				name.style.backgroundColor = goodColor;
+		        messag.style.color = goodColor;
+		        messag.innerHTML = "";
+		        document.getElementById("submit").disabled = false;
+			}
+
+			else
+			{
+				name.style.backgroundColor = badColor;
+		        messag.style.color = badColor;
+				messag.innerHTML = "Enter 13 digit ISBN";
+				document.getElementById("submit").disabled = true;
+			}
+	}
 	  </script>
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
@@ -66,10 +90,11 @@ $('.dropdown-button').dropdown({
 				<div class="signup-form"><!--sign up form-->						
 						<form action="/getInfo/" name="formName" method="post">
 							{% csrf_token %}
-							ISBN:<input type="Text" name="name" id="name" class="form-control" placeholder="ISBN of your book" style="color:black"><br>		
+							ISBN:<input type="Text" name="name" id="ISBN" class="form-control" oninput="checkISBN()" 	placeholder="ISBN of your book" style="color:black"><br>
+							<span id="confirmationMessage1" class="confirmMessage"></span><br>									
 							<p>You can find isbn of your book below the barcode of your Book comprising of 13 digits</p>
 							
-							<button type="submit" id="submit" class="btn btn-default">Lookup</button>
+							<button type="submit" id="submit" class="btn btn-default" disabled>Lookup</button>
 						</form>					
 				</div>
 			</div>
