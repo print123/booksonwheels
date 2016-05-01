@@ -355,8 +355,7 @@ def logout(request):
 def bookOfGenre(request):
     if request.GET["genre"] is not None:
         res = SearchClass().searchOnGenre(request.GET["genre"])
-        context = {'result': res}
-        print len(res)
+        context = {'result': res}        
         return render_to_response("genre.html",RequestContext(request,context))
 
 
@@ -432,13 +431,32 @@ def removeFromBooks(request):
         return HttpResponseRedirect("/login")
 
 def updateQuantity(request):
-    try:
-        bookid=request.POST["id"]        
-        newQty=int(request.POST["newquant"])        
-        custObj=CustomerClass(request.session["userid"])        
-        custObj.updateQuantity(bookid,newQty)       
+    try:        
+        bookid=request.POST["id"]                    
+        ISBN=request.POST["ISBN"]
+        if request.POST["sellprice"] is not None:
+            sellprice=request.POST["sellprice"]
+        else:
+            sellprice=0
+        if request.POST["sellquant"] is not None:
+            sellquant=request.POST["sellquant"]
+        else:
+            sellquant=0
+        
+        if request.POST["rentprice"] is not None:
+            rentprice=request.POST["rentprice"]
+        else:
+            rentprice=0        
+        if request.POST["rentquant"] is not None:
+            rentquant=request.POST["rentquant"]
+        else:
+            rentquant=0                
+        custObj=CustomerClass(request.session["userid"])                
+        custObj.updateQuantity(bookid,ISBN,sellprice,rentprice,sellquant,rentquant)       
         return HttpResponseRedirect("/mybooks")
-    except:
+    except Exception as ex:
+        print ex
+        print "am i here"
         return HttpResponseRedirect("/login")
 
 def remove(request):
@@ -484,7 +502,7 @@ def select(request):
 
 def update(request):
     if request.method == 'POST':
-        if 'update' in request.POST:
+        if 'update' in request.POST:            
             return updateQuantity(request)
         elif 'remove' in request.POST:
             return removeFromBooks(request)

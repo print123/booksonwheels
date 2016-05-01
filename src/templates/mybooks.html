@@ -96,8 +96,18 @@
 											<p style="text-align:center">Rent Price:{{b.rentprice}}</p>				
 											{% endif %}
 											<p style="text-align:center">	Author:{{b.author}}</p>
-											
-											<input type="text" name="newquant" placeholder="Quantity:{{b.qty}}"  style="width:15%;font-size:100%;text-align:center">											
+											<input name ="ISBN" type="hidden" value={{b.ISBN}}>
+											Quantity:{{b.quantity}}<br/>
+											{% if b.dosell %}
+												<input name="sellquant" type="text" style="width:20%;font-size:100%;text-align:center" placeholder="SellQuantity">	
+												<input name="sellprice" type="hidden">
+												<br/>
+											{% endif %}	
+											{% if b.dorent %}
+												<input name="rentquant" type="text" style="width:20%;font-size:100%;text-align:center" placeholder="RentQuantity">	
+												<input name="rentprice" type="hidden">
+												<br/>
+											{% endif %}																			   
 											<button name="update" type="submit" class="btn btn-fefault cart" style="width:15%;font-size:80%">
 											<!--<i class="fa fa-shopping-cart pull-left"></i>-->
 												Update
