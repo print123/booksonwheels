@@ -272,7 +272,7 @@ def addInfo(request):
             return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
-    d='C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    d='bow/static/images/'+isbn+'.jpg'
     destination = open(d, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
