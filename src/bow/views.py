@@ -24,7 +24,7 @@ from datetime import datetime
 def autocomplete(request):
     print "In autocomplete"
     s = SearchClass()
-    simple_qs = s.searchOnString(request.GET["stext"])
+    simple_qs = s.searchToSuggest(request.GET["stext"])
     #results = ['starting']
     print simple_qs
     results=[]
@@ -96,8 +96,8 @@ def signup(request):
         nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:
             nuser.addUser()            
-        except:
-               return render(request, "u.html")
+        except Exception as e:
+                print e
 
     return HttpResponseRedirect("/")
 
@@ -272,7 +272,7 @@ def addInfo(request):
             return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
-    d='C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    d='bow/static/images/'+isbn+'.jpg'
     destination = open(d, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)

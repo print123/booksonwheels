@@ -1,8 +1,7 @@
 """A Class that represents a User in the System"""
 
 from ..models import User, Upload
-
-
+import md5
 class UserClass:
     def __init__(self, name, password, email):
         self.name = name
@@ -18,7 +17,9 @@ class UserClass:
                 return False
         else:
             try:
-                ans = User.objects.get(email=self.email, password=self.password)
+                m=md5.new()
+                m.update(self.password)
+                ans = User.objects.get(email=self.email, password=m.hexdigest())
             except:
                 return False
             if ans is not None:
@@ -30,5 +31,8 @@ class UserClass:
 
     def addUser(self):
         """To Add New User """
-        newuser = User(name=self.name, password=self.password, email=self.email)
+        m=md5.new()
+        m.update(self.password)
+        print m.hexdigest()
+        newuser = User(name=self.name, password=m.hexdigest(), email=self.email)
         newuser.save()

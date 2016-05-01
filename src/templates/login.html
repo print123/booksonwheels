@@ -70,6 +70,11 @@
 			        document.getElementById("submit").disabled = false;
 			}
 		}
+		function checkName()
+		{
+			var message = document.getElementById('name');
+			
+		}
 	</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,7 +154,7 @@
 
 
 							{% csrf_token %}
-							Name:<input type="Text" name="name" id="name" class="form-control" placeholder="Your Name" style="color:black"><br>
+							Name:<input type="Text" name="name" id="name" class="form-control" onkeyup="checkName()" placeholder="Your Name" style="color:black"><br>
 							Email:<input type="Text" name="email" class="form-control" id="emailid" onkeyup="checkEmail()" onchange="checkEmail()" placeholder="Your Email Address" style="color:black">
 							<span id="confirmationMessage" class="confirmMessage"></span><br>
 							Password:<input type="Password" name="password1" id="password1" onkeyup="checkPass()" class="form-control" style="color:black"><br>
