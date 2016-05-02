@@ -102,24 +102,28 @@ class CustomerClass(UserClass):
                     order.save()
                 statObj.save()
             else:
-                bookObj=BookClass()                
-                temp_id=bookObj.getBookid(i.ISBN)                                    
-                bObj=Book.objects.filter(ISBN=i.ISBN).first()                
-                statObj=Status.objects.filter(ISBN=i.ISBN,rentprice=i.sellprice).first()                                                                      
-                squant=statObj.quantity
-                i.quantity=min(squant,i.quantity)                
-                bObj.quantity=bObj.quantity-i.quantity                
-                bObj.save()
-                while(i.quantity>0):                    
-                    temp=i.quantity                                        
-                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                        
-                    price=i.sellprice*(temp-i.quantity)                                        
-                    statObj.quantity=statObj.quantity-(temp-i.quantity)                    
-                    payment=Payment(mode='cd',amount=price,ispending=True)                                        
-                    payment.save()                          
-                    date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
-                    rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
-                    rent.save()                                        
+                try:
+                    bookObj=BookClass()                
+                    temp_id=bookObj.getBookid(i.ISBN)                                    
+                    bObj=Book.objects.filter(ISBN=i.ISBN).first()                
+                    statObj=Status.objects.filter(ISBN=i.ISBN,rentprice=i.sellprice).first()                                                                      
+                    squant=statObj.quantity
+                    i.quantity=min(squant,i.quantity)                
+                    bObj.quantity=bObj.quantity-i.quantity                
+                    bObj.save()
+                    while(i.quantity>0):                    
+                        temp=i.quantity                                        
+                        oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                        
+                        price=i.sellprice*(temp-i.quantity)                                        
+                        statObj.quantity=statObj.quantity-(temp-i.quantity)                    
+                        payment=Payment(mode='cd',amount=price,ispending=True)                                        
+                        payment.save()                          
+                        date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
+                        rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
+                        rent.save()                                        
+                except Exception as ex:
+                    print "hey bro"
+                    print ex
             i.delete()
             
 
@@ -141,26 +145,29 @@ class CustomerClass(UserClass):
         else:            
             statObj.quantity=statObj.quantity-qty            
             statObj.save()
-
     
-    def updateQuantity(self,bookid,newQty):
-        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
-        oldQty=upObj.qtyuploaded
-        oldaQty=upObj.qtyavailable
-        diff=newQty-oldQty
-        diff1=newQty-oldaQty
-        upObj.qtyuploaded=upObj.qtyuploaded+diff
-        upObj.qtyavailable=upObj.qtyavailable+diff1
-        upObj.save()
-        bookObj=Book.objects.filter(bookid=bookid).first()
-        t_ISBN=bookObj.ISBN
-        bookObj.quantity=bookObj.quantity+diff
-        bookObj.save()
-        statObj=Status.objects.filter(ISBN=t_ISBN).first()
-        statObj.quantity=statObj.quantity+diff
-        statObj.save()
-
-
+    def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
+        try:
+            newQty=sellquant+rentquant
+            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice).first()
+            oldQty=upObj.qtyuploaded
+            oldaQty=upObj.qtyavailable
+            diff=newQty-oldQty            
+            upObj.qtyuploaded=upObj.qtyuploaded+diff
+            upObj.qtyavailable=upObj.qtyavailable+diff
+            upObj.save()
+            bookObj=Book.objects.filter(bookid=bookid).first()
+            bookObj.quantity=bookObj.quantity+newQty
+            bookObj.sellquantity=bookObj.sellquantity+sellquant
+            t_ISBN=bookObj.ISBN
+            bookObj.save()
+            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()
+            statObj.quantity=statObj.quantity+newQty
+            statObj.sellquantity=statObj.sellquantity+squant
+            statObj.save()
+        except Exception as ex:
+            print ex
+    
 
     def uploadBook(self,t_ISBN,got):
         #incorrect isbn not handled only if info not found handled
@@ -288,7 +295,7 @@ class CustomerClass(UserClass):
         
         from PIL import Image
         import PIL
-        furl="C:\Users\Lenovo\Documents\Github\\booksonwheels\src\\bow\\static\\"+imageurl                
+        furl="bow/static/"+imageurl                
         img=Image.open(furl)
         img=img.resize((128,192),PIL.Image.ANTIALIAS)
         img.save(furl)

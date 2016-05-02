@@ -6,6 +6,7 @@
 	<script type="text/javascript">
 		var pass;
 		var email1;
+		var name1;
 		function checkPass()
 		{
 		    //Store the password field objects into variables ...
@@ -30,7 +31,7 @@
 		        message.style.color = goodColor;
 		        message.innerHTML = "Passwords Match!"
 		        pass = true;
-		        if(email1)
+		        if(email1 && name1)
 		        	document.getElementById("submit").disabled = false;		        	        		        
 		    }
 		    else{
@@ -66,8 +67,34 @@
 				message1.style.color = goodColor;
 				message1.innerHTML = "Id is valid!";
 				email1 = true;
-				if(pass)
+				if(pass && name1)
 			        document.getElementById("submit").disabled = false;
+			}
+		}
+		function checkName()
+		{
+			var name = document.getElementById('name');
+			var messag = document.getElementById('confirmationMessage1');
+			var goodColor = "#66cc66";
+		    var badColor = "#ff6666";
+			if(name.value.length == 0)
+			{
+				name.style.backgroundColor = badColor;
+		        messag.style.color = badColor;
+				messag.innerHTML = "Name must be field out";
+				name1 = false
+		        document.getElementById("submit").disabled = true;
+			}
+
+			else
+			{
+				name.style.backgroundColor = goodColor;
+		        messag.style.color = goodColor;
+		        messag.innerHTML = "";
+		        name1 = true;
+		        if(email1 && pass)
+		        	document.getElementById("submit").disabled = false;
+
 			}
 		}
 	</script>
@@ -110,15 +137,7 @@
 			</div>
 		</div><!--/header-middle-->
 	
-		<div class="header-bottom"><!--header-bottom-->
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-9">
-							{% include 'header.html' %}
-					</div>
-				</div>
-			</div>
-		</div><!--/header-bottom-->
+		
 	
 	{%if is_not_auth %}
 		
@@ -157,8 +176,9 @@
 
 
 							{% csrf_token %}
-							Name:<input type="Text" name="name" id="name" class="form-control" placeholder="Your Name" style="color:black"><br>
-							Email:<input type="Text" name="email" class="form-control" id="emailid" onkeyup="checkEmail()" onchange="checkEmail()" placeholder="Your Email Address" style="color:black">
+							Name:<input type="Text" name="name" id="name" class="form-control" onkeyup="checkName()" onchange="checkName()" placeholder="Your Name" style="color:black">
+							<span id="confirmationMessage1" class="confirmMessage"></span><br>
+							Email:<input type="Text" name="email" class="form-control" id="emailid" onchange="checkEmail()" placeholder="Your Email Address" style="color:black">
 							<span id="confirmationMessage" class="confirmMessage"></span><br>
 							Password:<input type="Password" name="password1" id="password1" onkeyup="checkPass()" class="form-control" style="color:black"><br>
 							Confirm Password:<input type="Password" name="password2" onkeyup="checkPass()" id="password2" onblur="validateField()" class="form-control" style="color:black">

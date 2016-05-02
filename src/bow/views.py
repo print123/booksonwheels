@@ -22,7 +22,7 @@ from datetime import datetime
 def autocomplete(request):
     print "In autocomplete"
     s = SearchClass()
-    simple_qs = s.searchOnString(request.GET["stext"])
+    simple_qs = s.searchToSuggest(request.GET["stext"])
     #results = ['starting']
     print simple_qs
     results=[]
@@ -94,8 +94,8 @@ def signup(request):
         nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:
             nuser.addUser()            
-        except:
-               return render(request, "u.html")
+        except Exception as e:
+                print e
 
     return HttpResponseRedirect("/")
 
@@ -270,7 +270,7 @@ def addInfo(request):
             return HttpResponseRedirect(url)
 
 def handle_uploaded_file(f,isbn):
-    d='C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\images\\'+isbn+'.jpg'
+    d='bow/static/images/'+isbn+'.jpg'
     destination = open(d, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
@@ -355,8 +355,7 @@ def logout(request):
 def bookOfGenre(request):
     if request.GET["genre"] is not None:
         res = SearchClass().searchOnGenre(request.GET["genre"])
-        context = {'result': res}
-        print len(res)
+        context = {'result': res}        
         return render_to_response("genre.html",RequestContext(request,context))
 
 
@@ -432,13 +431,32 @@ def removeFromBooks(request):
         return HttpResponseRedirect("/login")
 
 def updateQuantity(request):
-    try:
-        bookid=request.POST["id"]        
-        newQty=int(request.POST["newquant"])        
-        custObj=CustomerClass(request.session["userid"])        
-        custObj.updateQuantity(bookid,newQty)       
+    try:        
+        bookid=request.POST["id"]                    
+        ISBN=request.POST["ISBN"]
+        if request.POST["sellprice"] is not None:
+            sellprice=request.POST["sellprice"]
+        else:
+            sellprice=0
+        if request.POST["sellquant"] is not None:
+            sellquant=request.POST["sellquant"]
+        else:
+            sellquant=0
+        
+        if request.POST["rentprice"] is not None:
+            rentprice=request.POST["rentprice"]
+        else:
+            rentprice=0        
+        if request.POST["rentquant"] is not None:
+            rentquant=request.POST["rentquant"]
+        else:
+            rentquant=0                
+        custObj=CustomerClass(request.session["userid"])                
+        custObj.updateQuantity(bookid,ISBN,sellprice,rentprice,sellquant,rentquant)       
         return HttpResponseRedirect("/mybooks")
-    except:
+    except Exception as ex:
+        print ex
+        print "am i here"
         return HttpResponseRedirect("/login")
 
 def remove(request):
@@ -484,7 +502,7 @@ def select(request):
 
 def update(request):
     if request.method == 'POST':
-        if 'update' in request.POST:
+        if 'update' in request.POST:            
             return updateQuantity(request)
         elif 'remove' in request.POST:
             return removeFromBooks(request)
@@ -548,17 +566,30 @@ def deliver(request):
 
 @csrf_exempt
 def invoice(request):
-    try:
+    try:        
         if 'confirm' in request.POST:
             custObj = CustomerClass(request.session["userid"])        
-            custObj.bookCheckout()        
+            custObj.bookCheckout()             
             return HttpResponseRedirect("/orders")
         else:
             return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
 
+<<<<<<< HEAD
 def feedback(request):
     if request.method=="POST":
         request.POST['']
         
+=======
+def addfeedback(request):
+    if request.method=="POST":
+        emailid=request.POST['emailid']
+        feed=request.POST['feedback']
+        couch=Server()    
+        db=couch['feedback']
+        doc={'emailid':emailid,'feedback':feed,'datetime':str(datetime.now())}
+        db.save(doc)
+    return HttpResponseRedirect("/")
+    
+>>>>>>> c7942ddcc95ce0a5c69b9207929ee04907d8da9e

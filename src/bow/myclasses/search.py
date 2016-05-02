@@ -28,6 +28,22 @@ class SearchClass:
             results.append(res1)
         print results
         return results
+    def searchToSuggest(self, string):
+        results = []
+        result = Book.objects.filter(
+                Q(ISBN__iexact=string) |
+                Q(author__icontains=string) |
+                Q(title__icontains=string) 
+        )
+        b = BookClass()
+        for r in result:
+            res1=r.__dict__
+            p=b.getPrice(r.ISBN)
+            res1['sprice'] = p['sellprice']
+            res1['rprice'] = p['rentprice']
+            results.append(res1)
+        print results
+        return results
 
     def searchOnGenre(self, genre):
         result = Book.objects.filter(genre=genre)

@@ -127,6 +127,7 @@ $(document).ready(function() {
     <li class="active"><a href="#home" data-toggle="tab">Rent Today</a></li>
     <li><a href="#profile" data-toggle="tab">Bought Today</a></li>
     <li><a href="#messages" data-toggle="tab">To be Returned</a></li>
+    <li><a href="#feedback" data-toggle="tab">FeedBack</a></li>
     
   </ul>
 </div>
@@ -184,6 +185,24 @@ $(document).ready(function() {
 <button type="submit" class="btn btn-success">Mark as Done</button>
 </form>
 </div>
+
+
+  <div class="tab-pane" id="feedback"><h3>Feedbacks</h3>
+  
+  <table class="table table-responsive"><th>Email</th><th>Feedback</th><th>Date</th>
+  {% for b in feed %}
+  <tr>
+  <td>{{b.emailid}}</td>
+  
+  <td>{{b.feedback}}</td>
+  <td>{{b.datetime}}</td>
+  {% endfor %}
+  </table>
+
+</div>
+
+
+
     </div>
 </div>
 </div>
