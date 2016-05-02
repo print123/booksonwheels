@@ -92,8 +92,12 @@
 											<!--<p>Price:{{b.actual_price}}</p>				-->
 											<p>Author:{{b.author}}</p>
 											<p>Publisher:{{b.publisher}}</p>
+											{% if b.sprice %}
 											<p>Sell Price:{{b.sprice}}</p>
+											{%endif%}
+											{% if b.rprice %}
 											<p>Rent Price:{{b.rprice}}</p>
+											{%endif%}
 											<!--<p>Availability:
 											{%if b.available%}
 												In Stock

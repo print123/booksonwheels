@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 
   <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -27,12 +27,15 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/images/ico/apple-touch-icon-57-precomposed.png">        
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="/static/js/notify.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>    
+    <script src="/static/js/notify.js"></script>        
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
 	<script>
 		function notif()
-		{						
-			$.notify("added to cart","success")	
+		{
+				
+			var jqNew = jQuery.noConflict();					
+			jqNew.notify("added to cart","success")	
 		}		
 	</script>
 
@@ -148,14 +151,18 @@
 	<button type="submit"  class="btn default" style="margin-left: 70%">Checkout</button>
 	</form>
 	<br/><br/>
-	<footer id="footer">
+	<footer id="footer" >
+		
 		{% include 'footer.html' %}
 	</footer>
 
-    <script src="/static/js/jquery.js"></script>
+    
+    <!--<script src="/static/js/jqueryjs"></script>
 	<script src="/static/js/bootstrap.min.js"></script>
 	<script src="/static/js/jquery.scrollUp.min.js"></script>
     <script src="/static/js/jquery.prettyPhoto.js"></script>
-    <script src="/static/js/main.js"></script>        
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/notify.js"></script>    -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
 </body>
 </html>

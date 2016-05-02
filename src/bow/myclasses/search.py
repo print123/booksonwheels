@@ -19,8 +19,12 @@ class SearchClass:
         for r in result:
             res1=r.__dict__
             p=b.getPrice(r.ISBN)
-            res1['sprice'] = p['sellprice']
-            res1['rprice'] = p['rentprice']
+            if p['sellprice']<9999:
+                res1['sprice'] = p['sellprice']
+            if p['rentprice']<9999:
+                res1['rprice'] = p['rentprice']
+            
+
             results.append(res1)
         print results
         return results

@@ -17,10 +17,8 @@ from datetime import datetime
 
 
 
-# Create your views here.
 
 @csrf_exempt
-
 def autocomplete(request):
     print "In autocomplete"
     s = SearchClass()
@@ -292,6 +290,8 @@ def search(request):
             i += 1
         ttl = category[i]['tot']
         '''
+        
+        
         context = {'result': res, 'category': category, 'ttl': ttl}
         
         try:
@@ -318,9 +318,9 @@ def productdetails(request):
                 addto=False        
 
 
-            if sellp==999999:
+            if sellp>=99999:
                 context = {'result': res, 'rentp': rentp}
-            elif rentp==999999:
+            elif rentp>=99999:
                 context = {'result': res, 'sellp': sellp}
             else:
                 context = {'result': res, 'rentp': rentp,'sellp':sellp}   
@@ -558,5 +558,7 @@ def invoice(request):
     except:
         return HttpResponseRedirect("/cart")
 
-
+def feedback(request):
+    if request.method=="POST":
+        request.POST['']
         
