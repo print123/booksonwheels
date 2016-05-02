@@ -558,5 +558,13 @@ def invoice(request):
     except:
         return HttpResponseRedirect("/cart")
 
-
-        
+def addfeedback(request):
+    if request.method=="POST":
+        emailid=request.POST['emailid']
+        feed=request.POST['feedback']
+        couch=Server()    
+        db=couch['feedback']
+        doc={'emailid':emailid,'feedback':feed,'datetime':str(datetime.now())}
+        db.save(doc)
+    return HttpResponseRedirect("/")
+    

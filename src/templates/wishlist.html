@@ -24,6 +24,8 @@
     <![endif]-->       
     <link rel="shortcut icon" href="/static/images/ico/favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/images/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="stylesheet" href="/static/css/demo.css">
+	<link rel="stylesheet" href="/static/css/footer-distributed-with-contact-form.css">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/images/ico/apple-touch-icon-57-precomposed.png">
@@ -35,17 +37,18 @@
 			$.notify("added to wishlist","success")	
 		}		
 	</script>
+
 </head><!--/head-->
 
 <body>
-	<div ><!--header-middle-->
+	<div><!--header-middle-->
 			<div class="container-fluid" >
 				<div class="row">
 				{% include 'navbar.html' %}				
 				</div>
 			</div>
 		</div><!--/header-middle-->
-	<section id="cart_items">
+	<section id="cart_items" class="wrapper">
 		<div class="container">
 			<div class="breadcrumbs">
 				<ol class="breadcrumb">				  
@@ -242,9 +245,8 @@
 		</div>
 	</section><!--/#do_action-->
 
-	<footer id="footer">
-		{% include 'footer.html' %}
-	</footer>
+	
+	
 
     <script src="/static/js/jquery.js"></script>
 	<script src="/static/js/bootstrap.min.js"></script>

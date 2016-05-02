@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .myclasses.admin import AdminClass
 from .myclasses.book import BookClass
 from datetime import datetime
+
 from django.http import HttpResponseRedirect
 # Register your models here.
 def my_view(request, *args, **kwargs):
@@ -11,7 +12,8 @@ def my_view(request, *args, **kwargs):
 	rent=obj.trackRentRequest()
 	order=obj.trackOrderRequest()
 	returnbooks=obj.trackReturn()
-	context={'rent':rent,'order':order,'returnbooks':returnbooks}
+	feedbacks=obj.getFeedbacks()
+	context={'rent':rent,'order':order,'returnbooks':returnbooks,'feed':feedbacks}
 	return render(request, "admin.html",context)
 
 def todeliver(request, *args, **kwargs):
