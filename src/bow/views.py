@@ -182,6 +182,7 @@ def getInfo(request):
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
             got['imageurl']=imageurl
+            print imageurl
             genre=b.genre
             request.session['genre']=genre
             got['genre']=genre
@@ -576,5 +577,13 @@ def invoice(request):
     except:
         return HttpResponseRedirect("/cart")
 
-
-        
+def addfeedback(request):
+    if request.method=="POST":
+        emailid=request.POST['emailid']
+        feed=request.POST['feedback']
+        couch=Server()    
+        db=couch['feedback']
+        doc={'emailid':emailid,'feedback':feed,'datetime':str(datetime.now())}
+        db.save(doc)
+    return HttpResponseRedirect("/")
+    

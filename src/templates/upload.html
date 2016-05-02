@@ -85,8 +85,8 @@ $('.dropdown-button').dropdown({
 	</header><!--/header-->				
 	<section>
 		<div class="container">
-			<div class="row">			
-				<h2 class="title text-center">Upload a Book</h2>							
+			<div class="row" style="padding-top:10%;">			
+				<h2 class="title text-center">Upload a Book</h2>		<br/><br/>					
 				<div class="signup-form"><!--sign up form-->						
 						<form action="/getInfo/" name="formName" method="post">
 							{% csrf_token %}
@@ -100,12 +100,12 @@ $('.dropdown-button').dropdown({
 			</div>
 		</div>
 	</section>	
-	<footer id="footer"><!--Footer-->
+	<!--<footer id="footer">
 		
 		{% include 'footer.html' %}
 		
 		
-	</footer><!--/Footer-->
+	</footer>--> <!--/Footer-->
 	
 
   

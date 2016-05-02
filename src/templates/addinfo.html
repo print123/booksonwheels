@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 	
   <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  
 
 	  <script>
       (function($) {
@@ -74,40 +74,43 @@ $('.dropdown-button').dropdown({
 					
 				</div>
 			</div>
-		</div>--><!--/header-bottom-->
-	</header><!--/header-->				
+		</div>-->
+	
 	<section>
 		<div class="container">
 		{%if got%}				
 		<div class="row">			
 				<h2 class="title text-center">Your Book Details</h2>							
 				<div class="signup-form"><!--sign up form-->					
+					{%if got.imageurl%}					
+					<span style="float:right;">	<img src="{{got.imageurl}}" alt="{{got.imageurl}}"/></span>
+					{%endif%}
+					<span style="float:left;">
 					{%if got.title%}					
-						<h2>Title:{{got.title}}</h2>
+						<h2><b>Title:</b><em>{{got.title}}</em></h2>
 					{%endif%}
 					{%if got.author%}					
-						<h2>Author:{{got.author}}</h2>
+						<h2><b>Author:</b><em>{{got.author}}</em></h2>
 					{%endif%}
 					{%if got.language%}					
-						<h2>Language:{{got.language}}</h2>
+						<h2><b>Language:</b><em>{{got.language}}</em></h2>
 					{%endif%}
 					{%if got.publisher%}					
-						<h2>Publisher:{{got.publisher}}</h2>
+						<h2><b>Publisher:</b><em>{{got.publisher}}</em></h2>
 					{%endif%}					
 					{%if got.genre%}					
-						<h2>Genre:{{got.genre}}</h2>
+						<h2><b>Genre:</b><em>{{got.genre}}</em></h2>
 					{%endif%}
-					{%if got.imageurl%}					
-						<h2>Image:{{got.imageurl}}</h2>
-					{%endif%}
+					
 					{%if got.summary%}					
-						<h2>Summary:{{got.summary}}</h2>
-					{%endif%}					
-				</div>
+						<h2><b>Summary:</b><em>{{got.summary}}</em></h2>
+					{%endif%}				
+					</div>	
+				</span>
 			</div>
 			{%endif%}
 			<div class="row">			
-				<h2 class="title text-center">Upload a Book</h2>							
+				<h2 class="title text-center">Add information</h2>							
 				<div class="signup-form"><!--sign up form-->						
 						
 						{%if imageurl%}
@@ -170,13 +173,8 @@ $('.dropdown-button').dropdown({
 		</div>
 	</section>	
 
-	<footer id="footer"><!--Footer-->
-		
-		{% include 'footer.html' %}
-		
-		
-	</footer><!--/Footer-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
   
 	<script>
 	
@@ -188,7 +186,7 @@ $('.dropdown-button').dropdown({
 });
 	</script>
 
-    <script src="{% static 'js/jquery.js'%}"></script>
+   <!-- <script src="{% static 'js/jquery.js'%}"></script>-->
 	<script src="{% static 'js/bootstrap.min.js'%}"></script>
 	<script src="{% static 'js/jquery.scrollUp.min.js'%}"></script>
 	<script src="{% static 'js/price-range.js'%}"></script>

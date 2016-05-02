@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = [
     # Examples:
 	url(r'^$', 'bow.views.home', name='home'),
+    url(r'^addfeedback', 'bow.views.addfeedback', name='addfeedback'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^login', 'bow.views.login', name='login'),
     url(r'^signup', 'bow.views.signup', name='signup'),

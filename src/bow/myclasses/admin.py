@@ -4,7 +4,7 @@ from django.db.models import F
 from datetime import timedelta
 from datetime import datetime
 from django.utils import timezone
-
+from couchdb import Server
 import string
 class AdminClass():
 	def trackRentRequest(self):
@@ -167,5 +167,12 @@ class AdminClass():
 		Upload.objects.filter(owner_id_id=b['owner_id_id'],sellprice=price).update(qtyavailable=F('qtyavailable')+quant)
 		self.notifyBuyer(b['ISBN'])
 
-
+	def getFeedbacks(self):
+		couch=Server()
+		db=couch['feedback']
+		feeds=[]
+		for i in db:
+			feeds.append(db[i])
+			print db[i]
+		return feeds
 	
