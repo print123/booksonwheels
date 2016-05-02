@@ -17,6 +17,22 @@ from datetime import datetime
 
 
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+ 
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+ 
+    return False
+
 
 @csrf_exempt
 def autocomplete(request):
@@ -407,8 +423,6 @@ def wlToCart(request):
     return HttpResponseRedirect("/productdetails?id="+request.POST.get('ISBN')) 
 
 
-
-
 def addToWishlist(request):
     try:
         w=WishlistClass(request.session["userid"])
@@ -424,39 +438,46 @@ def addToWishlist(request):
 def removeFromBooks(request):
     try:        
         bookid=request.POST["id"]        
-        custObj=CustomerClass(request.session["userid"])        
-        custObj.removeBook(bookid)        
+        custObj=CustomerClass(request.session["userid"])     
+        sellprice=decimal.Decimal(999999.00)
+        rentprice=decimal.Decimal(999999.00)
+        if "sellprice" in request.POST.keys():            
+            sellprice=decimal.Decimal(request.POST["sellprice"])            
+        if "rentprice" in request.POST.keys():
+            rentprice=decimal.Decimal(request.POST["rentprice"])   
+        custObj.removeBook(bookid,request.POST["ISBN"],sellprice,rentprice)        
         return HttpResponseRedirect("/mybooks")
     except:
         return HttpResponseRedirect("/login")
 
 def updateQuantity(request):
     try:        
+        import decimal
         bookid=request.POST["id"]                    
         ISBN=request.POST["ISBN"]
-        if request.POST["sellprice"] is not None:
-            sellprice=request.POST["sellprice"]
-        else:
-            sellprice=0
-        if request.POST["sellquant"] is not None:
-            sellquant=request.POST["sellquant"]
-        else:
-            sellquant=0
+        sellquant=decimal.Decimal(0)
+        rentquant=decimal.Decimal(0)
+        sellprice=decimal.Decimal(999999.00)
+        rentprice=decimal.Decimal(999999.00)
+        if "sellprice" in request.POST.keys():            
+            sellprice=decimal.Decimal(request.POST["sellprice"])            
         
-        if request.POST["rentprice"] is not None:
-            rentprice=request.POST["rentprice"]
-        else:
-            rentprice=0        
-        if request.POST["rentquant"] is not None:
-            rentquant=request.POST["rentquant"]
-        else:
-            rentquant=0                
+        if "sellquant" in request.POST.keys():
+            if is_number(request.POST["sellquant"]):
+                sellquant=decimal.Decimal(request.POST["sellquant"])        
+        
+        if "rentprice" in request.POST.keys():
+            rentprice=decimal.Decimal(request.POST["rentprice"])
+        
+        if "rentquant" in request.POST.keys():                    
+            if is_number(request.POST["rentquant"]):                
+                rentquant=decimal.Decimal(request.POST["rentquant"])                        
+        
         custObj=CustomerClass(request.session["userid"])                
-        custObj.updateQuantity(bookid,ISBN,sellprice,rentprice,sellquant,rentquant)       
+        custObj.updateQuantity(bookid,ISBN,sellprice,rentprice,sellquant,rentquant)
         return HttpResponseRedirect("/mybooks")
-    except Exception as ex:
-        print ex
-        print "am i here"
+    except Exception as ex:      
+        print ex  
         return HttpResponseRedirect("/login")
 
 def remove(request):
@@ -501,12 +522,11 @@ def select(request):
     return HttpResponseRedirect('/')
 
 def update(request):
-    if request.method == 'POST':
-        if 'update' in request.POST:            
-            return updateQuantity(request)
+    if request.method == 'POST':        
+        if 'update' in request.POST:                        
+            return updateQuantity(request)            
         elif 'remove' in request.POST:
-            return removeFromBooks(request)
-    
+            return removeFromBooks(request)    
     return HttpResponseRedirect('/')
 
 def updateCart(request):
@@ -576,12 +596,6 @@ def invoice(request):
     except:
         return HttpResponseRedirect("/cart")
 
-<<<<<<< HEAD
-def feedback(request):
-    if request.method=="POST":
-        request.POST['']
-        
-=======
 def addfeedback(request):
     if request.method=="POST":
         emailid=request.POST['emailid']
@@ -592,4 +606,3 @@ def addfeedback(request):
         db.save(doc)
     return HttpResponseRedirect("/")
     
->>>>>>> c7942ddcc95ce0a5c69b9207929ee04907d8da9e

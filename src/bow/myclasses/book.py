@@ -86,31 +86,41 @@ class BookClass:
         return t
 
 
-    def add_seller(self,bookid,tosell,torent,sellprice,rentprice,quantity,owner):                
+    def add_seller(self,bookid,tosell,torent,sellprice,rentprice,sellquantity,quantity,owner):                
         upObj=Upload.objects.filter(owner_id_id=owner,bookid_id=bookid).first()                
         if upObj is not None:            
             if tosell and torent:                                            
                 if int(rentprice) == int(upObj.rentprice) and int(sellprice) == int(upObj.sellprice):
+                    upObj.sqtyuploaded=upObj.sqtyuploaded+sellquantity
                     upObj.qtyuploaded = upObj.qtyuploaded + quantity
                     upObj.qtyavailable=upObj.qtyavailable + quantity
+                    upObj.sqtyavailable=upObj.sqtyavailable+sellquantity
+                    upObj.dosell=tosell
+                    upObj.dorent=torent
                 else:
-                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,sqtyuploaded=sellquantity,qtyuploaded=quantity,qtyavailable=quantity,sqtyavailable=sellquantity,rentprice=rentprice,sellprice=sellprice)
                     nuser.save()
             elif tosell:
                 if int(sellprice) == int(upObj.sellprice):
-                        upObj.qtyuploaded=upObj.qtyuploaded + 1
+                    upObj.sqtyuploaded=upObj.sqtyuploaded+sellquantity
+                    upObj.qtyuploaded=upObj.qtyuploaded + quantity
+                    upObj.qtyavailable=upObj.available+quantity
+                    upObj.sqtyavailable=upObj.sqtyavailable+sellquantity
+                    upObj.dosell=tosell                    
                 else:
-                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,sqtyuploaded=sellquantity,qtyuploaded=quantity,qtyavailable=quantity,sqtyavailable=sellquantity,rentprice=rentprice,sellprice=sellprice)
                     nuser.save()
             elif torent:
                 if int(rentprice) == int(upObj.rentprice):
-                        upObj.qtyuploaded=upObj.qtyuploaded + 1
+                    upObj.qtyavailable=upObj.qtyavailable + quantity
+                    upObj.qtyuploaded=upObj.qtyuploaded + quantity
+                    upObj.dorent=torent
                 else:
-                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+                    nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,sqtyuploaded=sellquantity,qtyuploaded=quantity,qtyavailable=quantity,sqtyavailable=sellquantity,rentprice=rentprice,sellprice=sellprice)
                     nuser.save()
             upObj.save()    
         else:            
-            nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,qtyuploaded=quantity,qtyavailable=quantity,rentprice=rentprice,sellprice=sellprice)
+            nuser=Upload(bookid_id=bookid,dosell=tosell,dorent=torent,owner_id_id=owner,sqtyuploaded=sellquantity,qtyuploaded=quantity,qtyavailable=quantity,sqtyavailable=sellquantity,rentprice=rentprice,sellprice=sellprice)
             nuser.save()
         
         
@@ -154,29 +164,31 @@ class BookClass:
     def getOwner(self,bookid,quantity,dosell,price):
         if dosell:
             upObj=Upload.objects.filter(bookid_id=bookid,dosell=dosell,sellprice=price).first()
-            if upObj.qtyavailable > 0:
+            if upObj.qtyuploaded > 0:
                 retOwnid=upObj.owner_id_id
-                if upObj.qtyavailable >= quantity:
+                if upObj.sqtyavailable >= quantity:
+                    #upObj.sqtyuploaded=upObj.sqtyuploaded-quantity
+                    upObj.sqtyavailable=upObj.sqtyavailable-quantity
                     upObj.qtyavailable=upObj.qtyavailable-quantity
-                    quantity=0
-                    
+                    quantity=0                    
                 else:
-                    quantity=quantity-upObj.qtyavailable
-                    upObj.qtyavailable=0
-                    
+                    upObj.qtyavailable=upObj.qtyavailable-upObj.sqtyavailable
+                    quantity=quantity-upObj.sqtyavailable
+                    upObj.sqtyuploaded=0                    
                 upObj.save()                
                 return (retOwnid,quantity)
                             
         else:
             upObj=Upload.objects.filter(bookid_id=bookid,dorent=True,rentprice=price).first()
-            if upObj.qtyavailable > 0:
+            curr=upObj.qtyavailable-upObj.sqtyavailable
+            if curr > 0:
                 retOwnid=upObj.owner_id_id
-                if upObj.qtyavailable >= quantity:
+                if curr >= quantity:
                     upObj.qtyavailable=upObj.qtyavailable-quantity
                     quantity=0
                 else:
-                    quantity=quantity-upObj.qtyavailable
-                    upObj.qtyquantity=0
+                    upObj.qtyavailable=upObj.qtyavailable-(curr)
+                    quantity=quantity-curr                    
                 upObj.save()
                 return (retOwnid,quantity)
 
