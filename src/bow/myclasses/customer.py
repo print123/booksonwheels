@@ -145,26 +145,29 @@ class CustomerClass(UserClass):
         else:            
             statObj.quantity=statObj.quantity-qty            
             statObj.save()
-
     
-    def updateQuantity(self,bookid,newQty):
-        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
-        oldQty=upObj.qtyuploaded
-        oldaQty=upObj.qtyavailable
-        diff=newQty-oldQty
-        diff1=newQty-oldaQty
-        upObj.qtyuploaded=upObj.qtyuploaded+diff
-        upObj.qtyavailable=upObj.qtyavailable+diff1
-        upObj.save()
-        bookObj=Book.objects.filter(bookid=bookid).first()
-        t_ISBN=bookObj.ISBN
-        bookObj.quantity=bookObj.quantity+diff
-        bookObj.save()
-        statObj=Status.objects.filter(ISBN=t_ISBN).first()
-        statObj.quantity=statObj.quantity+diff
-        statObj.save()
-
-
+    def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
+        try:
+            newQty=sellquant+rentquant
+            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice).first()
+            oldQty=upObj.qtyuploaded
+            oldaQty=upObj.qtyavailable
+            diff=newQty-oldQty            
+            upObj.qtyuploaded=upObj.qtyuploaded+diff
+            upObj.qtyavailable=upObj.qtyavailable+diff
+            upObj.save()
+            bookObj=Book.objects.filter(bookid=bookid).first()
+            bookObj.quantity=bookObj.quantity+newQty
+            bookObj.sellquantity=bookObj.sellquantity+sellquant
+            t_ISBN=bookObj.ISBN
+            bookObj.save()
+            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()
+            statObj.quantity=statObj.quantity+newQty
+            statObj.sellquantity=statObj.sellquantity+squant
+            statObj.save()
+        except Exception as ex:
+            print ex
+    
 
     def uploadBook(self,t_ISBN,got):
         #incorrect isbn not handled only if info not found handled
