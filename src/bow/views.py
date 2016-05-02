@@ -182,6 +182,7 @@ def getInfo(request):
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
             got['imageurl']=imageurl
+            print imageurl
             genre=b.genre
             request.session['genre']=genre
             got['genre']=genre
