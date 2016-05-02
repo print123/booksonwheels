@@ -222,7 +222,7 @@ class CustomerClass(UserClass):
             from urllib import urlretrieve
             fname="bow\\static\\images\\"+ISBN13+".jpg"#give absolute path as where to store image
             urlretrieve(lst['imageurl'],fname)
-            got['imageurl']=fname
+            got['imageurl']="/static/images/"+ISBN13+".jpg"
             imageurl='images\\'+ISBN13+'.jpg'
 
 
