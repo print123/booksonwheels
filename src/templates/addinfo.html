@@ -63,19 +63,7 @@ $('.dropdown-button').dropdown({
 				
 				</div>
 			</div>
-		</div><!--/header-middle-->
-	
-		<!--<div class="header-bottom">
-			<div class="container-fluid">
-				<div class="row" style="padding-left: 10px">
-					<div class="col-sm-9">
-						{% include 'header.html' %}		
-					</div>
-					
-				</div>
-			</div>
-		</div>-->
-	
+		</div>
 	<section>
 		<div class="container">
 		{%if got%}				
@@ -114,12 +102,11 @@ $('.dropdown-button').dropdown({
 				<div class="signup-form"><!--sign up form-->						
 						
 						{%if imageurl%}
-						<form enctype="multipart/form-data" action="/addinfo/" name="formName" method="post">{%csrf_token%}
-							
+						<form enctype="multipart/form-data" action="/addinfo/" name="formName" method="post">{%csrf_token%}							
 							<p>Purpose :<br/>
-						<input type="checkbox" name="rent" id="rent" onclick="checkBtn()">
+						<input type="checkbox" name="rent" id="rent" >
 							<label for="rent">To Rent</label></p>							
-							<p><input type="checkbox" name="sell" id="sell" onclick="checkBtn()">															
+							<p><input type="checkbox" name="sell" id="sell">															
 								<label for="sell">To Sell</label></p>
 							<div id="sellblock" style="display:none;">
 							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price" >						
@@ -150,7 +137,7 @@ $('.dropdown-button').dropdown({
 							<p><input type="checkbox" name="sell" id="sell" onclick="checkBtn()">															
 								<label for="sell">To Sell</label></p>
 							<div id="sellblock" style="display:none;">
-							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price" onchange = "checkBtn()">						
+							Sell Price:<input type="Text" name="sellprice" id="sellprice" class="form-control" placeholder="Enter your book's Price" onchange = "checkBtn()">							
 							SellQuantity:<input type="Text" name="sellquantity" id="sellquantity" class="form-control" placeholder="sellQuantity" onchange = "checkBtn()">	
 							</div>
 							<div id="rentblock" style="display:none;">			
@@ -177,21 +164,28 @@ $('.dropdown-button').dropdown({
 <!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>-->
   
 	<script>
+	$document.ready(function(){
+			$('#sell').click(function() {
+		$("#sellblock").toggle(this.checked);
+		document.getElementById("submit").disabled = true;
+		  	if(document.formName.rent.checked == true || document.formName.sell.checked == true)
+		  		document.getElementById("submit").disabled = false;
+		});
+		$('#rent').click(function() {
+		$("#rentblock").toggle(this.checked);
+		document.getElementById("submit").disabled = true;
+		  	if(document.formName.rent.checked == true || document.formName.sell.checked == true)
+		  		document.getElementById("submit").disabled = false;
+		});	
+	});
 	
-	$('#sell').click(function() {
-    $("#sellblock").toggle(this.checked);
-});
-	$('#rent').click(function() {
-    $("#rentblock").toggle(this.checked);
-});
 	</script>
 
-   <!-- <script src="{% static 'js/jquery.js'%}"></script>-->
+    <script src="{% static 'js/jquery.js'%}"></script>
 	<script src="{% static 'js/bootstrap.min.js'%}"></script>
 	<script src="{% static 'js/jquery.scrollUp.min.js'%}"></script>
 	<script src="{% static 'js/price-range.js'%}"></script>
     <script src="{% static 'js/jquery.prettyPhoto.js'%}"></script>
-    <script src="{% static 'js/main.js'%}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <script src="{% static 'js/main.js'%}"></script>    
 </body>
 </html>

@@ -14,46 +14,51 @@ class BookClass:
 
 
     def mark_it_unavailable(self):
+        """A method to mark a book unavailable"""
         Book.Object.filter(bookid=self.bookid).update(available=False)
 
     def getSummary(self):
+        """A method to get book summary"""
         return Book.object.filter(bookid=self.bookid).values('summary')
 
     def getTrending(self):
+        """A method to get Current Trending Books in the system"""
         rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:6]
         res = []
         for i in rentTrend:
             res += self.getBook(i['ISBN'])
         return res
 
-    def getQuotation(self, time_dur):
-        # for customer
+    def getQuotation(self, time_dur):        
         base_price = Book.object.filter(bookid=self.bookid).values('actual_price')
         final_price = 0.1 * base_price * cnt
 
         return final_price
 
     def getRent(self):
-        # for uploader
+        """A method to get Rent Price of a book"""
         base_price = Book.object.filter(bookid=self.bookid).values('actual_price')
         final_price = 0.1 * base_price * cnt
 
         return final_price
 
     def getBooks(self, number):
+        """A method to get certain number of books from database"""
         b = Book.objects.all()[:number]
         return b
 
     def getBook(self, ISBN):
+        """A method to get a book using ISBN as parameter"""
         b = Book.objects.filter(ISBN=ISBN)[:1]
         #print type(b)        
         return b
 
-    def getCategory(self):
+    def getCategory(self):        
         catCount = Book.objects.all().values('genre').annotate(total=Count('genre'))        
         return catCount
 
     def getCategoryOfRes(self, res):
+
         gen_counts = []
         #t = 0
         for r in res:
@@ -87,6 +92,7 @@ class BookClass:
 
 
     def add_seller(self,bookid,tosell,torent,sellprice,rentprice,sellquantity,quantity,owner):                
+        """A method to update database and insert an entry for the owner of the book."""
         upObj=Upload.objects.filter(owner_id_id=owner,bookid_id=bookid).first()                
         if upObj is not None:            
             if tosell and torent:                                            
@@ -126,6 +132,7 @@ class BookClass:
         
 
     def getBookid(self, ISBN):
+        """A method to get ID of the book from ISBN"""
         b = Book.objects.filter(ISBN=ISBN).values('bookid')
         try:
             return b[0]['bookid']
@@ -133,6 +140,7 @@ class BookClass:
             return -1
 
     def getPrice(self, ISBN):
+        """A method to get price of the book to display"""
         price={}
         c = Status.objects.filter(ISBN=ISBN)
         #d = Status.objects.filter(ISBN=ISBN).aggregate(Min('rentprice'))
@@ -155,6 +163,7 @@ class BookClass:
         return price
 
     def getISBN(self, bookid):
+        """A method to get ISBN of the book from bookid"""
         b = Book.objects.filter(bookid=bookid).values('ISBN')
         try:
             return b[0]['ISBN']
@@ -162,6 +171,7 @@ class BookClass:
             return -1    
 
     def getOwner(self,bookid,quantity,dosell,price):
+        """A method to get owner of the book"""
         if dosell:
             upObj=Upload.objects.filter(bookid_id=bookid,dosell=dosell,sellprice=price).first()
             if upObj.qtyuploaded > 0:
@@ -193,4 +203,5 @@ class BookClass:
                 return (retOwnid,quantity)
 
     def UpdatePayStatus(self,pid):
+        """A method to update pending status to received"""
         Payment.objects.filter(paymentid=pid).update(ispending=False)

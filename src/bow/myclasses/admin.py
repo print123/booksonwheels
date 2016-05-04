@@ -85,6 +85,7 @@ class AdminClass():
 		return lst
 
 	def trackReturn(self):
+		"""A method to """
 		start_dat=datetime.today()
 		start_date = start_dat - timedelta( hours=start_dat.time().hour,minutes=start_dat.time().minute,seconds=start_dat.time().second ) 
 		end_date=start_dat
@@ -153,6 +154,7 @@ class AdminClass():
 
 
 	def UpdateStatus(self,pid):
+		"""A method to update database when a book is returned"""
 		b1=Rents.objects.filter(paymentid_id=pid).first()
 		amount=Payment.objects.filter(paymentid=pid).values('amount')
 		b=b1.__dict__
@@ -167,6 +169,7 @@ class AdminClass():
 		self.notifyBuyer(b['ISBN'])
 
 	def getFeedbacks(self):
+		"""A method to display all feedbacks."""
 		couch=Server()
 		db=couch['feedback']
 		feeds=[]

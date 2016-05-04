@@ -72,6 +72,7 @@ class CustomerClass(UserClass):
         return r_books
 
     def addDeliveryDetails(self,contactno,address):
+        """A method to add deivery details of the order in database for a customer"""
         custObj=User.objects.filter(userid=self.userid).first()        
         custObj.contact_no=contactno        
         custObj.address=address        
@@ -79,6 +80,7 @@ class CustomerClass(UserClass):
         
 
     def bookCheckout(self):                
+        """A method that implements checkout logic"""
         cartObj=Cart.objects.filter(userid_id=self.userid)                            
         for i in cartObj:            
             if i.dosell:                
@@ -130,6 +132,7 @@ class CustomerClass(UserClass):
 
 
     def removeBook(self,bookid,sellprice,rentprice):#future arguments dosell,dorent and prices        
+        """A method to remove a book from database for user"""
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()
         sqty=upObj.sqtyavailable
         qty=upObj.qtyavailable                        
@@ -142,9 +145,9 @@ class CustomerClass(UserClass):
             bookObj.quantity=bookObj.quantity-qty            
             bookObj.sellquantity=bookObj.sellquantity-sqty
             bookObj.save()                
-        if(sellprice=999999.00)
+        if(sellprice==999999.00):
             sellprice=0
-        if(rentprice=999999.00)
+        if(rentprice==999999.00):
             rentprice=0
         statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice).first()        
         if(statObj.quantity == qty):            
@@ -155,14 +158,20 @@ class CustomerClass(UserClass):
             statObj.save()
     
     def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
+        """A method that allows user to update quantity of the book"""
         try:            
             import decimal
-            newQty=decimal.Decimal(sellquant+rentquant)
+            print rentquant
             upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()            
+            if sellquant == 0:
+                sellquant=upObj.sqtyuploaded            
+            if rentquant == 0:
+                rentquant = (upObj.qtyuploaded-upObj.sqtyuploaded)
+            newQty=decimal.Decimal(sellquant+rentquant)            
             oldQty=upObj.qtyuploaded
-            oldaQty=upObj.qtyavailable
-            diff=newQty-oldQty        
-            diff1=upObj.sqtyuploaded-sellquant     
+            oldaQty=upObj.qtyavailable            
+            diff=newQty-oldQty                    
+            diff1=sellquant-upObj.sqtyuploaded
             upObj.qtyuploaded=upObj.qtyuploaded+diff            
             upObj.sqtyuploaded=sellquant
             upObj.qtyavailable=upObj.qtyavailable+diff            
@@ -170,18 +179,19 @@ class CustomerClass(UserClass):
             upObj.save()
             bookObj=Book.objects.filter(bookid=bookid).first()
             bookObj.quantity=bookObj.quantity+diff
-            bookObj.sellquantity=bookObj.sellquantity+sellquant
+            bookObj.sellquantity=bookObj.sellquantity+diff1
             t_ISBN=bookObj.ISBN
             bookObj.save()
             statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()            
             statObj.quantity=statObj.quantity+diff
-            statObj.sellquantity=statObj.sellquantity+sellquant
+            statObj.sellquantity=statObj.sellquantity+diff1
             statObj.save()
         except Exception as ex:
             print ex
     
 
     def uploadBook(self,t_ISBN,got):
+        """A method to upload a book"""
         #incorrect isbn not handled only if info not found handled
         lst={}        
         lst['ISBN']=t_ISBN                
@@ -307,7 +317,7 @@ class CustomerClass(UserClass):
         
         from PIL import Image
         import PIL
-        furl="bow/static/"+imageurl                
+        furl="C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\"+imageurl                
         img=Image.open(furl)
         img=img.resize((128,192),PIL.Image.ANTIALIAS)
         img.save(furl)
