@@ -34,8 +34,10 @@ class Upload(models.Model):
 	dorent=models.BooleanField(default=True)
 	rentprice=models.DecimalField(max_digits=8,decimal_places=2)
 	sellprice=models.DecimalField(max_digits=8,decimal_places=2)
-	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)
+	bookid=models.ForeignKey('Book',on_delete=models.CASCADE)	
+	sqtyuploaded=models.DecimalField(max_digits=8,decimal_places=0)
 	qtyuploaded=models.DecimalField(max_digits=8,decimal_places=0)
+	sqtyavailable=models.DecimalField(max_digits=8,decimal_places=0)
 	qtyavailable=models.DecimalField(max_digits=8,decimal_places=0)
 
 class Book(models.Model):

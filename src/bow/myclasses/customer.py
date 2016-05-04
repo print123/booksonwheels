@@ -22,11 +22,12 @@ class CustomerClass(UserClass):
             t=Book.objects.get(bookid=b.bookid_id)
             p={}
             p=t.__dict__
-            p['actual_price']=b.sellprice
-            p['rentprice']=b.rentprice
+            p['actual_price']=float(b.sellprice)
+            p['rentprice']=float(b.rentprice)            
             p['dosell']=b.dosell
             p['dorent']=b.dorent
-            p['qty']=b.qtyavailable
+            p['qty']=b.qtyuploaded
+            p['aqty']=b.qtyavailable                    
             books.append(p)
         return books
     def getCategoryOf(self, res):
@@ -128,9 +129,10 @@ class CustomerClass(UserClass):
             
 
 
-    def removeBook(self,bookid):#future arguments dosell,dorent and prices        
-        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
-        qty=upObj.qtyuploaded                        
+    def removeBook(self,bookid,sellprice,rentprice):#future arguments dosell,dorent and prices        
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()
+        sqty=upObj.sqtyavailable
+        qty=upObj.qtyavailable                        
         upObj.delete()        
         bookObj=Book.objects.filter(bookid=bookid).first()                
         t_ISBN=bookObj.ISBN        
@@ -138,32 +140,42 @@ class CustomerClass(UserClass):
             bookObj.delete()
         else:            
             bookObj.quantity=bookObj.quantity-qty            
+            bookObj.sellquantity=bookObj.sellquantity-sqty
             bookObj.save()                
-        statObj=Status.objects.filter(ISBN=t_ISBN).first()        
+        if(sellprice=999999.00)
+            sellprice=0
+        if(rentprice=999999.00)
+            rentprice=0
+        statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice).first()        
         if(statObj.quantity == qty):            
             statObj.delete()
         else:            
             statObj.quantity=statObj.quantity-qty            
+            statObj.sellquantity=statObj.sellquantity-sqty
             statObj.save()
     
     def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
-        try:
-            newQty=sellquant+rentquant
-            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice).first()
+        try:            
+            import decimal
+            newQty=decimal.Decimal(sellquant+rentquant)
+            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()            
             oldQty=upObj.qtyuploaded
             oldaQty=upObj.qtyavailable
-            diff=newQty-oldQty            
-            upObj.qtyuploaded=upObj.qtyuploaded+diff
-            upObj.qtyavailable=upObj.qtyavailable+diff
+            diff=newQty-oldQty        
+            diff1=upObj.sqtyuploaded-sellquant     
+            upObj.qtyuploaded=upObj.qtyuploaded+diff            
+            upObj.sqtyuploaded=sellquant
+            upObj.qtyavailable=upObj.qtyavailable+diff            
+            upObj.sqtyavailable=upObj.sqtyavailable+diff1
             upObj.save()
             bookObj=Book.objects.filter(bookid=bookid).first()
-            bookObj.quantity=bookObj.quantity+newQty
+            bookObj.quantity=bookObj.quantity+diff
             bookObj.sellquantity=bookObj.sellquantity+sellquant
             t_ISBN=bookObj.ISBN
             bookObj.save()
-            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()
-            statObj.quantity=statObj.quantity+newQty
-            statObj.sellquantity=statObj.sellquantity+squant
+            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()            
+            statObj.quantity=statObj.quantity+diff
+            statObj.sellquantity=statObj.sellquantity+sellquant
             statObj.save()
         except Exception as ex:
             print ex
@@ -345,7 +357,7 @@ class CustomerClass(UserClass):
             b.save()
         b1=BookClass()
         bookid=b1.getBookid(ISBN)        
-        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,int(int(sellquantity)+int(rentquantity)),owner)
+        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,int(sellquantity),int(int(sellquantity)+int(rentquantity)),owner)
 
         if dosell and dorent:
             statObj=Status.objects.filter(ISBN=ISBN,sellprice=sellprice,rentprice=rentprice).first()

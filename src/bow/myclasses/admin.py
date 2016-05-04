@@ -160,7 +160,6 @@ class AdminClass():
 		bookid=b['bookid_id']
 		price=amount[0]['amount']/quant
 		#price=float("{.2f}".format(amount[0]['amount']))/float("{0:.2f}".format(quant))
-		print price
 		Rents.objects.filter(paymentid_id=pid).update(status='r')
 		Book.objects.filter(bookid=bookid).update(quantity=F('quantity')+quant)
 		Status.objects.filter(ISBN=b['ISBN'],rentprice=price).update(quantity=F('quantity')+quant)
