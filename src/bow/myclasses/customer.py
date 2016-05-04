@@ -142,9 +142,9 @@ class CustomerClass(UserClass):
             bookObj.quantity=bookObj.quantity-qty            
             bookObj.sellquantity=bookObj.sellquantity-sqty
             bookObj.save()                
-        if(sellprice=999999.00)
+        if sellprice==999999.00:
             sellprice=0
-        if(rentprice=999999.00)
+        if rentprice==999999.00:
             rentprice=0
         statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice).first()        
         if(statObj.quantity == qty):            

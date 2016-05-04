@@ -111,7 +111,8 @@ def signup(request):
         try:
             nuser.addUser()            
         except Exception as e:
-                print e
+                context={'already_reg':True}
+                return render(request,"login.html",context)
 
     return HttpResponseRedirect("/")
 
@@ -606,4 +607,7 @@ def addfeedback(request):
         doc={'emailid':emailid,'feedback':feed,'datetime':str(datetime.now())}
         db.save(doc)
     return HttpResponseRedirect("/")
-    
+
+def changepass(request):
+    pass
+
