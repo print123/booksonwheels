@@ -181,4 +181,4 @@ class BookClass:
                 return (retOwnid,quantity)
 
     def UpdatePayStatus(self,pid):
-        Payment.objects.filter(paymentid=pid).update(ispending=False)
+        Payment.objects.filter(paymentid=pid).update(ispending=False)   

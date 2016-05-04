@@ -181,7 +181,7 @@ def getInfo(request):
             got['author']=author
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
-            got['imageurl']=imageurl
+            got['imageurl']='/static/'+imageurl
             print imageurl
             genre=b.genre
             request.session['genre']=genre
