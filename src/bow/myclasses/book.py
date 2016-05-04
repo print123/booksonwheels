@@ -203,5 +203,4 @@ class BookClass:
                 return (retOwnid,quantity)
 
     def UpdatePayStatus(self,pid):
-        """A method to update pending status to received"""
-        Payment.objects.filter(paymentid=pid).update(ispending=False)
+        Payment.objects.filter(paymentid=pid).update(ispending=False)   

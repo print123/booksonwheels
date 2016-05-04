@@ -111,7 +111,8 @@ def signup(request):
         try:
             nuser.addUser()            
         except Exception as e:
-                print e
+                context={'already_reg':True}
+                return render(request,"login.html",context)
 
     return HttpResponseRedirect("/")
 
@@ -195,7 +196,7 @@ def getInfo(request):
             got['author']=author
             imageurl=b.imageurl
             request.session['imageurl']=imageurl
-            got['imageurl']=imageurl
+            got['imageurl']='/static/'+imageurl
             print imageurl
             genre=b.genre
             request.session['genre']=genre
@@ -606,4 +607,7 @@ def addfeedback(request):
         doc={'emailid':emailid,'feedback':feed,'datetime':str(datetime.now())}
         db.save(doc)
     return HttpResponseRedirect("/")
-    
+
+def changepass(request):
+    pass
+

@@ -37,6 +37,5 @@ urlpatterns = [
     url(r'^deliver', 'bow.views.deliver', name='deliver'),
     url(r'^invoice', 'bow.views.invoice', name='invoice'),
     url(r'^test', 'bow.views.test', name='test'),
-    url(r'^feedback', 'bow.views.feedback', name='feedback'),
     url(r'^comment', 'bow.views.productdetails', name='comment'),
 ]
