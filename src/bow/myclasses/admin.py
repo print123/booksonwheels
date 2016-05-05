@@ -85,6 +85,7 @@ class AdminClass():
 		return lst
 
 	def trackReturn(self):
+		"""A method to """
 		start_dat=datetime.today()
 		start_date = start_dat - timedelta( hours=start_dat.time().hour,minutes=start_dat.time().minute,seconds=start_dat.time().second ) 
 		end_date=start_dat
@@ -153,6 +154,7 @@ class AdminClass():
 
 
 	def UpdateStatus(self,pid):
+		"""A method to update database when a book is returned"""
 		b1=Rents.objects.filter(paymentid_id=pid).first()
 		amount=Payment.objects.filter(paymentid=pid).values('amount')
 		b=b1.__dict__
@@ -160,7 +162,6 @@ class AdminClass():
 		bookid=b['bookid_id']
 		price=amount[0]['amount']/quant
 		#price=float("{.2f}".format(amount[0]['amount']))/float("{0:.2f}".format(quant))
-		print price
 		Rents.objects.filter(paymentid_id=pid).update(status='r')
 		Book.objects.filter(bookid=bookid).update(quantity=F('quantity')+quant)
 		Status.objects.filter(ISBN=b['ISBN'],rentprice=price).update(quantity=F('quantity')+quant)
@@ -168,6 +169,7 @@ class AdminClass():
 		self.notifyBuyer(b['ISBN'])
 
 	def getFeedbacks(self):
+		"""A method to display all feedbacks."""
 		couch=Server()
 		db=couch['feedback']
 		feeds=[]
@@ -175,4 +177,28 @@ class AdminClass():
 			feeds.append(db[i])
 			print db[i]
 		return feeds
-	
+
+	def mailowner(self,oid,bid,order,quantity):
+		u=User.objects.get(userid=oid)
+		b=Book.objects.get(bookid=bid)
+		import smtplib
+		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email		
+		toaddr = u.email #receiver's email
+		print u.email
+		msg = 'The book ' + b.title + ' Has a Purchaser for '+order +'. '+str(quantity)+' Books are required . Do keep it ready for collection'#The message
+			
+		#gmail credentials
+		username = 'booksonwheelsteam'
+		password = 'books^**'
+			
+		server=smtplib.SMTP('smtp.gmail.com:587')
+		server.starttls()
+
+		try:
+			server.login(username,password)
+			server.sendmail(fromaddr,toaddr,msg)
+		except:
+			print "not send mail"
+			#pass
+
+		server.quit()

@@ -1,11 +1,10 @@
-
-
 """A Class that represents a Customer """
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
+from .admin import AdminClass
 from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status,Cart,Order
 import json
 import requests
@@ -22,11 +21,12 @@ class CustomerClass(UserClass):
             t=Book.objects.get(bookid=b.bookid_id)
             p={}
             p=t.__dict__
-            p['actual_price']=b.sellprice
-            p['rentprice']=b.rentprice
+            p['actual_price']=float(b.sellprice)
+            p['rentprice']=float(b.rentprice)            
             p['dosell']=b.dosell
             p['dorent']=b.dorent
-            p['qty']=b.qtyavailable
+            p['sqty']=b.sqtyuploaded
+            p['rqty']=b.qtyuploaded-b.sqtyuploaded
             books.append(p)
         return books
     def getCategoryOf(self, res):
@@ -71,6 +71,7 @@ class CustomerClass(UserClass):
         return r_books
 
     def addDeliveryDetails(self,contactno,address):
+        """A method to add deivery details of the order in database for a customer"""
         custObj=User.objects.filter(userid=self.userid).first()        
         custObj.contact_no=contactno        
         custObj.address=address        
@@ -78,6 +79,7 @@ class CustomerClass(UserClass):
         
 
     def bookCheckout(self):                
+        """A method that implements checkout logic"""
         cartObj=Cart.objects.filter(userid_id=self.userid)                            
         for i in cartObj:            
             if i.dosell:                
@@ -91,6 +93,7 @@ class CustomerClass(UserClass):
                 bObj.sellquantity=bObj.sellquantity-i.quantity                
                 bObj.save()                
                 while (i.quantity>0):
+                    print "here"
                     temp=i.quantity
                     oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                          
                     price=i.sellprice*(temp-i.quantity)
@@ -100,6 +103,8 @@ class CustomerClass(UserClass):
                     payment.save()
                     order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=(temp-i.quantity))
                     order.save()
+                    a=AdminClass()
+                    a.mailowner(oid,temp_id,"buy",(temp-i.quantity))
                 statObj.save()
             else:
                 try:
@@ -112,15 +117,18 @@ class CustomerClass(UserClass):
                     bObj.quantity=bObj.quantity-i.quantity                
                     bObj.save()
                     while(i.quantity>0):                    
-                        temp=i.quantity                                        
-                        oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                        
-                        price=i.sellprice*(temp-i.quantity)                                        
+                        temp=i.quantity                                                        
+                        oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                                                
+                        price=i.sellprice*(temp-i.quantity)                                                                
                         statObj.quantity=statObj.quantity-(temp-i.quantity)                    
-                        payment=Payment(mode='cd',amount=price,ispending=True)                                        
-                        payment.save()                          
-                        date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
-                        rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
-                        rent.save()                                        
+                        payment=Payment(mode='cd',amount=price,ispending=True)                                      
+                        payment.save()                                                  
+                        date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                                                    
+                        rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                                                    
+                        rent.save()
+                        a=AdminClass()                        
+                        a.mailowner(oid,temp_id,"rent",temp-i.quantity)                                                                
+                    statObj.save()                
                 except Exception as ex:
                     print "hey bro"
                     print ex
@@ -128,9 +136,11 @@ class CustomerClass(UserClass):
             
 
 
-    def removeBook(self,bookid):#future arguments dosell,dorent and prices        
-        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid).first()
-        qty=upObj.qtyuploaded                        
+    def removeBook(self,bookid,sellprice,rentprice):#future arguments dosell,dorent and prices        
+        """A method to remove a book from database for user"""
+        upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()
+        sqty=upObj.sqtyavailable
+        qty=upObj.qtyavailable                        
         upObj.delete()        
         bookObj=Book.objects.filter(bookid=bookid).first()                
         t_ISBN=bookObj.ISBN        
@@ -138,38 +148,55 @@ class CustomerClass(UserClass):
             bookObj.delete()
         else:            
             bookObj.quantity=bookObj.quantity-qty            
+            bookObj.sellquantity=bookObj.sellquantity-sqty
             bookObj.save()                
-        statObj=Status.objects.filter(ISBN=t_ISBN).first()        
+        if sellprice==999999.00:
+            sellprice=0
+        if rentprice==999999.00:
+            rentprice=0
+        statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice).first()        
         if(statObj.quantity == qty):            
             statObj.delete()
         else:            
             statObj.quantity=statObj.quantity-qty            
+            statObj.sellquantity=statObj.sellquantity-sqty
             statObj.save()
     
     def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
-        try:
-            newQty=sellquant+rentquant
-            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice).first()
+        """A method that allows user to update quantity of the book"""
+        try:            
+            import decimal
+            print rentquant
+            upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()            
+            if sellquant == 0:
+                sellquant=upObj.sqtyuploaded            
+            if rentquant == 0:
+                rentquant = (upObj.qtyuploaded-upObj.sqtyuploaded)
+            newQty=decimal.Decimal(sellquant+rentquant)            
             oldQty=upObj.qtyuploaded
-            oldaQty=upObj.qtyavailable
-            diff=newQty-oldQty            
-            upObj.qtyuploaded=upObj.qtyuploaded+diff
-            upObj.qtyavailable=upObj.qtyavailable+diff
+            oldaQty=upObj.qtyavailable            
+            diff=newQty-oldQty                    
+            diff1=sellquant-upObj.sqtyuploaded
+            upObj.qtyuploaded=upObj.qtyuploaded+diff            
+            upObj.sqtyuploaded=sellquant
+            upObj.qtyavailable=upObj.qtyavailable+diff            
+            upObj.sqtyavailable=upObj.sqtyavailable+diff1
             upObj.save()
             bookObj=Book.objects.filter(bookid=bookid).first()
-            bookObj.quantity=bookObj.quantity+newQty
-            bookObj.sellquantity=bookObj.sellquantity+sellquant
+            bookObj.quantity=bookObj.quantity+diff
+            bookObj.sellquantity=bookObj.sellquantity+diff1
             t_ISBN=bookObj.ISBN
             bookObj.save()
-            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()
-            statObj.quantity=statObj.quantity+newQty
-            statObj.sellquantity=statObj.sellquantity+squant
+            statObj=Status.objects.filter(ISBN=t_ISBN,rentprice=rentprice,sellprice=sellprice).first()            
+            statObj.quantity=statObj.quantity+diff
+            statObj.sellquantity=statObj.sellquantity+diff1
             statObj.save()
         except Exception as ex:
             print ex
     
 
     def uploadBook(self,t_ISBN,got):
+        """A method to upload a book"""
         #incorrect isbn not handled only if info not found handled
         lst={}        
         lst['ISBN']=t_ISBN                
@@ -295,7 +322,8 @@ class CustomerClass(UserClass):
         
         from PIL import Image
         import PIL
-        furl="bow/static/"+imageurl                
+        
+        furl="bow/static/"+imageurl              
         img=Image.open(furl)
         img=img.resize((128,192),PIL.Image.ANTIALIAS)
         img.save(furl)
@@ -345,7 +373,7 @@ class CustomerClass(UserClass):
             b.save()
         b1=BookClass()
         bookid=b1.getBookid(ISBN)        
-        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,int(int(sellquantity)+int(rentquantity)),owner)
+        b1.add_seller(bookid,dosell,dorent,sellprice,rentprice,int(sellquantity),int(int(sellquantity)+int(rentquantity)),owner)
 
         if dosell and dorent:
             statObj=Status.objects.filter(ISBN=ISBN,sellprice=sellprice,rentprice=rentprice).first()

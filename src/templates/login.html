@@ -145,8 +145,12 @@
 			alert('Incorrect credentials')
 		</script>
 	{% endif %}
-	
-	<section id="form"><!--form-->
+	{%if already_reg %}
+		<script>
+			alert('Email already registered')
+		</script>
+	{% endif %}
+	<section id="form"  style="padding-top:5%"><!--form-->
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-1">
