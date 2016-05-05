@@ -588,7 +588,7 @@ def deliver(request):
 
 @csrf_exempt
 def invoice(request):
-    try:        
+    try:
         if 'confirm' in request.POST:
             custObj = CustomerClass(request.session["userid"])        
             custObj.bookCheckout()             
@@ -597,6 +597,7 @@ def invoice(request):
             return HttpResponseRedirect("/cart")
     except:
         return HttpResponseRedirect("/cart")
+    
 
 def addfeedback(request):
     if request.method=="POST":

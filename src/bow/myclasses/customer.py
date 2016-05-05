@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from .cart import CartClass
 from .user import UserClass
 from .book import BookClass
+from .admin import AdminClass
 from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status,Cart,Order
 import json
 import requests
@@ -103,6 +104,8 @@ class CustomerClass(UserClass):
                     payment.save()
                     order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=(temp-i.quantity))
                     order.save()
+                    a=AdminClass()
+                    a.mailowner(oid,temp_id,"buy",(temp-i.quantity))
                 statObj.save()
             else:
                 try:
@@ -123,7 +126,9 @@ class CustomerClass(UserClass):
                         payment.save()                          
                         date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
                         rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
-                        rent.save()                                        
+                        rent.save()
+                        a=AdminClass()
+                        a.mailowner(oid,temp_id,"rent",temp-i.quantity)                                        
                 except Exception as ex:
                     print "hey bro"
                     print ex
@@ -317,7 +322,8 @@ class CustomerClass(UserClass):
         
         from PIL import Image
         import PIL
-        furl="C:\\Users\\Lenovo\\Documents\\Github\\booksonwheels\\src\\bow\\static\\"+imageurl                
+        
+        furl="bow/static/"+imageurl              
         img=Image.open(furl)
         img=img.resize((128,192),PIL.Image.ANTIALIAS)
         img.save(furl)

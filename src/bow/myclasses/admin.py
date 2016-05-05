@@ -177,4 +177,28 @@ class AdminClass():
 			feeds.append(db[i])
 			print db[i]
 		return feeds
-	
+
+	def mailowner(self,oid,bid,order,quantity):
+		u=User.objects.get(userid=oid)
+		b=Book.objects.get(bookid=bid)
+		import smtplib
+		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email		
+		toaddr = u.email #receiver's email
+		print u.email
+		msg = 'The book ' + b.title + ' Has a Purchaser for '+order +'. '+str(quantity)+' Books are required . Do keep it ready for collection'#The message
+			
+		#gmail credentials
+		username = 'booksonwheelsteam'
+		password = 'books^**'
+			
+		server=smtplib.SMTP('smtp.gmail.com:587')
+		server.starttls()
+
+		try:
+			server.login(username,password)
+			server.sendmail(fromaddr,toaddr,msg)
+		except:
+			print "not send mail"
+			#pass
+
+		server.quit()
