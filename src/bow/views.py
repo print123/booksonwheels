@@ -108,12 +108,17 @@ def login(request):
 def signup(request):
     if request.method == "POST":
         address=request.POST.get('address') + "|" + request.POST.get('city') + "|" + request.POST.get('code')
-        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"], address=address, contact_no=request.POST["contact"])
+        contact=request.POST["contact"]
+        nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
         try:         
-            nuser.addUser()            
+            nuser.addUser()
+            idd=nuser.getId(request.POST["email"])
+            print idd
+            custObj = CustomerClass(idd)            
+            custObj.addDeliveryDetails(contact,address)            
         except Exception as e:
-                context={'already_reg':True}
-                return render(request,"login.html",context)
+            context={'already_reg':True}
+            return render(request,"login.html",context)
 
     return HttpResponseRedirect("/")
 
@@ -183,13 +188,7 @@ def getInfo(request):
         bookid=b.getBookid(t_isbn)        
         need=[]
         got={}
-        cartObj = CartClass(request.session["userid"])
-        cust = cartObj.getCust()
-        if cust.address is not None:
-            array = cust.address.split("|")
-            a = array[0]
-            b = array[1]
-            c = array[2] 
+         
         flag=False
         if not bookid==-1:
             owner=request.session['userid']                    
@@ -236,7 +235,7 @@ def getInfo(request):
                 else:                    
                     request.session[i]=lst[i]
         #print need
-        context={'got':got,'find':need,'ISBN':t_isbn,'cust': cust, 'a': a, 'b': b, 'c': c}
+        context={'got':got,'find':need,'ISBN':t_isbn}
 
         
         if flag==True:
@@ -578,7 +577,7 @@ def checkout(request):
                 else:
                     total += r['quantity'] * r['sellprice']*r['timeperiod']                
                     price.append(r['quantity'] * r['sellprice']*r['timeperiod'])
-                context = {'result': result, 'total': total, 'cust': cust, 'a': a, 'b': b, 'c': c}
+                context = {'result': result, 'total': total,'a':a,'cust':cust,'b':b,'c':c}
             #print cust.email
             return render(request, "checkout.html", context)        
     except:
@@ -612,15 +611,14 @@ def pickup(request):
         return HttpResponseRedirect("/login")              
 @csrf_exempt
 def invoice(request):
-    try:
-        if 'confirm' in request.POST:
-            custObj = CustomerClass(request.session["userid"])        
-            custObj.bookCheckout()             
-            return HttpResponseRedirect("/orders")
-        else:
-            return HttpResponseRedirect("/cart")
-    except:
+    
+    if 'confirm' in request.POST:
+        custObj = CustomerClass(request.session["userid"])        
+        custObj.bookCheckout()             
+        return HttpResponseRedirect("/orders")
+    else:
         return HttpResponseRedirect("/cart")
+    
     
 
 def addfeedback(request):

@@ -67,11 +67,11 @@
 							<p>Bill To</p>
 							<div class="form-one">
 								<form action="/deliver" name = "newform" method="POST" onsubmit = "checkAdd()">
-									<input type="text" placeholder="Delivery Address" id = "address" value ="{{a}}" name="address" oninput = "checkAdd()" >
-									<input type="text" placeholder="Email" value ="{{cust.email}}" name = "email" oninput = "checkAdd()">
-									<input type="text" placeholder="Contact No" name="contact" value = "{{cust.contact_no}}" id = "contact" oninput = "checkAdd()">
-									<input type="text" placeholder="City" name = "city" value ="{{b}}" name = "city" required >
-									<input type="text" placeholder="Zip/Postal Code" value ="{{c}}" name = "code" requred>
+									Address :<input type="text" placeholder="Delivery Address" id = "address" value ="{{a}}" name="address" oninput = "checkAdd()" >
+									<br/>
+									Contact Number:<input type="text" placeholder="Contact No" name="contact" value = "{{cust.contact_no}}" id = "contact" oninput = "checkAdd()">
+									City :<input type="text" placeholder="City" name = "city" value ="{{b}}" name = "city" required >
+									Postal Code:<input type="text" placeholder="Zip/Postal Code" value ="{{c}}" name = "code" requred>
 									<br/><br/>
 									<button type="submit" name="deliver" name="code" id="code" class="btn default">Deliver to this address</button>
 								</form>
