@@ -1,5 +1,3 @@
-
-
 """A Class that represents a Customer """
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -27,8 +25,8 @@ class CustomerClass(UserClass):
             p['rentprice']=float(b.rentprice)            
             p['dosell']=b.dosell
             p['dorent']=b.dorent
-            p['qty']=b.qtyuploaded
-            p['aqty']=b.qtyavailable                    
+            p['sqty']=b.sqtyuploaded
+            p['rqty']=b.qtyuploaded-b.sqtyuploaded
             books.append(p)
         return books
     def getCategoryOf(self, res):
@@ -95,6 +93,7 @@ class CustomerClass(UserClass):
                 bObj.sellquantity=bObj.sellquantity-i.quantity                
                 bObj.save()                
                 while (i.quantity>0):
+                    print "here"
                     temp=i.quantity
                     oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                          
                     price=i.sellprice*(temp-i.quantity)
@@ -118,17 +117,18 @@ class CustomerClass(UserClass):
                     bObj.quantity=bObj.quantity-i.quantity                
                     bObj.save()
                     while(i.quantity>0):                    
-                        temp=i.quantity                                        
-                        oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                        
-                        price=i.sellprice*(temp-i.quantity)                                        
+                        temp=i.quantity                                                        
+                        oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                                                                
+                        price=i.sellprice*(temp-i.quantity)                                                                
                         statObj.quantity=statObj.quantity-(temp-i.quantity)                    
-                        payment=Payment(mode='cd',amount=price,ispending=True)                                        
-                        payment.save()                          
-                        date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                            
-                        rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                            
+                        payment=Payment(mode='cd',amount=price,ispending=True)                                      
+                        payment.save()                                                  
+                        date_of_return = (datetime.today()+relativedelta(months=int(i.timeperiod))).isoformat()                                                                                    
+                        rent=Rents(ISBN=i.ISBN,userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=temp-i.quantity,date_of_return=date_of_return)                                                                                    
                         rent.save()
-                        a=AdminClass()
-                        a.mailowner(oid,temp_id,"rent",temp-i.quantity)                                        
+                        a=AdminClass()                        
+                        a.mailowner(oid,temp_id,"rent",temp-i.quantity)                                                                
+                    statObj.save()                
                 except Exception as ex:
                     print "hey bro"
                     print ex

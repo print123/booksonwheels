@@ -172,12 +172,14 @@ class BookClass:
 
     def getOwner(self,bookid,quantity,dosell,price):
         """A method to get owner of the book"""
-        if dosell:
-            upObj=Upload.objects.filter(bookid_id=bookid,dosell=dosell,sellprice=price).first()
+        ind = -1
+        while dosell:
+            ind=ind+1
+            uptmp=Upload.objects.filter(bookid_id=bookid,dosell=dosell,sellprice=price)
+            upObj=uptmp[ind]
             if upObj.qtyuploaded > 0:
                 retOwnid=upObj.owner_id_id
-                if upObj.sqtyavailable >= quantity:
-                    #upObj.sqtyuploaded=upObj.sqtyuploaded-quantity
+                if upObj.sqtyavailable >= quantity:                    
                     upObj.sqtyavailable=upObj.sqtyavailable-quantity
                     upObj.qtyavailable=upObj.qtyavailable-quantity
                     quantity=0                    
@@ -188,8 +190,10 @@ class BookClass:
                 upObj.save()                
                 return (retOwnid,quantity)
                             
-        else:
-            upObj=Upload.objects.filter(bookid_id=bookid,dorent=True,rentprice=price).first()
+        while True:
+            ind=ind+1
+            uptmp=Upload.objects.filter(bookid_id=bookid,dorent=True,rentprice=price)
+            upObj=uptmp[ind]
             curr=upObj.qtyavailable-upObj.sqtyavailable
             if curr > 0:
                 retOwnid=upObj.owner_id_id
