@@ -18,6 +18,15 @@
 
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <script type="text/javascript">
+  function checkAdd()
+  {
+  	if(document.forms['newform']['address'].value == null || document.forms['newform']['email'].value == null || document.forms['newform']['contact'].value == null )
+  		alert ('Please Fill up all the details')
+  	else
+  		document.getElementById('submit').disabled = false;
+  }
+  </script>
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -57,14 +66,14 @@
 						<div class="bill-to">
 							<p>Bill To</p>
 							<div class="form-one">
-								<form action="/deliver" method="POST">
-									<input type="text" placeholder="Delivery Address" name="address">
-									<input type="text" placeholder="Email">
-									<input type="text" placeholder="Contact No" name="contact">
-									<input type="text" placeholder="City">
-									<input type="text" placeholder="Zip/Postal Code">
+								<form action="/deliver" name = "newform" method="POST" onsubmit = "checkAdd()">
+									<input type="text" placeholder="Delivery Address" id = "address" value ="{{a}}" name="address" oninput = "checkAdd()" >
+									<input type="text" placeholder="Email" value ="{{cust.email}}" name = "email" oninput = "checkAdd()">
+									<input type="text" placeholder="Contact No" name="contact" value = "{{cust.contact_no}}" id = "contact" oninput = "checkAdd()">
+									<input type="text" placeholder="City" name = "city" value ="{{b}}" name = "city" required >
+									<input type="text" placeholder="Zip/Postal Code" value ="{{c}}" name = "code" requred>
 									<br/><br/>
-									<button type="submit" name="deliver"  class="btn default" >Deliver to this address</button>
+									<button type="submit" name="deliver" name="code" id="code" class="btn default">Deliver to this address</button>
 								</form>
 							</div>							
 						</div>
@@ -144,14 +153,14 @@
 				</form>
 			</div>
 			<div class="payment-options">
-					<span>
+					<!--<span>
 						<label><input type="checkbox"> Direct Bank Transfer</label>
 					</span>
 					<span>
 						<label><input type="checkbox"> Check Payment</label>
-					</span>
+					</span>-->
 					<span>
-						<label><input type="checkbox"> Paypal</label>
+						<label><input type="checkbox"> Cash on Delivery</label>
 					</span>
 				</div>
 		</div>

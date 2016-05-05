@@ -49,7 +49,7 @@ class CustomerClass(UserClass):
                 gen_counts.append({'genre': q, 'total': 1})
         return gen_counts
 
-
+    
     def showCategory(self, s):
         boo = Upload.objects.filter(owner_id_id=self.userid, dosell=s)
         books=[]

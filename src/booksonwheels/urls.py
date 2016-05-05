@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^updn', 'bow.views.updateCart', name='updateCart'),
     url(r'^checkout', 'bow.views.checkout', name='checkout'),
     url(r'^deliver', 'bow.views.deliver', name='deliver'),
+    url(r'^pickup', 'bow.views.pickup', name='pickup'),
     url(r'^invoice', 'bow.views.invoice', name='invoice'),
     url(r'^test', 'bow.views.test', name='test'),
     url(r'^comment', 'bow.views.productdetails', name='comment'),
