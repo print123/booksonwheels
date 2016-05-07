@@ -62,6 +62,12 @@ def home(request):
     books = BookClass().getTrending()
     category = BookClass().getCategory()
     context = {'books': books, 'category': category}
+    if "signed" in request.session.keys():
+        context['notif']=True
+        del request.session['signed']
+    if "pup" in request.session.keys():
+        context['passwordup']=True
+        del request.session['pup']
     return render(request, "index.html", context)
 
 def test(request):
@@ -70,7 +76,6 @@ def test(request):
 def login(request):
     try:
         if request.session["userid"] is not None:
-            print "123"
             return HttpResponseRedirect('/')
     except:
         already_login = True
@@ -121,7 +126,8 @@ def signup(request):
             idd=nuser.getId(request.POST["email"])
             print idd
             custObj = CustomerClass(idd)            
-            custObj.addDeliveryDetails(contact,address)            
+            custObj.addDeliveryDetails(contact,address) 
+            request.session['signed']=True
         except Exception as e:
             context={'already_reg':True}
             return render(request,"login.html",context)
@@ -183,8 +189,13 @@ def order(request):
             result = obj.displayOrders()
             
             context = {'result': result}        
+            if 'ordered' in request.session.keys():
+                context['notify']=True
+                del request.session['ordered']
+
             return render(request,"order.html",context)
-    except:
+    except Exception as ex:
+        print ex
         return HttpResponseRedirect("/")
 
 def getInfo(request):
@@ -620,7 +631,8 @@ def invoice(request):
     
     if 'confirm' in request.POST:
         custObj = CustomerClass(request.session["userid"])        
-        custObj.bookCheckout()             
+        custObj.bookCheckout()   
+        request.session['ordered']=True
         return HttpResponseRedirect("/orders")
     else:
         return HttpResponseRedirect("/cart")
@@ -653,9 +665,9 @@ def submitpass(request):
         context={'incorrectpass':True}
         return render(request,"changepass.html",context)
     else:
-        context={'correctpass':True}
+        request.session["pup"]=True
         u.updatePassword(request.POST['newpassword'])
-        return render(request,"changepass.html",context)
+        return HttpResponseRedirect("/")
 
 def forgotpass(request):
     return render(request,"forgotpass.html");
@@ -691,8 +703,8 @@ def updatepassword(request):
         print password + "hi"
         u=UserClass(name="",email=request.session["emailidown"],password="")
         u.updatePassword(password)
-        context={'pwd':True}
-        return render(request,"updatepass.html",context)
+        request.session["pup"]=True
+        return HttpResponseRedirect("/")
         
 
 

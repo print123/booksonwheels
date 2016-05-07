@@ -3,6 +3,8 @@
 from ..models import User, Upload,Token
 import md5
 from random import randint
+import random
+import string
 class UserClass:
     '''def __init__(self, name, password, email, contact_no, address):
         self.name = name
@@ -65,26 +67,26 @@ class UserClass:
         return True
 
     def sendConfirmMail(self):
-        token=self.generateToken(10)
-        t=Token(email=self.email,token_gen=str(token))
+        token=self.generateToken(7)
+        print token
+        t=Token(email=self.email,token_gen=token)
         t.save()
         self.sendMail(token)
 
     def generateToken(self,n):
-        range_start = 10**(n-1)
-        range_end = (10**n)-1
-        return randint(range_start, range_end)
+        token=''.join(random.choice(string.lowercase) for x in range(n))
+        return token
 
     def sendMail(self,token):
         import smtplib
-        fromaddr = 'booksonwheels8@gmail.com'#sender's email     
+        fromaddr = 'booksonwheelsteam@gmail.com'#sender's email     
         toaddr = self.email #receiver's email
         print self.email
-        msg = 'Token for changing password : ' + str(token) 
+        msg = 'the book isbn ' + token  
             
         #gmail credentials
-        username = 'booksonwheels8'
-        password = 'Programmer@08'
+        username = 'booksonwheelsteam'
+        password = 'books^**'
             
         server=smtplib.SMTP('smtp.gmail.com:587')
         server.starttls()
@@ -97,7 +99,6 @@ class UserClass:
             #pass
 
         server.quit()
-
     def verifyToken(self,token):
         token_get=None
         print self.email

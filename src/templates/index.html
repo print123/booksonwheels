@@ -49,9 +49,34 @@ $('.dropdown-button').dropdown({
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="{% static 'js/notify.js'%}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>  
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+    <script src="/static/js/notify.js"></script>
+	<script>
+		function notif()
+		{		
+					
+			$.notify("You successfully registered","success")	
+		}
+		function notif1()
+		{		
+					
+			$.notify("Password updated","success")	
+		}			
+	</script>
+
 </head><!--/head-->
 
 <body>
+	{%if notif%}
+	<script>
+		notif();
+	</script>
+	{%endif%}
+	{%if passwordup %}
+	<script>
+		notif1();
+	</script>
+	{%endif%}
 		<header>
 		<div><!--header-middle-->
 			<div class="container-fluid" >

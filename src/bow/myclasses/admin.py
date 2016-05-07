@@ -125,25 +125,22 @@ class AdminClass():
 		b=Book.objects.get(ISBN=ISBN)
 		import smtplib
 		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email		
-		
+		server=smtplib.SMTP('smtp.gmail.com:587')
 		for i in ans:
 			mail=None
 			print "hi  "
 			print i['userid']
 			mail=User.objects.filter(userid=i['userid']).values('email')
 			print mail
-	        """script for mail goes here"""
-	        if not mail is None:
+			if not mail is None:
 				toaddr = mail[0]['email'] #receiver's email
 				msg = 'The book '+ b.title +' is available.Add to cart and checkout as quick as possible.'#The message
 					
 				#gmail credentials
 				username = 'booksonwheelsteam'
 				password = 'books^**'
-					
-				server=smtplib.SMTP('smtp.gmail.com:587')
+				
 				server.starttls()
-
 				try:
 					server.login(username,password)
 					server.sendmail(fromaddr,toaddr,msg)

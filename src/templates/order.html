@@ -27,9 +27,23 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/images/ico/apple-touch-icon-57-precomposed.png">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/js/notify.js"></script>
+    <script>
+        function notif()
+        {                       
+            $.notify("Your Order has been placed","success")  
+        }       
+    </script>
 </head><!--/head-->
 
 <body>
+    {% if notify%}
+    <script>
+        notif();
+    </script>
+    {%endif%}
     <header id="header"><!--header-->
         <div ><!--header-middle-->
             <div class="container-fluid" >

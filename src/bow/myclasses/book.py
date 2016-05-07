@@ -23,7 +23,7 @@ class BookClass:
 
     def getTrending(self):
         """A method to get Current Trending Books in the system"""
-        rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:6]
+        rentTrend = Book.objects.all().values('ISBN').annotate(total=Count('ISBN')).order_by('-total')[:12]
         res = []
         for i in rentTrend:
             res += self.getBook(i['ISBN'])
