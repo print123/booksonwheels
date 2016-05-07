@@ -107,26 +107,32 @@ def login(request):
 
 def signup(request):
     if request.method == "POST":
+        address=request.POST.get('address') + "|" + request.POST.get('city') + "|" + request.POST.get('code')
+        contact=request.POST["contact"]
         nuser = UserClass(name=request.POST["name"], password=request.POST["password1"], email=request.POST["email"])
-        try:
-            nuser.addUser()            
+        try:         
+            nuser.addUser()
+            idd=nuser.getId(request.POST["email"])
+            print idd
+            custObj = CustomerClass(idd)            
+            custObj.addDeliveryDetails(contact,address)            
         except Exception as e:
-                context={'already_reg':True}
-                return render(request,"login.html",context)
+            context={'already_reg':True}
+            return render(request,"login.html",context)
 
     return HttpResponseRedirect("/")
 
 
 def cart(request):
     try:        
-        if request.session["userid"] is not None:
-            c = CartClass(request.session["userid"])            
-            result = c.displayCart()        
-            total=0
+        if request.session["userid"] is not None:            
+            c = CartClass(request.session["userid"])                        
+            result = c.displayCart()                  
+            total=0            
             for r in result:
-                if r['timeperiod']==0:
+                if r['timeperiod']==0:                   
                     total += r['quantity'] * r['sellprice']                
-                else:
+                else:                    
                     total += r['quantity'] * r['sellprice']*r['timeperiod']                
 
         try:
@@ -134,10 +140,10 @@ def cart(request):
                 context = {'result': result, 'total': total,'added':True}
                 del request.session["added"]                    
             return render(request, "cart.html", context)
-        except:            
-            context = {'result': result, 'total': total,'added':False}                    
+        except Exception as ex:            
+            context = {'result': result, 'total': total,'added':False}            
             return render(request, "cart.html", context)
-    except:
+    except Exception as t:        
         return HttpResponseRedirect("/login")
 
 def wishlist(request):
@@ -182,6 +188,7 @@ def getInfo(request):
         bookid=b.getBookid(t_isbn)        
         need=[]
         got={}
+         
         flag=False
         if not bookid==-1:
             owner=request.session['userid']                    
@@ -250,7 +257,6 @@ def addInfo(request):
             torent=True
         else:
             torent=False
-         
         t_list=[]                          
         doc={'_id':request.POST['ISBN'],'comments':t_list}
         server=Server()
@@ -551,7 +557,12 @@ def checkout(request):
     try:        
         if request.session["userid"] is not None:
             uid=request.session["userid"]
-            cartObj = CartClass(uid)            
+            cartObj = CartClass(uid)    
+            cust = cartObj.getCust() 
+            array = cust.address.split("|")
+            a = array[0]
+            b = array[1]
+            c = array[2]
             result = cartObj.displayCart()              
             temp,result=cartObj.expurgate(result)                                                            
             wishObj=WishlistClass(uid)                        
@@ -566,9 +577,8 @@ def checkout(request):
                 else:
                     total += r['quantity'] * r['sellprice']*r['timeperiod']                
                     price.append(r['quantity'] * r['sellprice']*r['timeperiod'])
-                
-                context = {'result': result, 'total': total}
-
+                context = {'result': result, 'total': total,'a':a,'cust':cust,'b':b,'c':c}
+            #print cust.email
             return render(request, "checkout.html", context)        
     except:
         return HttpResponseRedirect("/login")
@@ -579,26 +589,36 @@ def deliver(request):
     try:
         if request.session["userid"] is not None:                
             contactNo=request.POST.get('contact')              
-            address=request.POST.get('address')     
+            address=request.POST.get('address') + "|" + request.POST.get('city') + "|" + request.POST.get('code')
             custObj = CustomerClass(request.session["userid"])            
             custObj.addDeliveryDetails(contactNo,address)
             return HttpResponseRedirect("/checkout")
     except:
         return HttpResponseRedirect("/login")
 
+
+@csrf_exempt
+def pickup(request):
+    try:
+        if request.session["userid"] is not None:                
+            contactNo=request.POST.get('contact')              
+            address=request.POST.get('address') + "|" + request.POST.get('city') + "|" + request.POST.get('code')
+            custObj = CustomerClass(request.session["userid"])            
+            custObj.addDeliveryDetails(contactNo,address)
+            return render(request,"addinfo.html")
+    except Exception as ex:
+        print ex
+        return HttpResponseRedirect("/login")              
 @csrf_exempt
 def invoice(request):
-    try:
-        if 'confirm' in request.POST:
-            custObj = CustomerClass(request.session["userid"])        
-            custObj.bookCheckout()             
-            return HttpResponseRedirect("/orders")
-        else:
-            print "In else portion"
-            return HttpResponseRedirect("/cart")
-    except:
-        print "In exception"
+    
+    if 'confirm' in request.POST:
+        custObj = CustomerClass(request.session["userid"])        
+        custObj.bookCheckout()             
+        return HttpResponseRedirect("/orders")
+    else:
         return HttpResponseRedirect("/cart")
+    
     
 
 def addfeedback(request):

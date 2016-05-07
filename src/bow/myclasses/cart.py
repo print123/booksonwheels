@@ -2,7 +2,7 @@
 """A Class that represents a Customer """
 
 from .book import BookClass
-from ..models import Cart, Book, Order,Status
+from ..models import Cart, Book, Order,Status,User
 
 
 class CartClass:
@@ -25,13 +25,17 @@ class CartClass:
 
         Cart.objects.filter(userid=self.userid, ISBN=ISBN, sellprice=sellprice).delete()
  
+    def getCust(self):
+        cus = User.objects.filter(userid = self.userid)[0]
+        return cus
 
     def displayCart(self):
         """To display Cart Items"""
         books = []
         quant=[]
-        for i in self.bookarray:            
-            b = Book.objects.filter(ISBN=i.ISBN)[0]
+        for i in self.bookarray:                   
+            print i.ISBN     
+            b = Book.objects.filter(ISBN=i.ISBN)[0]            
             #q = Cart.object.filter(ISBN=i.ISBN).values('qunatity')            
             #print "k"
             q=i.quantity
