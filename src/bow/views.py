@@ -14,7 +14,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from couchdb import Server
 from datetime import datetime
-
+import decimal
 
 
 def is_number(s):
@@ -451,31 +451,31 @@ def addToWishlist(request):
 
 def removeFromBooks(request):
     try:        
-        bookid=request.POST["id"]        
-        custObj=CustomerClass(request.session["userid"])     
+        bookid=request.POST["id"] 
+        custObj=CustomerClass(request.session["userid"])        
         sellprice=decimal.Decimal(999999.00)
         rentprice=decimal.Decimal(999999.00)
         if "sellprice" in request.POST.keys():            
-            sellprice=decimal.Decimal(request.POST["sellprice"])            
+            sellprice=decimal.Decimal(request.POST["sellprice"])
         if "rentprice" in request.POST.keys():
             rentprice=decimal.Decimal(request.POST["rentprice"])   
-        custObj.removeBook(bookid,request.POST["ISBN"],sellprice,rentprice)        
+        print 'hey bro'
+        custObj.removeBook(bookid,request.POST["ISBN"],sellprice,rentprice)
         return HttpResponseRedirect("/mybooks")
     except:
         return HttpResponseRedirect("/login")
 
 def updateQuantity(request):
     try:        
-        import decimal
+
         bookid=request.POST["id"]                    
         ISBN=request.POST["ISBN"]
-        sellquant=decimal.Decimal(0)
-        rentquant=decimal.Decimal(0)
+        sellquant=decimal.Decimal(9999)
+        rentquant=decimal.Decimal(9999)
         sellprice=decimal.Decimal(999999.00)
         rentprice=decimal.Decimal(999999.00)
         if "sellprice" in request.POST.keys():            
             sellprice=decimal.Decimal(request.POST["sellprice"])            
-        
         if "sellquant" in request.POST.keys():
             if is_number(request.POST["sellquant"]):
                 sellquant=decimal.Decimal(request.POST["sellquant"])        

@@ -6,6 +6,7 @@ from .user import UserClass
 from .book import BookClass
 from .admin import AdminClass
 from ..models import User, Payment,Wishlist, Book, Rents,Upload,Status,Cart,Order
+import decimal
 import json
 import requests
 import yaml
@@ -95,7 +96,7 @@ class CustomerClass(UserClass):
                 while (i.quantity>0):
                     print "here"
                     temp=i.quantity
-                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)                          
+                    oid,i.quantity=bookObj.getOwner(temp_id,i.quantity,i.dosell,i.sellprice)
                     price=i.sellprice*(temp-i.quantity)
                     statObj.sellquantity=statObj.sellquantity-(temp-i.quantity)
                     statObj.quantity=statObj.quantity-(temp-i.quantity)                   
@@ -104,7 +105,7 @@ class CustomerClass(UserClass):
                     order=Order(userid_id=self.userid,paymentid_id=payment.paymentid,bookid_id=temp_id,owner_id_id=oid,quantity=(temp-i.quantity))
                     order.save()
                     a=AdminClass()
-                    a.mailowner(oid,temp_id,"buy",(temp-i.quantity))
+                    a.mailowner(oid,temp_id,"buy",(temp-i.quantity))    
                 statObj.save()
             else:
                 try:
@@ -136,7 +137,7 @@ class CustomerClass(UserClass):
             
 
 
-    def removeBook(self,bookid,sellprice,rentprice):#future arguments dosell,dorent and prices        
+    def removeBook(self,bookid,ISBN,sellprice,rentprice):#future arguments dosell,dorent and prices        
         """A method to remove a book from database for user"""
         upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()
         sqty=upObj.sqtyavailable
@@ -150,10 +151,11 @@ class CustomerClass(UserClass):
             bookObj.quantity=bookObj.quantity-qty            
             bookObj.sellquantity=bookObj.sellquantity-sqty
             bookObj.save()                
-        if sellprice==999999.00:
-            sellprice=0
-        if rentprice==999999.00:
-            rentprice=0
+
+        if sellprice == 999999.00:
+            sellprice=0.00
+        if rentprice == 999999.00:
+            rentprice=0.00
         statObj=Status.objects.filter(ISBN=t_ISBN,sellprice=sellprice,rentprice=rentprice).first()        
         if(statObj.quantity == qty):            
             statObj.delete()
@@ -165,21 +167,20 @@ class CustomerClass(UserClass):
     def updateQuantity(self,bookid,ISBN,sellprice,rentprice,sellquant,rentquant):
         """A method that allows user to update quantity of the book"""
         try:            
-            import decimal
-            print rentquant
+
             upObj=Upload.objects.filter(owner_id_id=self.userid,bookid_id=bookid,sellprice=sellprice,rentprice=rentprice).first()            
-            if sellquant == 0:
+            if sellquant == 9999:
                 sellquant=upObj.sqtyuploaded            
-            if rentquant == 0:
+            if rentquant == 9999:
                 rentquant = (upObj.qtyuploaded-upObj.sqtyuploaded)
             newQty=decimal.Decimal(sellquant+rentquant)            
             oldQty=upObj.qtyuploaded
             oldaQty=upObj.qtyavailable            
-            diff=newQty-oldQty                    
-            diff1=sellquant-upObj.sqtyuploaded
+            diff=newQty-oldQty                   
+            diff1=sellquant-upObj.sqtyavailable
             upObj.qtyuploaded=upObj.qtyuploaded+diff            
             upObj.sqtyuploaded=sellquant
-            upObj.qtyavailable=upObj.qtyavailable+diff            
+            upObj.qtyavailable=upObj.qtyavailable+diff  
             upObj.sqtyavailable=upObj.sqtyavailable+diff1
             upObj.save()
             bookObj=Book.objects.filter(bookid=bookid).first()
