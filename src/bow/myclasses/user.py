@@ -1,7 +1,8 @@
 """A Class that represents a User in the System"""
 
-from ..models import User, Upload
+from ..models import User, Upload,Token
 import md5
+from random import randint
 class UserClass:
     '''def __init__(self, name, password, email, contact_no, address):
         self.name = name
@@ -47,3 +48,68 @@ class UserClass:
     def getId(self, email):
         b = User.objects.filter(email=email).values('userid')
         return b[0]['userid']
+
+    def updatePassword(self,npass):
+        m=md5.new()
+        m.update(npass)
+        User.objects.filter(email=self.email).update(password=m.hexdigest())
+
+    def verifyEmail(self):
+        u=None
+        try:
+            u=User.objects.get(email=self.email)
+        except:
+            return False
+        if u is None:
+            return False
+        return True
+
+    def sendConfirmMail(self):
+        token=self.generateToken(10)
+        t=Token(email=self.email,token_gen=str(token))
+        t.save()
+        self.sendMail(token)
+
+    def generateToken(self,n):
+        range_start = 10**(n-1)
+        range_end = (10**n)-1
+        return randint(range_start, range_end)
+
+    def sendMail(self,token):
+        import smtplib
+        fromaddr = 'booksonwheels8@gmail.com'#sender's email     
+        toaddr = self.email #receiver's email
+        print self.email
+        msg = 'Token for changing password : ' + str(token) 
+            
+        #gmail credentials
+        username = 'booksonwheels8'
+        password = 'Programmer@08'
+            
+        server=smtplib.SMTP('smtp.gmail.com:587')
+        server.starttls()
+
+        try:
+            server.login(username,password)
+            server.sendmail(fromaddr,toaddr,msg)
+        except:
+            print "not send mail"
+            #pass
+
+        server.quit()
+
+    def verifyToken(self,token):
+        token_get=None
+        print self.email
+        try:
+            token_get=Token.objects.get(email=self.email,token_gen=token)
+        except:
+            return False
+        if token_get is None:
+            return False
+        Token.objects.get(email=self.email).delete()
+        return True
+
+
+
+

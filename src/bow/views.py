@@ -70,17 +70,22 @@ def test(request):
 def login(request):
     try:
         if request.session["userid"] is not None:
+            print "123"
             return HttpResponseRedirect('/')
     except:
         already_login = True
 
     lform = LoginForm()
+    
+
     # sform = SignUpForm()
     # rform=retype()
     is_not_auth = False
 
     context = {'form': lform, 'is_not_auth': is_not_auth}
+    
     if request.method == "POST":
+        print "12344"
         form = LoginForm(request.POST)
         email = request.POST["email"]
         password = request.POST["password"]
@@ -89,6 +94,7 @@ def login(request):
             context["is_not_auth"] = False
             request.session["userid"] = requestuser.userid
             request.session["name"] = requestuser.name
+            request.session["email"]=email
             
             cartObj=CartClass(requestuser.userid)
             l=cartObj.getTotal()            
@@ -632,5 +638,77 @@ def addfeedback(request):
     return HttpResponseRedirect("/")
 
 def changepass(request):
-    pass
+    return render(request,"changepass.html")
+
+def submitpass(request):
+    password=request.POST["oldpassword"]
+    try:
+        name=request.session['name']
+        email=request.session['email']
+    except:
+        return HttpResponseRedirect("/login")
+
+    u=UserClass(name=name,email=email,password=password)
+    if u.authenticate(False)==False:
+        context={'incorrectpass':True}
+        return render(request,"changepass.html",context)
+    else:
+        context={'correctpass':True}
+        u.updatePassword(request.POST['newpassword'])
+        return render(request,"changepass.html",context)
+
+def forgotpass(request):
+    return render(request,"forgotpass.html");
+
+def emailsubmit(request):
+    if request.method=="POST":
+        email=request.POST["email"];
+        user=UserClass(email=email,password="",name="")
+        if user.verifyEmail()==False:
+            context={'not_registered':True}
+            return render(request,"forgotpass.html",context)
+        else:
+            request.session["emailidown"]=email
+            user.sendConfirmMail()
+            return render(request,"tokensubmit.html")
+
+def tokensubmit(request):
+    if request.method=="POST":
+        token=request.POST["tokennumber"]
+        email=request.session["emailidown"]
+        #del request.session["emailidown"]
+        user=UserClass(email=email,password="",name="")
+        print token
+        if user.verifyToken(token)==False:
+            context={'not_correct':True}
+            return render(request,"tokensubmit.html",context)
+        else:
+            return render(request,"updatepass.html")
+
+def updatepassword(request):
+    if request.method=="POST":
+        password=request.POST.get('newpassword',False)
+        print password + "hi"
+        u=UserClass(name="",email=request.session["emailidown"],password="")
+        u.updatePassword(password)
+        context={'pwd':True}
+        return render(request,"updatepass.html",context)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

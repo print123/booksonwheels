@@ -38,5 +38,11 @@ urlpatterns = [
     url(r'^pickup', 'bow.views.pickup', name='pickup'),
     url(r'^invoice', 'bow.views.invoice', name='invoice'),
     url(r'^test', 'bow.views.test', name='test'),
+    url(r'^changepass', 'bow.views.changepass', name='changepass'),
+    url(r'^submitpass', 'bow.views.submitpass', name='submitpass'),
+    url(r'^forgotpass', 'bow.views.forgotpass', name='forgotpass'),
+    url(r'^tokensubmit', 'bow.views.tokensubmit', name='tokensubmit'),
+    url(r'^emailsubmit', 'bow.views.emailsubmit', name='emailsubmit'),
+    url(r'^pwd', 'bow.views.updatepassword', name='pwd'),
     url(r'^comment', 'bow.views.productdetails', name='comment'),
 ]

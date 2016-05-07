@@ -101,3 +101,9 @@ class Payment(models.Model):
 	def __unicode__(self):
 		return self.paymentid
 
+class Token(models.Model):
+	email=models.EmailField(max_length=254,blank=False,unique=True)
+	token_gen=models.CharField(max_length=20,blank=False,null=False)
+
+	def __unicode__(self):
+		return self.email

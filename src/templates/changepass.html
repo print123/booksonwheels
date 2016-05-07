@@ -10,7 +10,7 @@
 		function checkPass()
 		{
 		    //Store the password field objects into variables ...
-		    var pass1 = document.getElementById('password1');
+		    var pass1 = document.getElementById('newpassword');
 		    var pass2 = document.getElementById('password2');
 		    //Store the Confimation Message Object ...
 		    var message = document.getElementById('confirmMessage');
@@ -29,10 +29,18 @@
 		        //the user that they have entered the correct password 
 		        pass2.style.backgroundColor = goodColor;
 		        message.style.color = goodColor;
-		        message.innerHTML = "Passwords Match!"
+		        message.innerHTML = "Passwords Match!";
 		        pass = true;
-		        if(email1 && name1)
-		        	document.getElementById("submit").disabled = false;		        	        		        
+		        var name = document.getElementById('oldpassword');
+		        if (name.value.length >0)
+		        {
+		        	document.getElementById("submit").disabled = false;
+		        }
+		        
+		        if(name1){
+
+		        	
+		        }		        	        		        
 		    }
 		    else{
 		        //The passwords do not match.
@@ -40,7 +48,7 @@
 		        //notify the user.
 		        pass2.style.backgroundColor = badColor;
 		        message.style.color = badColor;
-		        message.innerHTML = "Passwords Do Not Match!"
+		        message.innerHTML = "Passwords Do Not Match!";
 		        pass=false;
 		        document.getElementById("submit").disabled = true;		        
 		    }
@@ -73,16 +81,19 @@
 		}
 		function checkName()
 		{
-			var name = document.getElementById('name');
+
+			var name = document.getElementById('oldpassword');
 			var messag = document.getElementById('confirmationMessage1');
 			var goodColor = "#66cc66";
 		    var badColor = "#ff6666";
+
 			if(name.value.length == 0)
 			{
+				
 				name.style.backgroundColor = badColor;
 		        messag.style.color = badColor;
-				messag.innerHTML = "Name must be field out";
-				name1 = false
+				messag.innerHTML = "Old password must be field out";
+				name1 = false;
 		        document.getElementById("submit").disabled = true;
 			}
 
@@ -92,9 +103,11 @@
 		        messag.style.color = goodColor;
 		        messag.innerHTML = "";
 		        name1 = true;
-		        if(email1 && pass)
-		        	document.getElementById("submit").disabled = false;
+		        var password1 = document.getElementById('newpassword');
 
+		        if(password1.value.length > 0){
+		        	document.getElementById("submit").disabled = false;
+		        }
 			}
 		}
 	</script>
@@ -137,76 +150,41 @@
 			</div>
 		</div><!--/header-middle-->
 	
-		
+		{% if incorrectpass %}
+			<script>
+				alert('Old password is incorrect');
+			</script>
+		{% endif %}
+		{% if correctpass %}
+			<script>
+				alert('Password updated');
+			</script>
+		{% endif %}
 	
-	{%if is_not_auth %}
-		
-		<script>
-			alert('Incorrect credentials')
-		</script>
-	{% endif %}
-	{%if already_reg %}
-		<script>
-			alert('Email already registered')
-		</script>
-	{% endif %}
+	
 	<section id="form"  style="padding-top:5%"><!--form-->
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-4 col-sm-offset-1">
-					<div class="login-form"><!--login form-->
-						<h2>Login to your account</h2>
-						<form action="/login" method="post">
-							{% csrf_token %}
-    						{{ form }}
-    						<br/>
-							<a href="/forgotpass" >Forgot Password</a>
-							<button type="submit" class="btn btn-default">Login</button>
-						</form>
-
-					</div><!--/login form-->
-				</div>
-				<div class="col-sm-1">
-					<h2 class="or">OR</h2>
-				</div>
-				{%if is_register %}
-					<script>
-						alert('Sign up successful');
-					</script>
-				{% endif %}
-
-				{% if passupd %}
-					<script>
-						alert('Password Updated');
-					</script>
-				{% endif %}
+				
+				
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
-						<h2>New User Signup!</h2>
+						<h2>Change Password</h2>
 
-						<form action="/signup/" name="formName" method="post">
+						<form action="submitpass" name="formName" method="post">
 
 
 							{% csrf_token %}
-							Name:<input type="Text" name="name" id="name" class="form-control" onkeyup="checkName()" onchange="checkName()" placeholder="Your Name" style="color:black">
-							<span id="confirmationMessage1" class="confirmMessage"></span><br>
-							Email:<input type="Text" name="email" class="form-control" id="emailid" onchange="checkEmail()" placeholder="Your Email Address" style="color:black">
-							<span id="confirmationMessage" class="confirmMessage"></span><br>
-							Password:<input type="Password" name="password1" id="password1" onkeyup="checkPass()" class="form-control" style="color:black"><br>
-							Confirm Password:<input type="Password" name="password2" onkeyup="checkPass()" id="password2" onblur="validateField()" class="form-control" style="color:black">
+							
+							Old Password:<input type="Password" name="oldpassword" id="oldpassword" onkeyup="checkName()" class="form-control" style="color:black"><br>
+							<span id="confirmMessage1" class="confirmMessage"></span><br/>
+							New Password:<input type="Password" name="newpassword" id="newpassword" onkeyup="checkPass()" class="form-control" style="color:black"><br>
+							Confirm Password:<input type="Password" name="password2" onkeyup="checkPass()" id="password2"  class="form-control" style="color:black">
 							<span id="confirmMessage" class="confirmMessage"></span><br/>
-							Contact Number:
-							<input type="text" placeholder="Contact No" name="contact"  id = "contact" required>
-							Address:
-							<input type="text" placeholder="Delivery Address" id = "address"  name="address" required>
-							City:
-							<input type="text" placeholder="City" name = "city"  name = "city" required >
-							Pincode:
-							<input type="text" placeholder="Zip/Postal Code"  name = "code" requred>
-							<br/><br/>
-			</div>	
+							
+				
 							<br>					
-							<button type="submit" id="submit" class="btn btn-default" disabled>Signup</button>
+							<button type="submit" id="submit" class="btn btn-default" disabled>Change Password</button>
 						</form>
 					</div><!--/sign up form-->
 				</div>
