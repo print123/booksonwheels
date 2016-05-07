@@ -122,6 +122,7 @@ class AdminClass():
 	def notifyBuyer(self,ISBN):
 		"""A method to notify user from wishlist by ISBN"""
 		ans=Wishlist.objects.filter(ISBN=ISBN).values('userid')
+		b=Book.objects.get(ISBN=ISBN)
 		import smtplib
 		fromaddr = 'booksonwheelsteam@gmail.com'#sender's email		
 		
@@ -134,7 +135,7 @@ class AdminClass():
 	        """script for mail goes here"""
 	        if not mail is None:
 				toaddr = mail[0]['email'] #receiver's email
-				msg = 'The book is available.Add to cart and checkout as quick as possible.'#The message
+				msg = 'The book '+ b.title +' is available.Add to cart and checkout as quick as possible.'#The message
 					
 				#gmail credentials
 				username = 'booksonwheelsteam'
